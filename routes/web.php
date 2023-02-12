@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('login');
+    return redirect(route('login'));
 });
 
 Route::get('/dashboard', function () {
@@ -23,8 +23,9 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
-    Route::get('/settings', [ProfileController::class, 'edit'])->name('settings.edit');
-    Route::patch('/settings', [ProfileController::class, 'update'])->name('settings.update');
+    Route::get('/settings', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/settings', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/settings', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
 require __DIR__.'/auth.php';
