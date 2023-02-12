@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use App\Models\User;
 
 class ProfileController extends Controller
 {
@@ -57,4 +58,20 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
+
+    /**
+     * View the users account.
+     */
+    public function view(Request $request, $username): View
+    {
+        $user = User::where('username', $username)->first();
+
+        if(!is_null($user)){
+            return view('profile.view', ['user' => $user]);
+        }
+
+        return abort(404);
+
+    }
+
 }
