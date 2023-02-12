@@ -12,7 +12,8 @@
         "laravel/sanctum": "^3.0",
         "laravel/tinker": "^2.7",
         "livewire/livewire": "^2.11",
-        "doctrine/dbal": "^3.6"
+        "doctrine/dbal": "^3.6",
+        "plesk/ext-laravel-integration": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
