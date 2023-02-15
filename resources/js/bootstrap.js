@@ -24,6 +24,10 @@ import InfiniteScroll from 'infinite-scroll';
 
 window.InfiniteScroll = InfiniteScroll;
 
+import fslightbox from 'fslightbox';
+
+window.fslightbox = fslightbox;
+
 
 
 /**
