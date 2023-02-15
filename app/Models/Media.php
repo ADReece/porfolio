@@ -9,4 +9,18 @@ use App\Traits\UsesUuid;
 class Media extends Model
 {
     use HasFactory, UsesUuid;
+
+    protected $fillable = [
+        'user_id',
+        'caption',
+        'description',
+        'url',
+        'public',
+        'size'
+    ];
+
+    public function getAwsMedia()
+    {
+        return \Storage::disk('s3')->temporaryUrl($this->url, now()->addMinutes(10));
+    }
 }

@@ -29,6 +29,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/settings', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::get('/upload', [MediaController::class, 'upload'])->name('upload.view');
+    Route::post('/upload', [MediaController::class, 'upload'])->name('upload.create');
     Route::patch('/upload', [MediaController::class, 'upload'])->name('upload.update');
     Route::delete('/upload', [MediaController::class, 'upload'])->name('upload.destroy');
 });

@@ -94,4 +94,14 @@ class User extends Authenticatable
     {
         return $this->media->where('public', true)->get();
     }
+
+    /**
+     * Get current disk usage for User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function totalMediaSize(): integer
+    {
+        return $this->media->sum('size') / 1000000; //(Size is store in Bytes.  /1m for mb.)
+    }
 }

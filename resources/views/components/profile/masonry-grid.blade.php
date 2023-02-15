@@ -6,9 +6,9 @@
             <div class="masonry-item">
                 <a data-fslightbox
                     data-caption="{{ $media->caption }}"
-                    href="{{ $media->url }}"
+                    href="{{ $media->getAwsMedia() }}"
                 >
-                    <img src="{{ $media->url }}" />
+                    <img src="{{ $media->getAwsMedia() }}" />
                 </a>
             </div>
         @endforeach
@@ -148,6 +148,8 @@
             stagger: 30,
             resize: true,
         });
+
+        fsLightbox.props.type = "image";
 
         const filterMasonry = (tag) => {
             let items = $(`.${tag}`); //Needs to be not this tag.
