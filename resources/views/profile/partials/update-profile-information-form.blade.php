@@ -31,7 +31,7 @@
 
         <div>
             <x-input-label for="bio" :value="__('Bio')" />
-            <x-text-input id="bio" name="bio" type="text" class="mt-1 block w-full" :value="old('bio', $user->bio)" autofocus/>
+            <x-multi-text-input id="bio" name="bio" type="text" class="mt-1 block w-full" :value="old('bio', $user->bio)" autofocus/>
             <x-input-error class="mt-2" :messages="$errors->get('bio')" />
         </div>
 

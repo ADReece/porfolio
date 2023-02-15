@@ -16,7 +16,10 @@
         <!-- Styles -->
     </head>
     <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
+        @if(Auth::check())
+            @include('layouts.navigation')
+        @endif
+        <div class="min-h-screen bg-gray-100 dark:bg-gray-900 z-0">
             <!-- Page Heading -->
             <header class="md:fixed md:top-0 md:left-0 md:w-80 md:min-h-screen bg-white dark:bg-gray-800 shadow-lg">
                 @if (isset($header))
