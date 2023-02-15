@@ -16,6 +16,7 @@
         "vite": "^4.0.0"
     },
     "dependencies": {
+        "infinite-scroll": "^4.0.1",
         "masonry-layout": "^4.2.2"
     }
 }

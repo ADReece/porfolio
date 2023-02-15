@@ -16,6 +16,10 @@ import Masonry from 'masonry-layout';
 
 window.Masonry = Masonry;
 
+import InfiniteScroll from 'infinite-scroll';
+
+window.InfiniteScroll = InfiniteScroll;
+
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
  * for events that are broadcast by Laravel. Echo and event broadcasting
