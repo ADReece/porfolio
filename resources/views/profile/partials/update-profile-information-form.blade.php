@@ -25,8 +25,14 @@
 
         <div>
             <x-input-label for="username" :value="__('Username')" />
-            <x-text-input id="username" name="username" type="text" class="mt-1 block w-full" :value="old('name', $user->username)" required autofocus autocomplete="name" disabled/>
+            <x-text-input id="username" name="username" type="text" class="mt-1 block w-full" :value="old('name', $user->username)" required autofocus autocomplete="username" disabled/>
             <x-input-error class="mt-2" :messages="$errors->get('name')" />
+        </div>
+
+        <div>
+            <x-input-label for="bio" :value="__('Bio')" />
+            <x-text-input id="bio" name="bio" type="text" class="mt-1 block w-full" :value="old('bio', $user->bio)" autofocus/>
+            <x-input-error class="mt-2" :messages="$errors->get('bio')" />
         </div>
 
         <div>
