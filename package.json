@@ -17,6 +17,7 @@
     },
     "dependencies": {
         "infinite-scroll": "^4.0.1",
+        "jquery": "^3.6.3",
         "masonry-layout": "^4.2.2"
     }
 }

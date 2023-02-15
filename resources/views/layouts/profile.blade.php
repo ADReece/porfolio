@@ -12,9 +12,11 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+        <!-- Styles -->
     </head>
     <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100 dark:bg-gray-900 grid grid-cols-6">
+        <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
             <!-- Page Heading -->
             <header class="fixed top-0 left-0 w-80 min-h-screen  bg-white dark:bg-gray-800 shadow col-span-1">
                 @if (isset($header))
@@ -25,7 +27,7 @@
             </header>
 
             <!-- Page Content -->
-            <main class="col-span-5 ml-80">
+            <main class="ml-80">
                 {{ $slot }}
             </main>
         </div>
