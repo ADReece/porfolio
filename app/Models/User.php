@@ -100,8 +100,8 @@ class User extends Authenticatable
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function totalMediaSize(): integer
+    public function totalMediaSize(): float
     {
-        return $this->media->sum('size') / 1000000; //(Size is store in Bytes.  /1m for mb.)
+        return $this->media->sum('size') / 1024000; //(Size is store in Bytes.  /1024k for mb.)
     }
 }
