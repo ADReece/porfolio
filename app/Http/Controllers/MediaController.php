@@ -19,7 +19,7 @@ class MediaController extends Controller
             $s3 = \Storage::disk('s3');
 
             foreach($request->file('media') as $media){
-                $imageFileName = time() . '.' . $media->getClientOriginalExtension();
+                $imageFileName = time() . \Str::random(5) . '.' . $media->getClientOriginalExtension();
                 $filePath = "members/".\Auth::user()->id."/media/".$imageFileName;
                 try{
                     $s3->put($filePath, file_get_contents($media->getRealPath()));
