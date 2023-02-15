@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\MediaController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,6 +27,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/settings', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/settings', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/settings', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::get('/upload', [MediaController::class, 'upload'])->name('upload.view');
+    Route::patch('/upload', [MediaController::class, 'upload'])->name('upload.update');
+    Route::delete('/upload', [MediaController::class, 'upload'])->name('upload.destroy');
 });
 
 Route::prefix('/@{username}')->group(function(){
