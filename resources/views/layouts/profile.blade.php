@@ -18,7 +18,7 @@
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
             <!-- Page Heading -->
-            <header class="fixed top-0 left-0 w-80 min-h-screen  bg-white dark:bg-gray-800 shadow col-span-1">
+            <header class="md:fixed md:top-0 md:left-0 md:w-80 md:min-h-screen bg-white dark:bg-gray-800 shadow-lg">
                 @if (isset($header))
                 <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                     {{ $header }}
@@ -27,7 +27,7 @@
             </header>
 
             <!-- Page Content -->
-            <main class="ml-80">
+            <main class="md:ml-80">
                 {{ $slot }}
             </main>
         </div>
