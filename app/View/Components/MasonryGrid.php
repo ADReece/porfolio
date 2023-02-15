@@ -6,6 +6,9 @@ use Illuminate\View\Component;
 
 class MasonryGrid extends Component
 {
+
+    public $user;
+
     /**
      * Create a new component instance.
      *
