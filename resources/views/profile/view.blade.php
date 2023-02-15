@@ -7,8 +7,8 @@
             <h2 class="text-l">
                 {{__("@$user->username") }}
             </h2>
-            <div class="font-light">
-                {{ $user->about ?? '' }}
+            <div class="font-light mt-5">
+                {{ $user->bio ?? '' }}
             </div>
         </div>
     </x-slot>
