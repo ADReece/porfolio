@@ -1,6 +1,6 @@
 <x-profile-layout>
-    <x-slot name="username">
-        {{$user->username}}
+    <x-slot name="name">
+        {{$user->name}}
     </x-slot>
     <x-slot name="header">
         <div class=" lg:mt-32 font-semibold mx-auto text-center text-gray-800 dark:text-gray-200 leading-tight">
