@@ -125,8 +125,8 @@
         @endif
     </div>
 </div>
-@php($input = 3);
-@php($size = (100 / $input) - 1)
+@php($cols = 4);
+@php($size = (100 / $cols) - 1)
 
 <style>
     .masonry-item,
