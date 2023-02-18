@@ -23,4 +23,10 @@ class Media extends Model
     {
         return \Storage::disk('s3')->temporaryUrl($this->url, now()->addMinutes(10));
     }
+
+    public function getAwsThumbnail()
+    {
+        $key = str_replace('media/', 'thumbs/', $this->url);
+        return \Storage::disk('s3')->temporaryUrl($key, now()->addMinutes(10));
+    }
 }

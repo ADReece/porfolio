@@ -20,7 +20,7 @@ class MediaController extends Controller
 
             foreach($request->file('media') as $media){
                 $imageFileName = time() . \Str::random(5) . '.' . $media->getClientOriginalExtension();
-                $filePath = "members/".\Auth::user()->id."/media/".$imageFileName;
+                $filePath = "media/".\Auth::user()->id."/".$imageFileName;
                 try{
                     $s3->put($filePath, file_get_contents($media->getRealPath()));
 

@@ -8,7 +8,7 @@
                     data-caption="{{ $media->caption }}"
                     href="{{ $media->getAwsMedia() }}"
                 >
-                    <img src="{{ $media->getAwsMedia() }}" />
+                    <img src="{{ $media->getAwsThumbnail() }}" />
                 </a>
             </div>
         @endforeach
