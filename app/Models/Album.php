@@ -14,6 +14,7 @@ class Album extends Model
     use HasFactory, Usesuuid, ScopesPublic;
 
     protected $fillable = [
+        'user_id',
         'name',
         'description',
         'public',

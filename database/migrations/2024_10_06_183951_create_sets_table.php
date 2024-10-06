@@ -13,10 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('album_media', function (Blueprint $table) {
-            $table->id();
-            $table->foreignUuid('album_id')->constrained('albums')->cascadeOnDelete();
-            $table->foreignUuid('media_id')->constrained('media')->cascadeOnDelete();
+        Schema::create('sets', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->timestamps();
+            $table->string('name');
+            $table->foreignUuid('collection_id')->constrained('collections')->cascadeOnDelete();
         });
     }
 
@@ -27,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('album_media');
+        Schema::dropIfExists('sets');
     }
 };

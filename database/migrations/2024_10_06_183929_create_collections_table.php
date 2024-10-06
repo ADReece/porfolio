@@ -13,16 +13,15 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('albums', function (Blueprint $table) {
+        Schema::create('collections', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('user_id');
-            $table->timestamps();
             $table->string('name');
-            $table->string('description');
-            $table->boolean('public')->default(true);
+            $table->string('status')->default('Draft');
+            $table->date('event_date')->nullable();
+            $table->foreignUuid('cover_image_id')->constrained('photos')->cascadeOnDelete();
+            $table->boolean('private')->default(0);
             $table->string('password')->nullable();
-
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->timestamps();
         });
     }
 
@@ -33,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('albums');
+        Schema::dropIfExists('collections');
     }
 };

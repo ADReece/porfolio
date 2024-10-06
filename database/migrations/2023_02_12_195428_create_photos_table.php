@@ -13,14 +13,16 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('media', function (Blueprint $table) {
+        Schema::create('photos', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->timestamps();
+            $table->boolean('private')->default(0);
             $table->foreignUuid('user_id')->constrained('users');
             $table->string('caption')->nullable();
             $table->string('description')->nullable();
             $table->string('url');
             $table->string('tags');
+            $table->bigInteger('size');
         });
     }
 
@@ -31,6 +33,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('media');
+        Schema::dropIfExists('photos');
     }
 };

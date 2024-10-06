@@ -11,14 +11,25 @@
                     <form action="{{ route('upload.create') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div>
-                            <input list="albums" name="album" autocomplete="off" />
-                            <datalist id="albums">
-                                @foreach(auth()->user()->albums as $album)
-                                    <option value="{{$album->id}}" label="{{$album->name}}"></option>
-                                @endforeach
-                            </datalist>
+                            <label for="albums">
+                                Album:
+                                <x-text-input list="albums" name="album" autocomplete="off" />
+                                <datalist id="albums">
+                                    @foreach(auth()->user()->albums as $album)
+                                        <option value="{{$album->id}}" label="{{$album->name}}"></option>
+                                    @endforeach
+                                </datalist>
+                            </label>
+                            <label for="private">
+                                Prviate
+                                <input type="checkbox" name="private" value="1" />
+                            </label>
+                            <label for="password">
+                                Album Password:
+                                <x-text-input type="text" name="password" />
+                            </label>
                         </div>
-                        <x-input-file-select type="file" name="media[]" id="media[]" multiple="multiple"/>
+                        <x-file-select-input type="file" name="media[]" id="media[]" multiple="multiple"/>
 
                         <x-primary-button type="submit">Upload</x-primary-button>
                     </form>
