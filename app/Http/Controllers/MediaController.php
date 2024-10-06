@@ -16,6 +16,12 @@ class MediaController extends Controller
             return view('upload.upload');
         }
 
+        $public = 1;
+
+        if(!is_null($request->private)){
+            $public = 0;
+        }
+
         if(!is_null($request->file('media'))){
             $s3 = \Storage::disk('s3');
 
@@ -23,7 +29,9 @@ class MediaController extends Controller
                 $album = Album::find($request->album);
                 if(is_null($album)){
                     $album = Album::create([
+                        'user_id' => \Auth::user()->id,
                         'name' => $request->album,
+                        'public' => $public
                     ]);
                 }
             }
@@ -37,7 +45,8 @@ class MediaController extends Controller
                     $media_model = Media::create([
                         'user_id' => \Auth::user()->id,
                         'url' => $filePath,
-                        'size' => $media->getSize()
+                        'size' => $media->getSize(),
+                        'public' => $public
                     ]);
 
                     $album->media()->attach($media_model->id);
