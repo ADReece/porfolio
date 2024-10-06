@@ -1,10 +1,5 @@
 import './bootstrap';
 
-import Dropzone from "dropzone";
-import "dropzone/dist/dropzone.css";
-
-window.Dropzone = Dropzone;
-
 import Masonry from 'masonry-layout';
 import imagesLoaded from 'imagesloaded';
 
