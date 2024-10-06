@@ -48,7 +48,7 @@
 {{--                        <label for="album" class="block text-sm font-medium text-gray-700">Choose Album (optional)</label>--}}
 {{--                        <select name="album_id" id="album" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">--}}
 {{--                            <option value="">No Album</option>--}}
-{{--                            @foreach($albums as $album)--}}
+{{--                            @foreach($collections as $album)--}}
 {{--                                <option value="{{ $album->id }}">{{ $album->name }}</option>--}}
 {{--                            @endforeach--}}
 {{--                        </select>--}}

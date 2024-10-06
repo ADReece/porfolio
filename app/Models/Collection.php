@@ -11,6 +11,16 @@ class Collection extends Model
 {
     use HasFactory, UsesUuid;
 
+
+    protected $fillable = [
+        'name',
+        'status',
+        'event_date',
+        'cover_photo_id',
+        'private',
+        'password',
+    ];
+
     public function sets() : HasMany
     {
         return $this->hasMany(Set::class);

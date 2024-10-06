@@ -11,17 +11,13 @@
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 -m-1 text-gray-900 dark:text-gray-100 flex flex-row flex-wrap">
 
-                    <x-dashboard.card title="Upload" href="upload" icon="">
-                        Upload images and media
-                    </x-dashboard.card>
+                    <x-card title="Manage Collections" href="{{route('collections.index')}}" icon="">
+                        Manage and Create Collections
+                    </x-card>
 
-                    <x-dashboard.card title="Albums" href="albums" icon="">
-                        Manage Albums
-                    </x-dashboard.card>
-
-                    <x-dashboard.card title="Settings" href="settings" icon="">
+                    <x-card title="Settings" href="settings" icon="">
                         Manage Settings
-                    </x-dashboard.card>
+                    </x-card>
 
                 </div>
             </div>
