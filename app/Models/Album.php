@@ -28,12 +28,12 @@ class Album extends Model
      */
     public function media(): BelongsToMany
     {
-        return $this->belongsToMany(Media::class);
+        return $this->belongsToMany(Photo::class);
     }
 
     public function cover(): HasOne
     {
-        return $this->hasOne(Media::class, 'id', 'cover_id')
+        return $this->hasOne(Photo::class, 'id', 'cover_id')
             ->withDefault(function($model){
                 return $model->media()->take(1);
             });

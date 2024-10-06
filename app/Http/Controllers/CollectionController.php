@@ -8,7 +8,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
-class AlbumController extends Controller
+class CollectionController extends Controller
 {
     public function index() : View
     {

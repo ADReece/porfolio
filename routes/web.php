@@ -1,8 +1,8 @@
 <?php
 
-use App\Http\Controllers\AlbumController;
+use App\Http\Controllers\CollectionController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\MediaController;
+use App\Http\Controllers\PhotoController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -29,20 +29,20 @@ Route::middleware('auth')->group(function () {
     Route::patch('/settings', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/settings', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::get('/upload', [MediaController::class, 'upload'])->name('upload.view');
-    Route::post('/upload', [MediaController::class, 'upload'])->name('upload.create');
-    Route::patch('/upload', [MediaController::class, 'upload'])->name('upload.update');
-    Route::delete('/upload', [MediaController::class, 'upload'])->name('upload.destroy');
+    Route::get('/upload', [PhotoController::class, 'upload'])->name('upload.view');
+    Route::post('/upload', [PhotoController::class, 'upload'])->name('upload.create');
+    Route::patch('/upload', [PhotoController::class, 'upload'])->name('upload.update');
+    Route::delete('/upload', [PhotoController::class, 'upload'])->name('upload.destroy');
 
 });
 
 Route::prefix('/@{username}')->group(function(){
     Route::get('/', [ProfileController::class, 'view'])->name('profile.view');
 
-    Route::get('/albums', [AlbumController::class, 'index'])->name('albums.index');
-    Route::get('/albums/{album_id}', [AlbumController::class, 'show'])->name('albums.show');
+    Route::get('/albums', [CollectionController::class, 'index'])->name('albums.index');
+    Route::get('/albums/{album_id}', [CollectionController::class, 'show'])->name('albums.show');
 
-    Route::get('/media/{media_id}', [MediaController::class, 'show'])->name('media.show');
+    Route::get('/media/{media_id}', [PhotoController::class, 'show'])->name('media.show');
 });
 
 require __DIR__.'/auth.php';

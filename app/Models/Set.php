@@ -19,6 +19,6 @@ class Set extends Model
 
     public function media() : HasMany
     {
-        return $this->hasMany(Media::class);
+        return $this->hasMany(Photo::class);
     }
 }

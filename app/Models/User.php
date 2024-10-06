@@ -65,9 +65,14 @@ class User extends Authenticatable
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function media(): HasMany
+    public function photos(): HasMany
     {
-        return $this->hasMany(Media::class, 'user_id', 'id');
+        return $this->hasMany(Photo::class);
+    }
+
+    public function public_photos() : HasMany
+    {
+        return $this->hasMany(Photo::class)->where('private', false);
     }
 
     /**
