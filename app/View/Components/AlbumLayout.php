@@ -2,14 +2,10 @@
 
 namespace App\View\Components;
 
-use Illuminate\Support\Collection;
 use Illuminate\View\Component;
 
-class MasonryGrid extends Component
+class AlbumLayout extends Component
 {
-
-    public Collection $media;
-
     /**
      * Create a new component instance.
      *
@@ -27,6 +23,6 @@ class MasonryGrid extends Component
      */
     public function render()
     {
-        return view('components.masonry-grid');
+        return view('layouts.album');
     }
 }

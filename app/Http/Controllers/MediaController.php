@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Album;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use App\Models\Media;
@@ -18,6 +19,15 @@ class MediaController extends Controller
         if(!is_null($request->file('media'))){
             $s3 = \Storage::disk('s3');
 
+            if(!is_null($request->album)){
+                $album = Album::find($request->album);
+                if(is_null($album)){
+                    $album = Album::create([
+                        'name' => $request->album,
+                    ]);
+                }
+            }
+
             foreach($request->file('media') as $media){
                 $imageFileName = time() . \Str::random(5) . '.' . $media->getClientOriginalExtension();
                 $filePath = "media/".\Auth::user()->id."/".$imageFileName;
@@ -29,6 +39,8 @@ class MediaController extends Controller
                         'url' => $filePath,
                         'size' => $media->getSize()
                     ]);
+
+                    $album->media()->attach($media_model->id);
                 } catch(\Throwable $e) {
                     Log::alert($e->getMessage());
                 }

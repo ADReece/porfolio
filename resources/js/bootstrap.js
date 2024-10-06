@@ -12,22 +12,6 @@ window.axios = axios;
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
-import Masonry from 'masonry-layout';
-
-window.Masonry = Masonry;
-
-import jQuery from 'jquery';
-
-window.$ = jQuery;
-
-import InfiniteScroll from 'infinite-scroll';
-
-window.InfiniteScroll = InfiniteScroll;
-
-import fslightbox from 'fslightbox';
-
-window.fslightbox = fslightbox;
-
 
 
 /**

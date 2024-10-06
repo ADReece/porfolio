@@ -2,22 +2,24 @@
 
 namespace App\Models;
 
+use App\Models\Traits\ScopesPublic;
+use App\Models\Traits\UsesUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\UsesUuid;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Album extends Model
 {
-    use HasFactory, Usesuuid;
+    use HasFactory, Usesuuid, ScopesPublic;
 
     /**
-     * Get all of the media for the Album
+     * Get all the media for the Album
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     * @return BelongsToMany
      */
-    public function media(): HasManyThrough
+    public function media(): BelongsToMany
     {
-        return $this->hasManyThrough(Comment::class, Post::class);
+        return $this->belongsToMany(Media::class);
     }
 
 }
