@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('albums', function (Blueprint $table) {
-            $table->uuid('id');
+            $table->uuid('id')->primary();
             $table->uuid('user_id');
             $table->timestamps();
             $table->string('name');

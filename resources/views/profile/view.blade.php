@@ -15,7 +15,7 @@
             </div>
         </div>
     </x-slot>
-    <div class="w-full mx-auto sm:px-6 lg:px-8 space-y-6">
-        @component('components.profile.masonry-grid', ['user' => $user])@endcomponent
+    <div class="w-full mx-auto sm:px-2 lg:px-4 space-y-6">
+        <livewire:masonry-grid :media="Auth::user()->media" />
     </div>
 </x-profile-layout>

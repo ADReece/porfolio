@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AlbumController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\MediaController;
 use Illuminate\Support\Facades\Route;
@@ -32,10 +33,16 @@ Route::middleware('auth')->group(function () {
     Route::post('/upload', [MediaController::class, 'upload'])->name('upload.create');
     Route::patch('/upload', [MediaController::class, 'upload'])->name('upload.update');
     Route::delete('/upload', [MediaController::class, 'upload'])->name('upload.destroy');
+
 });
 
 Route::prefix('/@{username}')->group(function(){
     Route::get('/', [ProfileController::class, 'view'])->name('profile.view');
+
+    Route::get('/albums', [AlbumController::class, 'index'])->name('albums.index');
+    Route::get('/albums/{album_id}', [AlbumController::class, 'show'])->name('albums.show');
+
+    Route::get('/media/{media_id}', [MediaController::class, 'show'])->name('media.show');
 });
 
 require __DIR__.'/auth.php';

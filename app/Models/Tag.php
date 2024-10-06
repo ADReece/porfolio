@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+use App\Models\Traits\UsesUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\UsesUuid;
 
 class Tag extends Model
 {

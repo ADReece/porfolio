@@ -14,8 +14,9 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 
         <!-- Styles -->
+        @livewireStyles
     </head>
-    <body class="font-sans antialiased">
+    <body class="font-sans antialiased bg-white dark:bg-gray-800">
         @if(Auth::check())
             @include('layouts.navigation')
         @endif
@@ -34,5 +35,6 @@
                 {{ $slot }}
             </main>
         </div>
+        @livewireScripts
     </body>
 </html>

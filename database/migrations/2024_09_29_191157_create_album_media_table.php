@@ -13,14 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->rememberToken();
-            $table->timestamps();
+        Schema::create('album_media', function (Blueprint $table) {
+            $table->id();
+            $table->foreignUuid('album_id')->constrained('albums')->cascadeOnDelete();
+            $table->foreignUuid('media_id')->constrained('media')->cascadeOnDelete();
         });
     }
 
@@ -31,6 +27,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('album_media');
     }
 };
