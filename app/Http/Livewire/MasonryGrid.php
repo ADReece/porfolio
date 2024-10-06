@@ -7,7 +7,7 @@ use Livewire\Component;
 
 class MasonryGrid extends Component
 {
-    public Collection $media;
+    public Collection $photos;
 
     public int $amount = 5;
 
@@ -19,7 +19,7 @@ class MasonryGrid extends Component
     public function render()
     {
         return view('livewire.masonry-grid', [
-            'media' => $this->media->take($this->amount)
+            'media' => $this->photos->take($this->amount)
         ]);
     }
 }

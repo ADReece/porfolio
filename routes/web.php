@@ -1,8 +1,8 @@
 <?php
 
-use App\Http\Controllers\AlbumController;
+use App\Http\Controllers\CollectionController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\MediaController;
+use App\Http\Controllers\PhotoController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,25 +24,34 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+
+//Backend Routes
 Route::middleware('auth')->group(function () {
     Route::get('/settings', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/settings', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/settings', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::get('/upload', [MediaController::class, 'upload'])->name('upload.view');
-    Route::post('/upload', [MediaController::class, 'upload'])->name('upload.create');
-    Route::patch('/upload', [MediaController::class, 'upload'])->name('upload.update');
-    Route::delete('/upload', [MediaController::class, 'upload'])->name('upload.destroy');
+    Route::group(['prefix' => 'collections'], function () {
+        Route::get('/', [CollectionController::class, 'index'])->name('collections.index');
+        Route::get('/create', [CollectionController::class, 'create'])->name('collections.create');
+        Route::post('/create', [CollectionController::class, 'store'])->name('collections.store');
+        Route::get('/{collection}/edit', [CollectionController::class, 'edit'])->name('collections.edit');
+        Route::patch('/{collection}', [CollectionController::class, 'update'])->name('collections.update');
+        Route::delete('/{collection}', [CollectionController::class, 'destroy'])->name('collections.destroy');
 
+        Route::get('/{collection}/sets', [CollectionController::class, 'sets'])->name('sets.create');
+    });
 });
 
+
+
+//Public facing Routes
 Route::prefix('/@{username}')->group(function(){
     Route::get('/', [ProfileController::class, 'view'])->name('profile.view');
 
-    Route::get('/albums', [AlbumController::class, 'index'])->name('albums.index');
-    Route::get('/albums/{album_id}', [AlbumController::class, 'show'])->name('albums.show');
+    Route::get('/collections', [ProfileController::class, 'collections'])->name('profile.collections');
+    Route::get('/collections/{collection_id}', [ProfileController::class, 'collection'])->name('profile.collection');
 
-    Route::get('/media/{media_id}', [MediaController::class, 'show'])->name('media.show');
 });
 
 require __DIR__.'/auth.php';

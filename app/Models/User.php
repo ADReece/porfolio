@@ -60,24 +60,24 @@ class User extends Authenticatable
         return $this->hasMany(Setting::class, 'user_id', 'id');
     }
 
-    /**
-     * Get all of the media for the User
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function media(): HasMany
+    public function collections() : HasMany
     {
-        return $this->hasMany(Media::class, 'user_id', 'id');
+        return $this->hasMany(Collection::class);
     }
 
     /**
-     * Get all of the albums for the User
+     * Get all of the photos for the User
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function albums(): HasMany
+    public function photos(): HasMany
     {
-        return $this->hasMany(Album::class, 'user_id', 'id');
+        return $this->hasMany(Photo::class);
+    }
+
+    public function publicPhotos() : HasMany
+    {
+        return $this->hasMany(Photo::class)->where('private', false);
     }
 
     /**
@@ -90,18 +90,13 @@ class User extends Authenticatable
         return $this->hasMany(Tag::class, 'user_id', 'id');
     }
 
-    public function publicMedia()
-    {
-        return $this->media->where('public', true)->get();
-    }
-
     /**
      * Get current disk usage for User
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function totalMediaSize(): float
+    public function totalPhotoSize(): float
     {
-        return $this->media->sum('size') / 1024000; //(Size is store in Bytes.  /1024k for mb.)
+        return $this->photos->sum('size') / 1024000; //(Size is store in Bytes.  /1024k for mb.)
     }
 }

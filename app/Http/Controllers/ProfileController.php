@@ -74,4 +74,32 @@ class ProfileController extends Controller
 
     }
 
+    public function collections($username) : View
+    {
+        $collections = User::where('username', $username)->firstOrFail()?->collections;
+
+        return view('collections.frontend.index', ['collections' => $collections]);
+    }
+
+    public function collection(Request $request, $username, $collection_id) : View
+    {
+        $user = User::where('username', $username)->firstOrFail();
+        $collection = $user->collections->find($collection_id)->with(['sets.photos'])->firstOrFail();
+
+        if(is_null($collection)){
+            abort(404);
+        }
+        if($collection->private){
+            $password = $request->get('password');
+            if(is_null($password)){
+                return view('collections.frontend.password', ['collection' => $collection]);
+            }
+            if(!password_verify($password, $collection->password)){
+                return view('collections.frontend.password', ['collection' => $collection])->withErrors(['password' => 'Invalid Password']);
+            }
+        }
+
+        return view('collections.frontend.show', ['collection' => $collection]);
+    }
+
 }

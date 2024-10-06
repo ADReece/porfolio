@@ -5,10 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Album;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Filesystem\Filesystem;
-use App\Models\Media;
+use App\Models\Photo;
 use Illuminate\Support\Facades\Log;
 
-class MediaController extends Controller
+class PhotoController extends Controller
 {
     public function upload(Request $request)
     {
@@ -22,7 +22,7 @@ class MediaController extends Controller
             $public = 0;
         }
 
-        if(!is_null($request->file('media'))){
+        if(!is_null($request->file('photos'))){
             $s3 = \Storage::disk('s3');
 
             if(!is_null($request->album)){
@@ -42,7 +42,7 @@ class MediaController extends Controller
                 try{
                     $s3->put($filePath, file_get_contents($media->getRealPath()));
 
-                    $media_model = Media::create([
+                    $media_model = Photo::create([
                         'user_id' => \Auth::user()->id,
                         'url' => $filePath,
                         'size' => $media->getSize(),

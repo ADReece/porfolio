@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Media extends Model
+class Photo extends Model
 {
     use HasFactory, UsesUuid, ScopesPublic;
 
@@ -28,7 +28,13 @@ class Media extends Model
 
     public function getAwsThumbnail()
     {
-        $key = str_replace('media/', 'thumbs/', $this->url);
+        $key = str_replace('photos/', 'thumbs/', $this->url);
+        return \Storage::disk('s3')->temporaryUrl($key, now()->addMinutes(10));
+    }
+
+    public function getAwsWatermarked()
+    {
+        $key = str_replace('photos/', 'watermarked/', $this->url);
         return \Storage::disk('s3')->temporaryUrl($key, now()->addMinutes(10));
     }
 

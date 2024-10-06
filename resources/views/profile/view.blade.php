@@ -16,6 +16,6 @@
         </div>
     </x-slot>
     <div class="w-full mx-auto sm:px-2 lg:px-4 space-y-6">
-        <livewire:masonry-grid :media="$user->media" />
+        <livewire:masonry-grid :photos="$user->photos" />
     </div>
 </x-profile-layout>
