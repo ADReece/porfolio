@@ -17,6 +17,11 @@ class CollectionController extends Controller
         return view('collections.backend.index', ['collections' => $collections]);
     }
 
+    public function sets($collection) : View
+    {
+        return view('collections.backend.sets', ['collection' => $collection]);
+    }
+
 
 
     public function create() : View

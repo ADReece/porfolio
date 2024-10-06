@@ -28,7 +28,13 @@ class Photo extends Model
 
     public function getAwsThumbnail()
     {
-        $key = str_replace('media/', 'thumbs/', $this->url);
+        $key = str_replace('photos/', 'thumbs/', $this->url);
+        return \Storage::disk('s3')->temporaryUrl($key, now()->addMinutes(10));
+    }
+
+    public function getAwsWatermarked()
+    {
+        $key = str_replace('photos/', 'watermarked/', $this->url);
         return \Storage::disk('s3')->temporaryUrl($key, now()->addMinutes(10));
     }
 

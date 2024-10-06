@@ -12,12 +12,17 @@ class Set extends Model
 {
     use HasFactory, UsesUuid;
 
+    protected $fillable = [
+        'collection_id',
+        'name'
+    ];
+
     public function collection() : BelongsTo
     {
         return $this->belongsTo(Collection::class);
     }
 
-    public function media() : HasMany
+    public function photos() : HasMany
     {
         return $this->hasMany(Photo::class);
     }

@@ -2,7 +2,6 @@
 
 namespace App\Http\Livewire;
 
-use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use App\Models\Collection;
 use Illuminate\Support\Facades\Hash;
@@ -10,9 +9,7 @@ use Illuminate\Support\Facades\Hash;
 class CollectionForm extends Component
 {
     public $name;
-    public $status;
     public $event_date;
-    public $cover_image_id;
     public $private = false;
     public $password;
 
@@ -27,8 +24,9 @@ class CollectionForm extends Component
     {
         $this->validate();
 
-        Auth::user()->collections()->create([
+        $collection = Collection::create([
             'name' => $this->name,
+            'user_id' => auth()->id(),
             'status' => 'Draft',
             'event_date' => $this->event_date,
             'private' => $this->private,
@@ -37,8 +35,8 @@ class CollectionForm extends Component
 
         session()->flash('message', 'Collection successfully created.');
 
-        // Reset form after creation
-        $this->reset();
+        // Redirect to the set creation page after collection is created
+        return redirect()->route('sets.create', $collection->id);
     }
 
     public function render()

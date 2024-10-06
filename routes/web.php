@@ -38,6 +38,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/{collection}/edit', [CollectionController::class, 'edit'])->name('collections.edit');
         Route::patch('/{collection}', [CollectionController::class, 'update'])->name('collections.update');
         Route::delete('/{collection}', [CollectionController::class, 'destroy'])->name('collections.destroy');
+
+        Route::get('/{collection}/sets', [CollectionController::class, 'sets'])->name('sets.create');
     });
 });
 

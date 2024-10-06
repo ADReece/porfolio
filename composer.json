@@ -8,13 +8,14 @@
         "php": "^8.0.2",
         "doctrine/dbal": "^3.6",
         "guzzlehttp/guzzle": "^7.2",
+        "intervention/image": "^2.7",
         "laravel/cashier": "^14.14",
         "laravel/framework": "^9.19",
         "laravel/sanctum": "^3.0",
         "laravel/tinker": "^2.7",
         "league/flysystem-aws-s3-v3": "^3.0",
         "livewire/livewire": "^2.11",
-        "plesk/ext-laravel-integration": "*",
+        "plesk/ext-laravel-integration": "^7.0",
         "stripe/stripe-php": "^10.21"
     },
     "require-dev": {
