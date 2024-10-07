@@ -6,6 +6,7 @@ use App\Models\Traits\ScopesPublic;
 use App\Models\Traits\UsesUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Photo extends Model
@@ -21,6 +22,11 @@ class Photo extends Model
         'size'
     ];
 
+    public function getUri() : string
+    {
+        return $this->private ? $this->getAwsWatermarked() : $this->getAwsMedia();
+    }
+
     public function getAwsMedia()
     {
         return \Storage::disk('s3')->temporaryUrl($this->url, now()->addMinutes(10));
@@ -28,7 +34,7 @@ class Photo extends Model
 
     public function getAwsThumbnail()
     {
-        $key = str_replace('photos/', 'thumbs/', $this->url);
+        $key = str_replace('photos/', 'thumbnails/', $this->url);
         return \Storage::disk('s3')->temporaryUrl($key, now()->addMinutes(10));
     }
 
@@ -38,8 +44,8 @@ class Photo extends Model
         return \Storage::disk('s3')->temporaryUrl($key, now()->addMinutes(10));
     }
 
-    public function albums() : BelongsToMany
+    public function set() : BelongsTo
     {
-        return $this->belongsToMany(Album::class);
+        return $this->belongsTo(Set::class);
     }
 }

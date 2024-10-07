@@ -11,7 +11,7 @@
                 <div class="masonry-item">
                     <a data-fslightbox
                        data-caption="{{ $m->caption }}"
-                       href="{{ $m->getAwsMedia() }}"
+                       href="{{ $m->getUri() }}"
                     >
                         <img src="{{ $m->getAwsThumbnail() }}" />
                     </a>
