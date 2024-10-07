@@ -95,7 +95,7 @@ class ProcessImageUpload implements ShouldQueue
         $image = $this->imageManager->make($file);
 
         // Resize the image to a thumbnail (e.g., max width or height of 300px, keeping aspect ratio)
-        $image->resize(300, 300, function ($constraint) {
+        $image->resize(800, 800, function ($constraint) {
             $constraint->aspectRatio();
             $constraint->upsize(); // Avoid enlarging the image if it's smaller than the target dimensions
         });
