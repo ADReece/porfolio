@@ -1,52 +1,65 @@
 <div>
+    <!-- Header actions -->
+    <div class="mb-6 flex items-center justify-between">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Sets ({{ $sets->count() }})</h3>
+        <a href="{{ route('collections.edit', $collectionId) }}"
+           class="inline-flex items-center px-3 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+            Edit Collection Settings
+        </a>
+    </div>
+
     <!-- Success message -->
     @if (session()->has('message'))
-        <div class="bg-green-100 text-green-700 p-2 rounded mb-4">
+        <div class="bg-green-50 dark:bg-green-900/20 text-green-800 dark:text-green-200 border border-green-200 dark:border-green-800 p-3 rounded mb-4">
             {{ session('message') }}
         </div>
     @endif
 
-    <h2 class="text-xl mb-4">Manage Sets for Collection: {{ $collection->name }}</h2>
+    <!-- Create New Set -->
+    <div class="mb-6">
+        <h4 class="text-md font-semibold mb-2 text-gray-900 dark:text-gray-100">Create New Set</h4>
+        <form wire:submit.prevent="createSet" class="flex gap-2">
+            <input type="text" wire:model="setName" placeholder="Set name..."
+                class="flex-1 rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+            <button type="submit"
+                class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                Create Set
+            </button>
+        </form>
+        @error('setName')
+            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+        @enderror
+    </div>
 
-    <!-- Add Set Form -->
-    <form wire:submit.prevent="addSet">
-        <div class="mb-4">
-            <label for="setName" class="block text-gray-700">Set Name</label>
-            <input type="text" id="setName" wire:model="setName" class="w-full p-2 border border-gray-300 rounded mt-1">
-            @error('setName') <span class="text-red-600">{{ $message }}</span> @enderror
-        </div>
-
-        <div class="mb-4">
-            <label for="photos" class="block text-gray-700">Upload Photos</label>
-            <input type="file" id="photos" wire:model="photos" multiple class="w-full p-2 border border-gray-300 rounded mt-1">
-            @error('photos.*') <span class="text-red-600">{{ $message }}</span> @enderror
-
-            @if ($photos)
-                <div class="mt-4">
-                    <h3 class="text-gray-700">Photo Previews:</h3>
-                    <div class="grid grid-cols-3 gap-4">
-                        @foreach ($photos as $photo)
-                            <img src="{{ $photo->temporaryUrl() }}" class="h-24 w-24 object-cover">
-                        @endforeach
+    <!-- Existing Sets -->
+    <div>
+        @if($sets->isEmpty())
+            <p class="text-gray-500 dark:text-gray-400 text-sm">No sets yet. Create your first set above to start organizing photos.</p>
+        @else
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                @foreach($sets as $set)
+                    <div class="p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h5 class="text-md font-semibold text-gray-900 dark:text-gray-100">{{ $set->name }}</h5>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">{{ $set->photos->count() }} photos</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <button wire:click="renameSet('{{ $set->id }}')" class="px-3 py-1 text-sm bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded hover:bg-gray-200 dark:hover:bg-gray-600">Rename</button>
+                                <button wire:click="deleteSet('{{ $set->id }}')" class="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700" onclick="return confirm('Delete this set?')">Delete</button>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <a href="{{ route('sets.detail', $set->id) }}" class="inline-flex items-center text-indigo-600 dark:text-indigo-400 hover:underline text-sm">Manage Photos →</a>
+                        </div>
                     </div>
-                </div>
-            @endif
-        </div>
-
-        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-            Add Set
-        </button>
-    </form>
-
-    <!-- Display Existing Sets -->
-    <div class="mt-8">
-        <h3 class="text-lg mb-4">Existing Sets</h3>
-        <ul>
-            @foreach ($sets as $set)
-                <li class="mb-2">
-                    <strong>{{ $set->name }}</strong> - Photos: {{ $set->photos->count() }}
-                </li>
-            @endforeach
-        </ul>
+                @endforeach
+            </div>
+        @endif
     </div>
 </div>
+

@@ -12,7 +12,6 @@ class Collection extends Model
 {
     use HasFactory, UsesUuid;
 
-
     protected $fillable = [
         'name',
         'user_id',
@@ -21,6 +20,15 @@ class Collection extends Model
         'cover_photo_id',
         'private',
         'password',
+        'watermarked',
+        'hide_from_portfolio',
+    ];
+
+    protected $casts = [
+        'event_date' => 'datetime',
+        'private' => 'boolean',
+        'watermarked' => 'boolean',
+        'hide_from_portfolio' => 'boolean',
     ];
 
     public function user() : BelongsTo
@@ -31,5 +39,10 @@ class Collection extends Model
     public function sets() : HasMany
     {
         return $this->hasMany(Set::class);
+    }
+
+    public function coverPhoto() : BelongsTo
+    {
+        return $this->belongsTo(Photo::class, 'cover_photo_id');
     }
 }

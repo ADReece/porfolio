@@ -3,6 +3,9 @@
 use App\Http\Controllers\CollectionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PhotoController;
+use App\Http\Controllers\SetController;
+use App\Http\Livewire\ManageSets;
+use App\Http\Livewire\PhotoUpload;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -27,9 +30,12 @@ Route::get('/dashboard', function () {
 
 //Backend Routes
 Route::middleware('auth')->group(function () {
-    Route::get('/settings', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/settings', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/settings', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::patch('/profile/display', [ProfileController::class, 'updateDisplayMode'])->name('profile.update-display');
+    Route::patch('/profile/watermark', [ProfileController::class, 'updateWatermark'])->name('profile.update-watermark');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::post('/upload-files', [PhotoController::class, 'upload'])->name('upload-files');
 
     Route::group(['prefix' => 'collections'], function () {
         Route::get('/', [CollectionController::class, 'index'])->name('collections.index');
@@ -41,6 +47,23 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/{collection}/sets', [CollectionController::class, 'sets'])->name('sets.create');
     });
+
+    // Sets routes
+    Route::get('/sets/{set}', [SetController::class, 'show'])->name('sets.detail');
+    Route::post('/collections/{collection}/sets', [SetController::class, 'store'])->name('sets.store');
+    Route::patch('/collections/{collection}/sets/{set}', [SetController::class, 'update'])->name('sets.update');
+    Route::delete('/collections/{collection}/sets/{set}', [SetController::class, 'destroy'])->name('sets.destroy');
+
+    Route::post('/collections/{collection}/email-client', [CollectionController::class, 'emailClient'])->name('collections.email-client');
+
+
+    // Photo management
+    Route::group(['prefix' => 'photos'], function () {
+        Route::patch('/{photo}', [PhotoController::class, 'update'])->name('photos.update');
+        Route::delete('/{photo}', [PhotoController::class, 'destroy'])->name('photos.destroy');
+        Route::post('/bulk-delete', [PhotoController::class, 'bulkDelete'])->name('photos.bulk-delete');
+        Route::post('/{photo}/move', [PhotoController::class, 'move'])->name('photos.move');
+    });
 });
 
 
@@ -51,7 +74,10 @@ Route::prefix('/@{username}')->group(function(){
 
     Route::get('/collections', [ProfileController::class, 'collections'])->name('profile.collections');
     Route::get('/collections/{collection_id}', [ProfileController::class, 'collection'])->name('profile.collection');
-
 });
+
+// Public photo download and purchase requests
+Route::post('/photos/{photo}/request-download', [PhotoController::class, 'requestDownload'])->name('photos.request-download');
+Route::post('/photos/{photo}/request-purchase', [PhotoController::class, 'requestPurchase'])->name('photos.request-purchase');
 
 require __DIR__.'/auth.php';

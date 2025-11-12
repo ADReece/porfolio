@@ -39,6 +39,42 @@ class ProfileController extends Controller
     }
 
     /**
+     * Update the user's portfolio display mode.
+     */
+    public function updateDisplayMode(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'portfolio_display_mode' => 'required|in:grid,collections',
+            'masonry_columns' => 'required|integer|min:2|max:6',
+            'photos_per_page' => 'required|integer|min:10|max:100',
+        ]);
+
+        $request->user()->update([
+            'portfolio_display_mode' => $validated['portfolio_display_mode'],
+            'masonry_columns' => $validated['masonry_columns'],
+            'photos_per_page' => $validated['photos_per_page'],
+        ]);
+
+        return Redirect::route('profile.edit')->with('status', 'display-updated');
+    }
+
+    /**
+     * Update the user's watermark settings.
+     */
+    public function updateWatermark(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'watermark_text' => 'nullable|string|max:50',
+        ]);
+
+        $request->user()->update([
+            'watermark_text' => $validated['watermark_text']
+        ]);
+
+        return Redirect::route('profile.edit')->with('status', 'watermark-updated');
+    }
+
+    /**
      * Delete the user's account.
      */
     public function destroy(Request $request): RedirectResponse
@@ -67,6 +103,23 @@ class ProfileController extends Controller
         $user = User::where('username', $username)->first();
 
         if(!is_null($user)){
+            // Determine which view to show based on user's preference
+            if ($user->portfolio_display_mode === 'collections') {
+                // Load published, non-hidden collections with cover photos
+                $collections = $user->collections()
+                    ->where('status', 'Published')
+                    ->where('hide_from_portfolio', false)
+                    ->with('coverPhoto')
+                    ->orderBy('event_date', 'desc')
+                    ->get();
+
+                return view('profile.view-collections', [
+                    'user' => $user,
+                    'collections' => $collections
+                ]);
+            }
+
+            // Default to grid view
             return view('profile.view', ['user' => $user]);
         }
 
@@ -84,11 +137,17 @@ class ProfileController extends Controller
     public function collection(Request $request, $username, $collection_id) : View
     {
         $user = User::where('username', $username)->firstOrFail();
-        $collection = $user->collections->find($collection_id)->with(['sets.photos'])->firstOrFail();
+
+        // Load collection with sets and filter photos based on privacy
+        $collection = $user->collections()
+            ->where('id', $collection_id)
+            ->firstOrFail();
 
         if(is_null($collection)){
             abort(404);
         }
+
+        // Handle password protection for private collections
         if($collection->private){
             $password = $request->get('password');
             if(is_null($password)){
@@ -98,6 +157,17 @@ class ProfileController extends Controller
                 return view('collections.frontend.password', ['collection' => $collection])->withErrors(['password' => 'Invalid Password']);
             }
         }
+
+        // Load sets with photos - only show non-private photos unless it's a private collection
+        $collection->load(['sets' => function($query) use ($collection) {
+            $query->with(['photos' => function($q) use ($collection) {
+                // If collection is private and user verified, show all photos
+                // Otherwise only show public photos (private = 0)
+                if (!$collection->private) {
+                    $q->where('private', false);
+                }
+            }]);
+        }]);
 
         return view('collections.frontend.show', ['collection' => $collection]);
     }

@@ -28,7 +28,11 @@ class User extends Authenticatable
         'phone',
         'twitter',
         'instagram',
-        'facebook'
+        'facebook',
+        'portfolio_display_mode',
+        'masonry_columns',
+        'photos_per_page',
+        'watermark_text'
     ];
 
     /**

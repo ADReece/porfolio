@@ -14,7 +14,12 @@ class Set extends Model
 
     protected $fillable = [
         'collection_id',
-        'name'
+        'name',
+        'hide_from_portfolio'
+    ];
+
+    protected $casts = [
+        'hide_from_portfolio' => 'boolean',
     ];
 
     public function collection() : BelongsTo
