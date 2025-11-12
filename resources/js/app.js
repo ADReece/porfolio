@@ -1,7 +1,12 @@
 import './bootstrap';
+import '../css/app.css';
 
 import Masonry from 'masonry-layout';
 import imagesLoaded from 'imagesloaded';
+import Dropzone from 'dropzone';
+import 'dropzone/dist/dropzone.css';
+Dropzone.autoDiscover = false;
+window.Dropzone = Dropzone;
 
 window.Masonry = Masonry;
 window.imagesLoaded = imagesLoaded;

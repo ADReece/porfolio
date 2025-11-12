@@ -14,10 +14,16 @@ return new class extends Migration
     public function up()
     {
         Schema::table('collections', function (Blueprint $table) {
-            $table->foreignUuid('cover_photo_id')->nullable()->after('event_date')->constrained('photos')->cascadeOnDelete();
+            // First drop the old foreign key if it exists
+            if (Schema::hasColumn('collections', 'cover_image_id')) {
+                $table->dropForeign('collections_cover_image_id_foreign');
+                $table->dropColumn('cover_image_id');
+            }
 
-            $table->dropForeign('collections_cover_image_id_foreign');
-            $table->dropColumn('cover_image_id');
+            // Add new nullable cover_photo_id if it doesn't exist
+            if (!Schema::hasColumn('collections', 'cover_photo_id')) {
+                $table->foreignUuid('cover_photo_id')->nullable()->after('event_date')->constrained('photos')->nullOnDelete();
+            }
         });
     }
 

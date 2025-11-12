@@ -14,7 +14,9 @@ return new class extends Migration
     public function up()
     {
         Schema::table('photos', function (Blueprint $table) {
-            $table->foreignUuid('set_id')->constrained('sets')->cascadeOnDelete();
+            if (!Schema::hasColumn('photos', 'set_id')) {
+                $table->foreignUuid('set_id')->nullable()->constrained('sets')->cascadeOnDelete();
+            }
         });
     }
 
