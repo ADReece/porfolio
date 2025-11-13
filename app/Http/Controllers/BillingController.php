@@ -69,11 +69,20 @@ class BillingController extends Controller
         try {
             return $request->user()->redirectToBillingPortal(route('dashboard'));
         } catch (\Stripe\Exception\InvalidRequestException $e) {
+            \Log::error('Billing portal error: ' . $e->getMessage());
+
             // Check if it's the portal configuration error
-            if (str_contains($e->getMessage(), 'billing/portal')) {
-                return redirect()->back()->with('error', 'Billing portal is not yet configured. Please contact support or manage your subscription from the dashboard.');
+            if (str_contains($e->getMessage(), 'configuration') || str_contains($e->getMessage(), 'portal')) {
+                return redirect()->route('dashboard')->with('error',
+                    'The billing portal is not yet configured. You can still manage your subscription using the Cancel/Resume buttons below, or contact support for assistance.'
+                );
             }
             throw $e;
+        } catch (\Exception $e) {
+            \Log::error('Unexpected billing portal error: ' . $e->getMessage());
+            return redirect()->route('dashboard')->with('error',
+                'Unable to access billing portal at this time. Please try again later or contact support.'
+            );
         }
     }
 
