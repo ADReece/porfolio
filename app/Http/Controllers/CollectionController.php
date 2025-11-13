@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Storage;
 
 class CollectionController extends Controller
 {
@@ -175,5 +176,129 @@ class CollectionController extends Controller
                 'message' => 'Failed to send email. Please try again later.'
             ], 500);
         }
+    }
+
+    public function requestArchive(Request $request, $collectionId)
+    {
+        $collection = \App\Models\Collection::findOrFail($collectionId);
+
+        // Verify collection is private
+        if (!$collection->private) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Archive download is only available for private collections'
+            ], 403);
+        }
+
+        $validated = $request->validate([
+            'email' => 'required|email',
+        ]);
+
+        try {
+            // Dispatch the job to generate the archive
+            \App\Jobs\GenerateCollectionArchive::dispatch($collectionId, $validated['email']);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Archive is being prepared. You will receive an email with the download link shortly.'
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Failed to dispatch archive generation job: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to process your request. Please try again later.'
+            ], 500);
+        }
+    }
+
+    public function archiveDownloadPage($collectionId, $filename)
+    {
+        $collection = \App\Models\Collection::findOrFail($collectionId);
+
+        // Verify collection is private
+        if (!$collection->private) {
+            abort(403, 'Archive download is only available for private collections');
+        }
+
+        // Sanitize filename to prevent directory traversal
+        $filename = basename($filename);
+
+        // Verify filename matches the collection ID pattern
+        if (!preg_match('/^collection-' . $collectionId . '-\d+\.zip$/', $filename)) {
+            abort(403, 'Invalid archive file');
+        }
+
+        // Check if file exists in S3
+        if (!Storage::disk('s3')->exists('archives/' . $filename)) {
+            abort(404, 'Archive file not found or has expired');
+        }
+
+        // Extract timestamp from filename to calculate expiration
+        preg_match('/\-(\d+)\.zip$/', $filename, $matches);
+        $timestamp = $matches[1] ?? time();
+        $expiresAt = \Carbon\Carbon::createFromTimestamp($timestamp)->addHours(48);
+
+        // Check if expired
+        if (now()->gt($expiresAt)) {
+            abort(410, 'Download link has expired');
+        }
+
+        // Get photo count
+        $photoCount = $collection->sets()
+            ->with('photos')
+            ->get()
+            ->pluck('photos')
+            ->flatten()
+            ->count();
+
+        return view('collections.archive-download', [
+            'collection' => $collection,
+            'filename' => $filename,
+            'expiresAt' => $expiresAt->toIso8601String(),
+            'photoCount' => $photoCount,
+        ]);
+    }
+
+    public function downloadArchive($collectionId, $filename)
+    {
+        $collection = \App\Models\Collection::findOrFail($collectionId);
+
+        // Verify collection is private
+        if (!$collection->private) {
+            abort(403, 'Archive download is only available for private collections');
+        }
+
+        // Sanitize filename to prevent directory traversal
+        $filename = basename($filename);
+
+        // Verify filename matches the collection ID pattern
+        if (!preg_match('/^collection-' . $collectionId . '-\d+\.zip$/', $filename)) {
+            abort(403, 'Invalid archive file');
+        }
+
+        // Check if file exists in S3
+        if (!Storage::disk('s3')->exists('archives/' . $filename)) {
+            abort(404, 'Archive file not found or has expired');
+        }
+
+        // Extract timestamp from filename to calculate expiration
+        preg_match('/\-(\d+)\.zip$/', $filename, $matches);
+        $timestamp = $matches[1] ?? time();
+        $expiresAt = \Carbon\Carbon::createFromTimestamp($timestamp)->addHours(48);
+
+        // Check if expired
+        if (now()->gt($expiresAt)) {
+            abort(410, 'Download link has expired');
+        }
+
+        // Generate a temporary signed URL (valid for 1 hour)
+        $url = Storage::disk('s3')->temporaryUrl(
+            'archives/' . $filename,
+            now()->addHour()
+        );
+
+        // Redirect to the signed S3 URL
+        return redirect($url);
     }
 }

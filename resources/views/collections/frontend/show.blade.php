@@ -54,6 +54,19 @@
                 @endif
             </div>
 
+            <!-- Download Archive Button (Private Collections Only) -->
+            @if($collection->private)
+                <div class="mb-8">
+                    <button onclick="requestArchive()"
+                            class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white text-lg font-semibold rounded-lg shadow-lg transition-all transform hover:scale-105 flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                        Download All Photos
+                    </button>
+                </div>
+            @endif
+
             <!-- Scroll Indicator -->
             <div class="absolute bottom-8 animate-bounce">
                 <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -111,5 +124,46 @@
                 }, 300);
             }
         }, 5000);
+
+        // Request archive download
+        function requestArchive() {
+            window.promptUser({
+                title: 'Request Download Archive',
+                message: 'Enter your email address to receive the download link when the archive is ready:',
+                placeholder: 'your@email.com',
+                inputType: 'email',
+                confirmText: 'Request Archive',
+                onConfirm: (email) => {
+                    if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+                        window.showErrorToast('Please enter a valid email address');
+                        return;
+                    }
+
+                    // Show loading toast
+                    window.showInfoToast('Processing your request...');
+
+                    fetch('{{ route("collections.request-archive", $collection->id) }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                        },
+                        body: JSON.stringify({ email: email })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.showSuccessToast('Archive is being prepared! You will receive an email with the download link shortly.');
+                        } else {
+                            window.showErrorToast(data.message || 'Failed to request archive');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        window.showErrorToast('An error occurred. Please try again.');
+                    });
+                }
+            });
+        }
     </script>
 </x-collection-layout>
