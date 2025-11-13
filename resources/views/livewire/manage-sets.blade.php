@@ -43,25 +43,49 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 @foreach($sets as $set)
                     <div class="p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <h5 class="text-md font-semibold text-gray-900 dark:text-gray-100">{{ $set->name }}</h5>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">{{ $set->photos->count() }} photos</p>
+                        @if($editingSetId === $set->id)
+                            <!-- Edit Mode -->
+                            <form wire:submit.prevent="updateSet" class="space-y-3">
+                                <input type="text"
+                                       wire:model="editingSetName"
+                                       class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+                                @error('editingSetName')
+                                    <p class="text-xs text-red-600 dark:text-red-400">{{ $message }}</p>
+                                @enderror
+                                <div class="flex gap-2">
+                                    <button type="submit"
+                                            class="flex-1 px-3 py-1.5 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700">
+                                        Save
+                                    </button>
+                                    <button type="button"
+                                            wire:click="cancelEdit"
+                                            class="flex-1 px-3 py-1.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600">
+                                        Cancel
+                                    </button>
+                                </div>
+                            </form>
+                        @else
+                            <!-- View Mode -->
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h5 class="text-md font-semibold text-gray-900 dark:text-gray-100">{{ $set->name }}</h5>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ $set->photos->count() }} photos</p>
+                                </div>
+                                <div class="flex gap-2">
+                                    <button wire:click="editSet('{{ $set->id }}')" class="px-3 py-1 text-sm bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded hover:bg-gray-200 dark:hover:bg-gray-600">Rename</button>
+                                    <button @click="window.confirmAction({
+                                                title: 'Delete Set?',
+                                                message: 'Are you sure you want to delete this set? All photos will be removed.',
+                                                confirmText: 'Delete',
+                                                isDanger: true,
+                                                onConfirm: () => $wire.call('deleteSet', '{{ $set->id }}')
+                                            })" class="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700">Delete</button>
+                                </div>
                             </div>
-                            <div class="flex gap-2">
-                                <button wire:click="renameSet('{{ $set->id }}')" class="px-3 py-1 text-sm bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded hover:bg-gray-200 dark:hover:bg-gray-600">Rename</button>
-                                <button @click="window.confirmAction({
-                                            title: 'Delete Set?',
-                                            message: 'Are you sure you want to delete this set? All photos will be removed.',
-                                            confirmText: 'Delete',
-                                            isDanger: true,
-                                            onConfirm: () => $wire.call('deleteSet', '{{ $set->id }}')
-                                        })" class="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700">Delete</button>
+                            <div class="mt-3">
+                                <a href="{{ route('sets.detail', $set->id) }}" class="inline-flex items-center text-indigo-600 dark:text-indigo-400 hover:underline text-sm">Manage Photos →</a>
                             </div>
-                        </div>
-                        <div class="mt-3">
-                            <a href="{{ route('sets.detail', $set->id) }}" class="inline-flex items-center text-indigo-600 dark:text-indigo-400 hover:underline text-sm">Manage Photos →</a>
-                        </div>
+                        @endif
                     </div>
                 @endforeach
             </div>
