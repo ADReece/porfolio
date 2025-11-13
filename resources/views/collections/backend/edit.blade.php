@@ -77,17 +77,20 @@
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Visibility</label>
                                 <div class="flex items-center gap-4">
                                     <label class="inline-flex items-center">
-                                        <input type="checkbox" name="private" {{ old('private', $collection->private) ? 'checked' : '' }}
+                                        <input type="hidden" name="private" value="0">
+                                        <input type="checkbox" name="private" value="1" {{ old('private', $collection->private) ? 'checked' : '' }}
                                                class="rounded border-gray-300 dark:border-gray-600 text-indigo-600 shadow-sm focus:ring-indigo-500">
                                         <span class="ml-2 text-gray-700 dark:text-gray-300">Private Collection</span>
                                     </label>
                                     <label class="inline-flex items-center">
-                                        <input type="checkbox" name="hide_from_portfolio" {{ old('hide_from_portfolio', $collection->hide_from_portfolio) ? 'checked' : '' }}
+                                        <input type="hidden" name="hide_from_portfolio" value="0">
+                                        <input type="checkbox" name="hide_from_portfolio" value="1" {{ old('hide_from_portfolio', $collection->hide_from_portfolio) ? 'checked' : '' }}
                                                class="rounded border-gray-300 dark:border-gray-600 text-indigo-600 shadow-sm focus:ring-indigo-500">
                                         <span class="ml-2 text-gray-700 dark:text-gray-300">Hide from Portfolio</span>
                                     </label>
                                     <label class="inline-flex items-center">
-                                        <input type="checkbox" name="watermarked" {{ old('watermarked', $collection->watermarked) ? 'checked' : '' }}
+                                        <input type="hidden" name="watermarked" value="0">
+                                        <input type="checkbox" name="watermarked" value="1" {{ old('watermarked', $collection->watermarked) ? 'checked' : '' }}
                                                class="rounded border-gray-300 dark:border-gray-600 text-indigo-600 shadow-sm focus:ring-indigo-500">
                                         <span class="ml-2 text-gray-700 dark:text-gray-300">Watermarked</span>
                                     </label>
