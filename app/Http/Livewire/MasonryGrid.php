@@ -18,8 +18,10 @@ class MasonryGrid extends Component
     public int $perPage = 20;
     public int $columns = 4;
     public int $page = 1;
-    public bool $hasMore = true;
+    public bool $hasMore = false;
     public int $totalCount = 0;
+
+    protected $listeners = ['load-more-photos' => 'loadMore'];
 
     public function mount()
     {
@@ -79,28 +81,46 @@ class MasonryGrid extends Component
 
     public function loadMore()
     {
+        \Log::info('MasonryGrid::loadMore() called', [
+            'current_page' => $this->page,
+            'per_page' => $this->perPage,
+            'total_count' => $this->totalCount
+        ]);
+
         $this->page++;
 
         // Check if there are more items to load
         $totalLoaded = $this->page * $this->perPage;
         $this->hasMore = $this->totalCount > $totalLoaded;
 
+        \Log::info('MasonryGrid::loadMore() after increment', [
+            'new_page' => $this->page,
+            'total_loaded' => $totalLoaded,
+            'has_more' => $this->hasMore
+        ]);
+
         $this->dispatchBrowserEvent('masonry-items-loaded');
     }
 
     public function render()
     {
-        // Only fetch the photos we need for display
-        $totalToShow = $this->page * $this->perPage;
+        // Fetch ALL photos loaded so far (from page 1 to current page)
+        // This ensures all photos are rendered, with new ones marked appropriately
+        $totalToLoad = $this->page * $this->perPage;
         $media = $this->getQuery()
-            ->take($totalToShow)
+            ->take($totalToLoad)
             ->get();
+
+        $totalLoaded = $this->page * $this->perPage;
 
         return view('livewire.masonry-grid', [
             'media' => $media,
             'totalCount' => $this->totalCount,
-            'loadedCount' => $media->count(),
-            'columns' => $this->columns
+            'loadedCount' => min($totalLoaded, $this->totalCount),
+            'columns' => $this->columns,
+            'page' => $this->page,
+            'perPage' => $this->perPage,
+            'isInitialLoad' => $this->page === 1
         ]);
     }
 }

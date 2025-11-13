@@ -22,7 +22,7 @@
                 <div class="p-6">
                     <form method="POST" action="{{ route('collections.update', $collection->id) }}">
                         @csrf
-                        @method('PUT')
+                        @method('PATCH')
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <!-- Name -->

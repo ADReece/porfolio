@@ -66,9 +66,6 @@
     <!-- Photo Gallery Section -->
     <div class="py-12 px-8 bg-gray-50 dark:bg-gray-900">
         <div class="max-w-7xl mx-auto">
-            <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-8 text-center">
-                Gallery
-            </h2>
             <livewire:masonry-grid :collectionId="$collection->id" />
         </div>
     </div>
