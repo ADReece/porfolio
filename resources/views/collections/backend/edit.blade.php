@@ -265,9 +265,17 @@
             linkInput.setSelectionRange(0, 99999); // For mobile devices
 
             navigator.clipboard.writeText(linkInput.value).then(function() {
-                window.showSuccessToast('Link copied to clipboard!');
+                if (typeof window.showSuccessToast === 'function') {
+                    window.showSuccessToast('Link copied to clipboard!');
+                } else {
+                    console.log('Link copied to clipboard!');
+                }
             }, function(err) {
-                window.showErrorToast('Failed to copy link: ' + err);
+                if (typeof window.showErrorToast === 'function') {
+                    window.showErrorToast('Failed to copy link: ' + err);
+                } else {
+                    console.error('Failed to copy link:', err);
+                }
             });
         }
 
@@ -309,15 +317,21 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    window.showSuccessToast('Email sent successfully to ' + email);
+                    if (typeof window.showSuccessToast === 'function') {
+                        window.showSuccessToast('Email sent successfully to ' + email);
+                    }
                     closeEmailModal();
                 } else {
-                    window.showErrorToast('Error: ' + (data.message || 'Failed to send email'));
+                    if (typeof window.showErrorToast === 'function') {
+                        window.showErrorToast('Error: ' + (data.message || 'Failed to send email'));
+                    }
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                window.showErrorToast('An error occurred while sending the email');
+                if (typeof window.showErrorToast === 'function') {
+                    window.showErrorToast('An error occurred while sending the email');
+                }
             })
             .finally(() => {
                 submitBtn.disabled = false;

@@ -8,7 +8,7 @@
                 {{ $user->name ?? $user->username }}
             </h1>
             <h2 class="text-lg text-gray-600 dark:text-gray-400 mb-4">
-                @{{ $user->username }}
+                 {{ _('@'.$user->username) }}
             </h2>
             @if($user->bio)
             <div class="font-light mt-5 text-gray-700 dark:text-gray-300 max-w-md mx-auto">

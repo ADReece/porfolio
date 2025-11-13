@@ -69,6 +69,12 @@ class ManageSets extends Component
         session()->flash('message', 'Set updated successfully.');
     }
 
+    public function cancelEdit()
+    {
+        $this->editingSetId = null;
+        $this->editingSetName = '';
+    }
+
     public function deleteSet($setId)
     {
         $set = Set::findOrFail($setId);
