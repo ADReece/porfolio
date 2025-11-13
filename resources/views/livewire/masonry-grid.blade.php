@@ -23,11 +23,17 @@
                             <a href="{{ $m->getUri() }}"
                                data-fslightbox="gallery"
                                data-caption="{{ $m->caption ?? '' }}"
-                               class="block">
+                               class="block"
+                               oncontextmenu="return false;"
+                               ondragstart="return false;">
                                 <img src="{{ $m->getAwsThumbnail() }}"
                                      alt="{{ $m->caption ?? 'Photo' }}"
-                                     class="w-full cursor-pointer"
+                                     class="w-full cursor-pointer select-none"
                                      loading="{{ $index < 10 ? 'eager' : 'lazy' }}"
+                                     oncontextmenu="return false;"
+                                     ondragstart="return false;"
+                                     draggable="false"
+                                     style="user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none;"
                                 />
                             </a>
 
@@ -158,6 +164,32 @@
             width: 100%;
             height: auto;
             display: block;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            -webkit-user-drag: none;
+            -khtml-user-drag: none;
+            -moz-user-drag: none;
+            -o-user-drag: none;
+            user-drag: none;
+            pointer-events: auto;
+        }
+
+        /* Prevent text selection on masonry items */
+        .masonry-item {
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+
+        /* Allow clicks on links and buttons */
+        .masonry-item a,
+        .masonry-item button {
+            user-select: none;
+            -webkit-user-select: none;
+            pointer-events: auto;
         }
 
         /* Hide sizer elements */
@@ -210,6 +242,84 @@
     </style>
 
     <script>
+        // DRM Protection
+        document.addEventListener('DOMContentLoaded', function() {
+            // Prevent right-click on images
+            document.addEventListener('contextmenu', function(e) {
+                if (e.target.tagName === 'IMG' || e.target.closest('.masonry-item')) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+
+            // Prevent keyboard shortcuts for saving and opening
+            document.addEventListener('keydown', function(e) {
+                // Ctrl+S / Cmd+S (Save)
+                if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                    e.preventDefault();
+                    window.showWarningToast('Image protection: Save is disabled');
+                    return false;
+                }
+
+                // Ctrl+Shift+S / Cmd+Shift+S (Save As)
+                if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 's') {
+                    e.preventDefault();
+                    window.showWarningToast('Image protection: Save is disabled');
+                    return false;
+                }
+
+                // Prevent Print Screen
+                if (e.key === 'PrintScreen') {
+                    e.preventDefault();
+                    window.showWarningToast('Image protection: Screenshots are discouraged');
+                    return false;
+                }
+
+                // Prevent Ctrl+P / Cmd+P (Print)
+                if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+                    e.preventDefault();
+                    window.showWarningToast('Image protection: Printing is disabled');
+                    return false;
+                }
+
+                // Prevent Inspect Element shortcuts
+                if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) {
+                    e.preventDefault();
+                    return false;
+                }
+
+                // Prevent F12 (Dev Tools)
+                if (e.key === 'F12') {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+
+            // Prevent drag and drop of images
+            document.addEventListener('dragstart', function(e) {
+                if (e.target.tagName === 'IMG' || e.target.closest('.masonry-item')) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+
+            // Add watermark overlay on images (subtle but visible when inspecting)
+            const style = document.createElement('style');
+            style.textContent = `
+                .masonry-item img::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    pointer-events: none;
+                    z-index: 1;
+                }
+            `;
+            document.head.appendChild(style);
+        });
+
         // Register Alpine component immediately (before Alpine starts)
         document.addEventListener('alpine:init', () => {
             Alpine.data('masonryData', () => ({
