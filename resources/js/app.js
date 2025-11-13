@@ -44,12 +44,6 @@ window.showErrorToast = (message) => window.showToast(message, 'error');
 window.showWarningToast = (message) => window.showToast(message, 'warning');
 window.showInfoToast = (message) => window.showToast(message, 'info');
 
-// Debug log to verify toast functions are loaded
-console.log('Toast functions initialized:', {
-    showToast: typeof window.showToast,
-    showSuccessToast: typeof window.showSuccessToast,
-    Toastify: typeof window.Toastify
-});
 window.fslightbox = fslightbox;
 
 
