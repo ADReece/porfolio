@@ -133,7 +133,7 @@
                                        readonly
                                        class="flex-1 rounded-md border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                                 <button type="button"
-                                        onclick="copyLink()"
+                                        onclick="copyLink(event)"
                                         class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500">
                                     Copy Link
                                 </button>
@@ -259,26 +259,15 @@
             }
         }
 
-        function copyLink() {
+        function copyLink(event) {
             const linkInput = document.getElementById('collection-link');
             linkInput.select();
             linkInput.setSelectionRange(0, 99999); // For mobile devices
 
             navigator.clipboard.writeText(linkInput.value).then(function() {
-                // Show success feedback
-                const button = event.target;
-                const originalText = button.textContent;
-                button.textContent = 'Copied!';
-                button.classList.remove('bg-gray-600', 'hover:bg-gray-700');
-                button.classList.add('bg-green-600', 'hover:bg-green-700');
-
-                setTimeout(function() {
-                    button.textContent = originalText;
-                    button.classList.remove('bg-green-600', 'hover:bg-green-700');
-                    button.classList.add('bg-gray-600', 'hover:bg-gray-700');
-                }, 2000);
+                window.showSuccessToast('Link copied to clipboard!');
             }, function(err) {
-                alert('Failed to copy link: ' + err);
+                window.showErrorToast('Failed to copy link: ' + err);
             });
         }
 
@@ -320,15 +309,15 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    alert('Email sent successfully to ' + email);
+                    window.showSuccessToast('Email sent successfully to ' + email);
                     closeEmailModal();
                 } else {
-                    alert('Error: ' + (data.message || 'Failed to send email'));
+                    window.showErrorToast('Error: ' + (data.message || 'Failed to send email'));
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('An error occurred while sending the email');
+                window.showErrorToast('An error occurred while sending the email');
             })
             .finally(() => {
                 submitBtn.disabled = false;

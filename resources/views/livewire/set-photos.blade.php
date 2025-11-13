@@ -46,8 +46,13 @@
                                             class="px-3 py-1 bg-white text-gray-800 rounded text-sm hover:bg-gray-100">
                                             Edit
                                         </button>
-                                        <button wire:click="deletePhoto('{{ $photo->id }}')"
-                                            onclick="return confirm('Delete this photo?')"
+                                        <button @click="window.confirmAction({
+                                                    title: 'Delete Photo?',
+                                                    message: 'Are you sure you want to delete this photo? This action cannot be undone.',
+                                                    confirmText: 'Delete',
+                                                    isDanger: true,
+                                                    onConfirm: () => $wire.call('deletePhoto', '{{ $photo->id }}')
+                                                })"
                                             class="px-3 py-1 bg-red-600 text-white rounded text-sm hover:bg-red-700">
                                             Delete
                                         </button>

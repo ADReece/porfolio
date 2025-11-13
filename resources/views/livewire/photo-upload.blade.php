@@ -99,7 +99,7 @@
                         message += 'Unknown error';
                     }
 
-                    alert(message);
+                    window.showErrorToast(message);
                 });
 
                 console.log('Dropzone initialized successfully for set {{ $setId }}');

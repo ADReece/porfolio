@@ -99,7 +99,6 @@
             @endif
         @endif
     </div>
-    </div>
 
     @php($cols = $columns ?? 4);
     @php($mobile_cols = 2)
@@ -460,36 +459,39 @@
 
         // Download request function
         function requestDownload(photoId) {
-            const email = prompt('Enter your email address to receive the download link:');
+            window.promptUser({
+                title: 'Request Download',
+                message: 'Enter your email address to receive the download link:',
+                placeholder: 'your@email.com',
+                inputType: 'email',
+                confirmText: 'Send Link',
+                onConfirm: (email) => {
+                    if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+                        window.showErrorToast('Please enter a valid email address');
+                        return;
+                    }
 
-            if (!email) {
-                return; // User cancelled
-            }
-
-            if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
-                alert('Please enter a valid email address.');
-                return;
-            }
-
-            fetch(`/photos/${photoId}/request-download`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                },
-                body: JSON.stringify({ email: email })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Download link has been sent to ' + email);
-                } else {
-                    alert('Error: ' + (data.message || 'Failed to send download link'));
+                    fetch(`/photos/${photoId}/request-download`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                        },
+                        body: JSON.stringify({ email: email })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.showSuccessToast('Download link has been sent to ' + email);
+                        } else {
+                            window.showErrorToast('Error: ' + (data.message || 'Failed to send download link'));
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        window.showErrorToast('An error occurred. Please try again.');
+                    });
                 }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred. Please try again.');
             });
         }
     </script>
