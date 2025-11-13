@@ -5,14 +5,17 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\Traits\UsesUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Cashier\Billable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Carbon; // for date checks
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, UsesUuid;
+    use HasApiTokens, HasFactory, Notifiable, UsesUuid, Billable;
 
     /**
      * The attributes that are mass assignable.
@@ -32,7 +35,13 @@ class User extends Authenticatable
         'portfolio_display_mode',
         'masonry_columns',
         'photos_per_page',
-        'watermark_text'
+        'watermark_text',
+        'subscription_plan_id',
+        'stripe_connect_id',
+        'stripe_connect_enabled',
+        'feature_override',
+        'feature_override_expires_at',
+        'is_admin',
     ];
 
     /**
@@ -52,7 +61,13 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'stripe_connect_enabled' => 'boolean',
+        'feature_override' => 'boolean',
+        'feature_override_expires_at' => 'datetime',
+        'is_admin' => 'boolean',
     ];
+
+    protected $with = ['subscriptionPlan'];
 
     /**
      * Get all of the settings for the User
@@ -92,6 +107,90 @@ class User extends Authenticatable
     public function tags(): HasMany
     {
         return $this->hasMany(Tag::class, 'user_id', 'id');
+    }
+
+    public function subscriptionPlan(): BelongsTo
+    {
+        return $this->belongsTo(SubscriptionPlan::class);
+    }
+
+    public function products(): HasMany
+    {
+        return $this->hasMany(Product::class);
+    }
+
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    // Feature checking methods
+    public function hasFeature(string $feature): bool
+    {
+        if ($this->isFeatureOverrideActive()) {
+            return true; // grant all features
+        }
+        if (!$this->subscriptionPlan) {
+            return false;
+        }
+        return $this->subscriptionPlan->hasFeature($feature);
+    }
+
+    public function isFeatureOverrideActive(): bool
+    {
+        if (!$this->feature_override) return false;
+        if (!$this->feature_override_expires_at) return true;
+        return now()->lt($this->feature_override_expires_at);
+    }
+
+    public function canUploadPhotos(): bool
+    {
+        if ($this->isFeatureOverrideActive()) {
+            return true;
+        }
+        if (!$this->subscriptionPlan) {
+            return false;
+        }
+        if ($this->subscriptionPlan->photo_limit === null) {
+            return true; // Unlimited
+        }
+        return $this->photos()->count() < $this->subscriptionPlan->photo_limit;
+    }
+
+    public function canCreateCollections(): bool
+    {
+        if ($this->isFeatureOverrideActive()) {
+            return true;
+        }
+        if (!$this->subscriptionPlan) {
+            return false;
+        }
+        if ($this->subscriptionPlan->collection_limit === null) {
+            return true; // Unlimited
+        }
+        return $this->collections()->count() < $this->subscriptionPlan->collection_limit;
+    }
+
+    public function getRemainingPhotos(): ?int
+    {
+        if ($this->isFeatureOverrideActive()) {
+            return null; // Unlimited
+        }
+        if (!$this->subscriptionPlan || $this->subscriptionPlan->photo_limit === null) {
+            return null; // Unlimited
+        }
+        return max(0, $this->subscriptionPlan->photo_limit - $this->photos()->count());
+    }
+
+    public function getRemainingCollections(): ?int
+    {
+        if ($this->isFeatureOverrideActive()) {
+            return null; // Unlimited
+        }
+        if (!$this->subscriptionPlan || $this->subscriptionPlan->collection_limit === null) {
+            return null; // Unlimited
+        }
+        return max(0, $this->subscriptionPlan->collection_limit - $this->collections()->count());
     }
 
     /**

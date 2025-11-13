@@ -1,0 +1,208 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\SubscriptionPlan;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Laravel\Cashier\Exceptions\IncompletePayment; // add for SCA handling
+
+class BillingController extends Controller
+{
+    public function pricing(Request $request)
+    {
+        $interval = $request->query('interval', 'month');
+        $plans = SubscriptionPlan::where('active', true)->orderBy('sort_order')->get();
+        return view('billing.pricing', compact('plans', 'interval'));
+    }
+
+    public function checkout(Request $request, SubscriptionPlan $plan)
+    {
+        $interval = $request->query('interval', 'month');
+        if ($plan->isFree()) {
+            Auth::user()->update(['subscription_plan_id' => $plan->id]);
+            return redirect()->route('dashboard')->with('success', "You're now on the Free plan.");
+        }
+        return view('billing.checkout', compact('plan', 'interval'));
+    }
+
+    public function processCheckout(Request $request, SubscriptionPlan $plan)
+    {
+        $request->validate([
+            'payment_method' => 'required|string',
+            'interval' => 'nullable|in:month,year'
+        ]);
+        $interval = $request->input('interval', 'month');
+
+        $user = $request->user();
+
+        try {
+            if (!$user->stripe_id) {
+                $user->createAsStripeCustomer();
+            }
+
+            $priceId = $plan->stripePriceFor($interval);
+            if (!$priceId) {
+                return back()->with('error', 'This plan is not configured for '.($interval === 'year' ? 'yearly' : 'monthly').' billing. Please contact support.');
+            }
+
+            // Create subscription with the selected price; Cashier will handle trial if configured
+            $user->newSubscription('default', $priceId)
+                ->create($request->payment_method);
+
+            $user->update(['subscription_plan_id' => $plan->id]);
+
+            return redirect()->route('dashboard')->with('success', 'Subscription activated successfully!');
+        } catch (IncompletePayment $exception) {
+            // Redirect to SCA confirmation page
+            return redirect()->route(
+                'cashier.payment',
+                [$exception->payment->id, 'redirect' => route('dashboard')]
+            );
+        } catch (\Exception $e) {
+            return back()->with('error', 'Payment failed: '.$e->getMessage());
+        }
+    }
+
+    public function billingPortal(Request $request)
+    {
+        try {
+            return $request->user()->redirectToBillingPortal(route('dashboard'));
+        } catch (\Stripe\Exception\InvalidRequestException $e) {
+            // Check if it's the portal configuration error
+            if (str_contains($e->getMessage(), 'billing/portal')) {
+                return redirect()->back()->with('error', 'Billing portal is not yet configured. Please contact support or manage your subscription from the dashboard.');
+            }
+            throw $e;
+        }
+    }
+
+    public function cancel(Request $request)
+    {
+        $user = $request->user();
+
+        if ($user->subscribed('default')) {
+            $user->subscription('default')->cancel();
+
+            return redirect()->back()
+                ->with('success', 'Your subscription will be cancelled at the end of the billing period.');
+        }
+
+        return redirect()->back()
+            ->with('error', 'No active subscription found.');
+    }
+
+    public function resume(Request $request)
+    {
+        $user = $request->user();
+
+        if ($user->subscription('default')->onGracePeriod()) {
+            $user->subscription('default')->resume();
+
+            return redirect()->back()
+                ->with('success', 'Your subscription has been resumed!');
+        }
+
+        return redirect()->back()
+            ->with('error', 'Unable to resume subscription.');
+    }
+
+    public function swap(Request $request, SubscriptionPlan $plan)
+    {
+        $interval = $request->input('interval', 'month');
+        $user = $request->user();
+        if (!$user->subscribed('default')) {
+            return redirect()->route('checkout', ['plan' => $plan->id, 'interval' => $interval]);
+        }
+        try {
+            $priceId = $plan->stripePriceFor($interval);
+            if (!$priceId) {
+                return back()->with('error', 'This plan is not configured for '.($interval === 'year' ? 'yearly' : 'monthly').' billing.');
+            }
+            $user->subscription('default')->swap($priceId);
+            $user->update(['subscription_plan_id' => $plan->id]);
+            return redirect()->route('dashboard')->with('success', 'Plan updated successfully!');
+        } catch (IncompletePayment $exception) {
+            return redirect()->route(
+                'cashier.payment',
+                [$exception->payment->id, 'redirect' => route('dashboard')]
+            );
+        } catch (\Exception $e) {
+            return back()->with('error', 'Failed to update plan: '.$e->getMessage());
+        }
+    }
+
+    // Stripe Connect methods for receiving payments
+    public function connectStripe(Request $request)
+    {
+        return view('billing.connect-stripe');
+    }
+
+    public function handleConnectCallback(Request $request)
+    {
+        // Handle OAuth callback from Stripe Connect
+        $code = $request->query('code');
+
+        if (!$code) {
+            return redirect()->route('dashboard')
+                ->with('error', 'Failed to connect Stripe account.');
+        }
+
+        try {
+            $stripe = new \Stripe\StripeClient(config('cashier.secret'));
+
+            $response = $stripe->oauth->token([
+                'grant_type' => 'authorization_code',
+                'code' => $code,
+            ]);
+
+            $user = Auth::user();
+            $user->update([
+                'stripe_connect_id' => $response->stripe_user_id,
+                'stripe_connect_enabled' => true,
+            ]);
+
+            return redirect()->route('dashboard')
+                ->with('success', 'Stripe account connected successfully! You can now receive payments.');
+        } catch (\Exception $e) {
+            return redirect()->route('dashboard')
+                ->with('error', 'Failed to connect Stripe account: ' . $e->getMessage());
+        }
+    }
+
+    public function disconnectStripe(Request $request)
+    {
+        $user = Auth::user();
+
+        try {
+            if ($user->stripe_connect_id) {
+                // Optionally revoke the connection on Stripe's side
+                $stripe = new \Stripe\StripeClient(config('cashier.secret'));
+                $stripe->oauth->deauthorize([
+                    'stripe_user_id' => $user->stripe_connect_id,
+                ]);
+            }
+
+            $user->update([
+                'stripe_connect_id' => null,
+                'stripe_connect_enabled' => false,
+            ]);
+
+            return redirect()->back()
+                ->with('success', 'Stripe account disconnected.');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Failed to disconnect: ' . $e->getMessage());
+        }
+    }
+
+    public function downloadInvoice(Request $request, string $invoiceId)
+    {
+        // Customize invoice vendor/product labels if desired
+        $data = [
+            'vendor' => config('app.name'),
+            'product' => 'Subscription',
+        ];
+        return $request->user()->downloadInvoice($invoiceId, $data);
+    }
+}

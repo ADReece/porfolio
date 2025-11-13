@@ -18,11 +18,107 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
 
+            @if(session('success'))
+                <div class="bg-green-100 dark:bg-green-900 border border-green-400 dark:border-green-700 text-green-700 dark:text-green-200 px-4 py-3 rounded relative" role="alert">
+                    <span class="block sm:inline">{{ session('success') }}</span>
+                </div>
+            @endif
+
+            @if(session('error'))
+                <div class="bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-200 px-4 py-3 rounded relative" role="alert">
+                    <span class="block sm:inline">{{ session('error') }}</span>
+                </div>
+            @endif
+
             <!-- Welcome Section -->
             <div class="bg-gradient-to-r from-indigo-500 to-purple-600 dark:from-indigo-700 dark:to-purple-800 overflow-hidden shadow-lg sm:rounded-lg">
                 <div class="p-8 text-white">
                     <h3 class="text-2xl font-bold mb-2">Welcome back, {{ auth()->user()->name ?? auth()->user()->username }}! 👋</h3>
                     <p class="text-indigo-100">Manage your photography portfolio and collections from here.</p>
+                </div>
+            </div>
+
+            <!-- Subscription Summary -->
+            @php
+                $user = auth()->user();
+                $plan = $user->subscriptionPlan;
+                $subscription = $user->subscription('default');
+                $isSubscribed = $subscription && $subscription->valid();
+                $onGrace = $subscription && $subscription->onGracePeriod();
+                $nextBilling = null;
+                $lastInvoice = null;
+                if ($isSubscribed) {
+                    try {
+                        $stripeSub = $subscription->asStripeSubscription();
+                        if (isset($stripeSub->current_period_end)) {
+                            $nextBilling = \Carbon\Carbon::createFromTimestamp($stripeSub->current_period_end);
+                        }
+                    } catch (\Exception $e) {
+                        $nextBilling = null;
+                    }
+                    // Get last invoice
+                    $invoices = $user->invoices();
+                    if (count($invoices) > 0) {
+                        $lastInvoice = $invoices[0];
+                    }
+                }
+            @endphp
+
+            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6">
+                    <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
+                        <div class="flex-1">
+                            <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Subscription</h3>
+                            @if($isSubscribed)
+                                <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Current Plan: <span class="font-medium text-gray-900 dark:text-gray-100">{{ $plan->name ?? '—' }}</span></p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Status:
+                                    @if($onGrace)
+                                        <span class="text-yellow-700 dark:text-yellow-400 font-medium">Cancels on {{ optional($subscription->ends_at)->toDayDateTimeString() }}</span>
+                                    @else
+                                        <span class="text-green-700 dark:text-green-400 font-medium">Active</span>
+                                    @endif
+                                </p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Next Billing: <span class="font-medium">{{ $nextBilling ? $nextBilling->toDayDateTimeString() : '—' }}</span></p>
+                                @if($lastInvoice)
+                                    @php
+                                        $invoiceAmount = (float)$lastInvoice->total() / 100;
+                                    @endphp
+                                    @if($invoiceAmount > 0)
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">Last Invoice: <span class="font-medium">${{ number_format($invoiceAmount, 2) }}</span> <span class="text-xs">({{ $lastInvoice->date()->format('M d, Y') }})</span></p>
+                                    @endif
+                                @endif
+                            @else
+                                <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Current Plan: <span class="font-medium text-gray-900 dark:text-gray-100">{{ $plan->name ?? 'Free' }}</span></p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">You're not currently subscribed. Explore paid plans to unlock premium features.</p>
+                            @endif
+                        </div>
+                        <div class="flex flex-wrap items-center gap-3">
+                            @if($isSubscribed)
+                                <a href="{{ route('billing.portal') }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">Manage Billing</a>
+                                @if($lastInvoice)
+                                    <a href="{{ route('billing.invoice.download', $lastInvoice->id) }}" class="inline-flex items-center px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600">
+                                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path>
+                                        </svg>
+                                        View Invoice
+                                    </a>
+                                @endif
+                                @if($onGrace)
+                                    <form action="{{ route('subscription.resume') }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">Resume</button>
+                                    </form>
+                                @else
+                                    <form action="{{ route('subscription.cancel') }}" method="POST" onsubmit="return confirm('Are you sure you want to cancel your subscription?');">
+                                        @csrf
+                                        <button type="submit" class="inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">Cancel</button>
+                                    </form>
+                                @endif
+                            @else
+                                <a href="{{ route('pricing') }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">View Plans</a>
+                            @endif
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -143,6 +239,49 @@
 
                 </div>
             </div>
+
+            <!-- Recent Invoices -->
+            @if($isSubscribed && count($user->invoices()) > 0)
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Recent Invoices</h3>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                <thead class="bg-gray-50 dark:bg-gray-900">
+                                    <tr>
+                                        <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Date</th>
+                                        <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Amount</th>
+                                        <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Status</th>
+                                        <th class="px-4 py-2"></th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                                    @foreach($user->invoices() as $invoice)
+                                    <tr>
+                                        <td class="px-4 py-2 text-gray-800 dark:text-gray-200">{{ $invoice->date()->toDayDateTimeString() }}</td>
+                                        <td class="px-4 py-2 text-gray-800 dark:text-gray-200">
+                                            ${{ number_format(((float)$invoice->total()) / 100, 2) }}
+                                        </td>
+                                        <td class="px-4 py-2 text-gray-800 dark:text-gray-200">
+                                            <span class="px-2 py-1 text-xs rounded @if($invoice->status === 'paid') bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 @else bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 @endif">
+                                                {{ ucfirst($invoice->status) }}
+                                            </span>
+                                        </td>
+                                        <td class="px-4 py-2 text-right">
+                                            @if($invoice->status === 'paid')
+                                            <a href="{{ route('billing.invoice.download', $invoice->id) }}" class="inline-flex items-center px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 text-sm">Download</a>
+                                            @else
+                                            <span class="text-xs text-gray-500 dark:text-gray-400">Pending</span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            @endif
 
         </div>
     </div>

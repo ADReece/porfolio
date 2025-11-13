@@ -19,5 +19,5 @@ export default defineConfig({
             host: 'localhost',
             port: Number(process.env.VITE_PORT) || 5173,
         },
-    },
+    }
 });
