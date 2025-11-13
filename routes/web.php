@@ -55,6 +55,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/collections/{collection}/sets/{set}', [SetController::class, 'destroy'])->name('sets.destroy');
 
     Route::post('/collections/{collection}/email-client', [CollectionController::class, 'emailClient'])->name('collections.email-client');
+    Route::post('/collections/{collection}/request-archive', [CollectionController::class, 'requestArchive'])->name('collections.request-archive');
+    Route::get('/collections/{collection}/archive/{filename}', [CollectionController::class, 'archiveDownloadPage'])->name('collections.archive-download-page');
+    Route::get('/collections/{collection}/download-archive/{filename}', [CollectionController::class, 'downloadArchive'])->name('collections.download-archive');
 
 
     // Photo management
