@@ -4,7 +4,7 @@ namespace App\View\Components;
 
 use Illuminate\View\Component;
 
-class Collectionlayout extends Component
+class CollectionLayout extends Component
 {
     /**
      * Create a new component instance.
@@ -23,6 +23,6 @@ class Collectionlayout extends Component
      */
     public function render()
     {
-        return view('layouts.collection');
+        return view('layouts.collection-layout');
     }
 }

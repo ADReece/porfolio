@@ -105,10 +105,11 @@ class ProfileController extends Controller
         if(!is_null($user)){
             // Determine which view to show based on user's preference
             if ($user->portfolio_display_mode === 'collections') {
-                // Load published, non-hidden collections with cover photos
+                // Load published, non-hidden, non-private collections with cover photos
                 $collections = $user->collections()
                     ->where('status', 'Published')
                     ->where('hide_from_portfolio', false)
+                    ->where('private', false) // Exclude private collections from public portfolio
                     ->with('coverPhoto')
                     ->orderBy('event_date', 'desc')
                     ->get();
