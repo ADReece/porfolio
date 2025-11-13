@@ -50,7 +50,13 @@
                             </div>
                             <div class="flex gap-2">
                                 <button wire:click="renameSet('{{ $set->id }}')" class="px-3 py-1 text-sm bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded hover:bg-gray-200 dark:hover:bg-gray-600">Rename</button>
-                                <button wire:click="deleteSet('{{ $set->id }}')" class="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700" onclick="return confirm('Delete this set?')">Delete</button>
+                                <button @click="window.confirmAction({
+                                            title: 'Delete Set?',
+                                            message: 'Are you sure you want to delete this set? All photos will be removed.',
+                                            confirmText: 'Delete',
+                                            isDanger: true,
+                                            onConfirm: () => $wire.call('deleteSet', '{{ $set->id }}')
+                                        })" class="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700">Delete</button>
                             </div>
                         </div>
                         <div class="mt-3">

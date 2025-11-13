@@ -32,6 +32,10 @@
         {{ $slot }}
     </main>
 </div>
+
+<!-- Global Modals -->
+<x-modals />
+
 @livewireScripts
 </body>
 </html>
