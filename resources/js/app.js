@@ -1,27 +1,14 @@
 import './bootstrap';
 import '../css/app.css';
 
-import Masonry from 'masonry-layout';
 import imagesLoaded from 'imagesloaded';
 import Dropzone from 'dropzone';
 import 'dropzone/dist/dropzone.css';
+
+// Make libraries available globally
 Dropzone.autoDiscover = false;
 window.Dropzone = Dropzone;
-
-window.Masonry = Masonry;
 window.imagesLoaded = imagesLoaded;
-
-import Macy from 'macy';
-
-window.Macy = Macy;
-
-import jQuery from 'jquery';
-
-window.$ = jQuery;
-
-import InfiniteScroll from 'infinite-scroll';
-
-window.InfiniteScroll = InfiniteScroll;
 
 import fslightbox from 'fslightbox';
 
