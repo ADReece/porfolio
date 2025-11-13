@@ -21,6 +21,8 @@ class SubscriptionPlanSeeder extends Seeder
                 'stripe_price_id' => null,
                 'stripe_product_id' => null,
                 'price' => 0.00,
+                'annual_price' => 0.00,
+                'annual_stripe_price_id' => null,
                 'photo_limit' => 100,
                 'collection_limit' => 5,
                 'private_collections' => false,
@@ -41,9 +43,11 @@ class SubscriptionPlanSeeder extends Seeder
             [
                 'name' => 'Photographer',
                 'slug' => 'photographer',
-                'stripe_price_id' => null, // Set after creating in Stripe
-                'stripe_product_id' => null, // Set after creating in Stripe
-                'price' => 9.99,
+                'stripe_price_id' => null, // Set in Admin Settings
+                'stripe_product_id' => null, // Set in Admin Settings
+                'price' => 8.33, // £8.33/month
+                'annual_price' => 83.00, // £83/year (save 17% vs £99.96/year)
+                'annual_stripe_price_id' => null, // Set in Admin Settings
                 'photo_limit' => null, // Unlimited
                 'collection_limit' => null, // Unlimited
                 'private_collections' => true,
@@ -69,9 +73,11 @@ class SubscriptionPlanSeeder extends Seeder
             [
                 'name' => 'Videographer',
                 'slug' => 'videographer',
-                'stripe_price_id' => null, // Set after creating in Stripe
-                'stripe_product_id' => null, // Set after creating in Stripe
-                'price' => 14.99,
+                'stripe_price_id' => null, // Set in Admin Settings
+                'stripe_product_id' => null, // Set in Admin Settings
+                'price' => 12.50, // £12.50/month
+                'annual_price' => 125.00, // £125/year (save 17% vs £150/year)
+                'annual_stripe_price_id' => null, // Set in Admin Settings
                 'photo_limit' => null, // Unlimited
                 'collection_limit' => null, // Unlimited
                 'private_collections' => true,

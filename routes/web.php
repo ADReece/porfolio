@@ -9,6 +9,7 @@ use App\Http\Livewire\PhotoUpload;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminOrdersController;
+use App\Http\Controllers\Admin\AdminSettingsController;
 use App\Http\Controllers\Admin\AdminSubscriptionsController;
 use App\Http\Controllers\Admin\AdminUsersController;
 use Laravel\Cashier\Http\Controllers\PaymentController as CashierPaymentController;
@@ -126,6 +127,10 @@ Route::middleware(['auth','admin'])->prefix('admin')->name('admin.')->group(func
 
     Route::get('/subscriptions', [AdminSubscriptionsController::class, 'index'])->name('subscriptions.index');
     Route::get('/orders', [AdminOrdersController::class, 'index'])->name('orders.index');
+
+    Route::get('/settings', [AdminSettingsController::class, 'index'])->name('settings.index');
+    Route::put('/settings', [AdminSettingsController::class, 'update'])->name('settings.update');
+    Route::put('/settings/plans', [AdminSettingsController::class, 'updatePlans'])->name('settings.plans.update');
 });
 
 require __DIR__.'/auth.php';

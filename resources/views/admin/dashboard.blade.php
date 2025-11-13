@@ -31,7 +31,7 @@
                 <div class="text-3xl font-bold mt-2 text-gray-900 dark:text-white">${{ number_format($gmvLast30, 2) }}</div>
             </div>
 
-            <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <a href="{{ route('admin.users.index') }}" class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow hover:ring-2 hover:ring-indigo-600">
                     <div class="text-lg font-semibold text-gray-900 dark:text-white">Users</div>
                     <p class="text-sm text-gray-600 dark:text-gray-400">Browse, search, and manage users</p>
@@ -43,6 +43,10 @@
                 <a href="{{ route('admin.orders.index') }}" class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow hover:ring-2 hover:ring-indigo-600">
                     <div class="text-lg font-semibold text-gray-900 dark:text-white">Orders</div>
                     <p class="text-sm text-gray-600 dark:text-gray-400">Review platform sales and payouts</p>
+                </a>
+                <a href="{{ route('admin.settings.index') }}" class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow hover:ring-2 hover:ring-indigo-600">
+                    <div class="text-lg font-semibold text-gray-900 dark:text-white">Settings</div>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">Configure currency and Stripe integration</p>
                 </a>
             </div>
         </div>
