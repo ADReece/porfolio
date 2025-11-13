@@ -84,10 +84,10 @@ class CollectionController extends Controller
             'name' => $validated['name'],
             'event_date' => $validated['event_date'] ?? null,
             'status' => $validated['status'] ?? $collection->status,
-            'private' => $request->has('private') ? true : false,
+            'private' => (bool) $request->input('private', 0),
             'cover_photo_id' => $validated['cover_photo_id'] ?? $collection->cover_photo_id,
-            'watermarked' => $request->has('watermarked') ? true : false,
-            'hide_from_portfolio' => $request->has('hide_from_portfolio') ? true : false,
+            'watermarked' => (bool) $request->input('watermarked', 0),
+            'hide_from_portfolio' => (bool) $request->input('hide_from_portfolio', 0),
         ];
 
         if (isset($validated['password']) && $validated['password']) {
