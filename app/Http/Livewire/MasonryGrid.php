@@ -65,9 +65,10 @@ class MasonryGrid extends Component
             $query->where('user_id', $this->userId)
                   ->where('hide_from_portfolio', false); // Exclude hidden photos
 
-            // Also exclude photos from collections/sets marked as hidden
+            // Also exclude photos from collections/sets marked as hidden or private
             $query->whereHas('set.collection', function($q) {
-                $q->where('hide_from_portfolio', false);
+                $q->where('hide_from_portfolio', false)
+                  ->where('private', false); // Also exclude private collections
             })->whereHas('set', function($q) {
                 $q->where('hide_from_portfolio', false);
             });
