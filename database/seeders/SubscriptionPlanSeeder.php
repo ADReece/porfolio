@@ -45,8 +45,8 @@ class SubscriptionPlanSeeder extends Seeder
                 'slug' => 'photographer',
                 'stripe_price_id' => null, // Set in Admin Settings
                 'stripe_product_id' => null, // Set in Admin Settings
-                'price' => 8.33, // £8.33/month
-                'annual_price' => 83.00, // £83/year (save 17% vs £99.96/year)
+                'price' => 9.99, // £8.33/month
+                'annual_price' => 99.99, // £83/year (save 17% vs £99.96/year)
                 'annual_stripe_price_id' => null, // Set in Admin Settings
                 'photo_limit' => null, // Unlimited
                 'collection_limit' => null, // Unlimited
@@ -75,8 +75,8 @@ class SubscriptionPlanSeeder extends Seeder
                 'slug' => 'videographer',
                 'stripe_price_id' => null, // Set in Admin Settings
                 'stripe_product_id' => null, // Set in Admin Settings
-                'price' => 12.50, // £12.50/month
-                'annual_price' => 125.00, // £125/year (save 17% vs £150/year)
+                'price' => 14.99, // £12.50/month
+                'annual_price' => 139.99, // £125/year (save 17% vs £150/year)
                 'annual_stripe_price_id' => null, // Set in Admin Settings
                 'photo_limit' => null, // Unlimited
                 'collection_limit' => null, // Unlimited
