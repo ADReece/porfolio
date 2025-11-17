@@ -60,8 +60,8 @@ window.refreshFsLightbox = function() {
         });
     }
     // Reinitialize by calling the main fslightbox function
-    if (typeof refreshFsLightbox !== 'undefined') {
-        refreshFsLightbox();
+    if (typeof fsLightbox !== 'undefined') {
+        fsLightbox();
     }
 };
 
