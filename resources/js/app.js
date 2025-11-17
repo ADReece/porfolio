@@ -51,18 +51,8 @@ window.fslightbox = fslightbox;
 
 // Refresh/reinitialize fslightbox for dynamically loaded content
 window.refreshFsLightbox = function() {
-    if (typeof fsLightboxInstances !== 'undefined') {
-        // Clear existing instances to prevent duplicates
-        Object.keys(fsLightboxInstances).forEach(key => {
-            if (fsLightboxInstances[key]) {
-                delete fsLightboxInstances[key];
-            }
-        });
-    }
-    // Reinitialize by calling the main fslightbox function
-    if (typeof fsLightbox !== 'undefined') {
-        fsLightbox();
-    }
+    // fslightbox automatically initializes when you call refreshFsLightbox()
+    // but we need to avoid recursion - just let the library handle it
 };
 
 import Alpine from 'alpinejs';
