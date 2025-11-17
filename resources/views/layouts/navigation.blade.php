@@ -1,3 +1,18 @@
+<!-- Impersonation Banner -->
+@if(session()->has('impersonate_admin_id'))
+    <div class="bg-purple-600 text-white px-4 py-2 text-center">
+        <div class="flex items-center justify-center gap-4">
+            <span class="font-semibold">🎭 You are impersonating {{ Auth::user()->name }}</span>
+            <form action="{{ route('admin.users.stop-impersonating') }}" method="POST" class="inline">
+                @csrf
+                <button type="submit" class="bg-white text-purple-600 px-4 py-1 rounded-lg hover:bg-purple-50 font-semibold text-sm">
+                    Stop Impersonating
+                </button>
+            </form>
+        </div>
+    </div>
+@endif
+
 <nav x-data="{ open: false }" class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 z-50 relative">
     <!-- Primary Navigation Menu -->
     <div class="px-4 sm:px-6 lg:px-8">
@@ -11,20 +26,30 @@
                 </div>
 
                 <!-- Navigation Links -->
+                @auth
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    @if(Auth::user()->is_admin)
+                    <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.*')">
+                        {{ __('Admin') }}
+                    </x-nav-link>
+                    @endif
                 </div>
+                @if(Auth::user()->username)
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                     <x-nav-link :href="route('profile.view', ['username' => Auth::user()->username])" :active="request()->routeIs('profile.view')">
                         {{ __('View Portfolio') }}
                     </x-nav-link>
                 </div>
+                @endif
+                @endauth
 
             </div>
 
             <!-- Settings Dropdown -->
+            @auth
             <div class="hidden sm:flex sm:items-center sm:ml-6">
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
@@ -57,6 +82,7 @@
                     </x-slot>
                 </x-dropdown>
             </div>
+            @endauth
 
             <!-- Hamburger -->
             <div class="-mr-2 flex items-center sm:hidden">
@@ -71,14 +97,22 @@
     </div>
 
     <!-- Responsive Navigation Menu -->
+    @auth
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+            @if(Auth::user()->username)
             <x-responsive-nav-link :href="route('profile.view', ['username' => Auth::user()->username])" :active="request()->routeIs('profile.view')">
                 {{ __('View Portfolio') }}
             </x-responsive-nav-link>
+            @endif
+            @if(Auth::user()->is_admin)
+            <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.*')">
+                {{ __('Admin') }}
+            </x-responsive-nav-link>
+            @endif
         </div>
 
         <!-- Responsive Settings Options -->
@@ -89,9 +123,11 @@
             </div>
 
             <div class="mt-3 space-y-1">
+                @if(Auth::user()->username)
                 <x-responsive-nav-link :href="route('profile.view', ['username' => Auth::user()->username])">
                     {{ __('View Portfolio') }}
                 </x-responsive-nav-link>
+                @endif
 
                 <x-responsive-nav-link :href="route('profile.edit')">
                     {{ __('Settings') }}
@@ -110,4 +146,5 @@
             </div>
         </div>
     </div>
+    @endauth
 </nav>

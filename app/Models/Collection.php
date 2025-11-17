@@ -22,6 +22,7 @@ class Collection extends Model
         'password',
         'watermarked',
         'hide_from_portfolio',
+        'cover_photo_object_position',
     ];
 
     protected $casts = [

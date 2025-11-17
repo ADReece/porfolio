@@ -47,12 +47,18 @@ class ProfileController extends Controller
             'portfolio_display_mode' => 'required|in:grid,collections',
             'masonry_columns' => 'required|integer|min:2|max:6',
             'photos_per_page' => 'required|integer|min:10|max:100',
+            'portfolio_font' => 'nullable|string|in:system,nunito,inter,playfair,roboto,open-sans',
+            'portfolio_accent_color' => 'nullable|regex:/^#([A-Fa-f0-9]{6})$/',
+            'portfolio_theme' => 'nullable|in:auto,light,dark',
         ]);
 
         $request->user()->update([
             'portfolio_display_mode' => $validated['portfolio_display_mode'],
             'masonry_columns' => $validated['masonry_columns'],
             'photos_per_page' => $validated['photos_per_page'],
+            'portfolio_font' => $validated['portfolio_font'] ?? $request->user()->portfolio_font,
+            'portfolio_accent_color' => $validated['portfolio_accent_color'] ?? $request->user()->portfolio_accent_color,
+            'portfolio_theme' => $validated['portfolio_theme'] ?? $request->user()->portfolio_theme,
         ]);
 
         return Redirect::route('profile.edit')->with('status', 'display-updated');

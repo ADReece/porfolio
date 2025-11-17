@@ -7,6 +7,12 @@ use App\Http\Controllers\SetController;
 use App\Http\Livewire\ManageSets;
 use App\Http\Livewire\PhotoUpload;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\AdminOrdersController;
+use App\Http\Controllers\Admin\AdminSettingsController;
+use App\Http\Controllers\Admin\AdminSubscriptionsController;
+use App\Http\Controllers\Admin\AdminUsersController;
+use Laravel\Cashier\Http\Controllers\PaymentController as CashierPaymentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,9 +25,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return redirect(route('login'));
-});
+// Public homepage
+Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+// Legal pages
+Route::get('/terms', [App\Http\Controllers\HomeController::class, 'terms'])->name('terms');
+Route::get('/privacy', [App\Http\Controllers\HomeController::class, 'privacy'])->name('privacy');
+Route::get('/sla', [App\Http\Controllers\HomeController::class, 'sla'])->name('sla');
+Route::get('/about', [App\Http\Controllers\HomeController::class, 'about'])->name('about');
+
+// Pricing
+Route::get('/pricing', [App\Http\Controllers\BillingController::class, 'pricing'])->name('pricing');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -30,17 +44,31 @@ Route::get('/dashboard', function () {
 
 //Backend Routes
 Route::middleware('auth')->group(function () {
+    // Billing routes
+    Route::get('/checkout/{plan}', [App\Http\Controllers\BillingController::class, 'checkout'])->name('checkout');
+    Route::post('/checkout/{plan}', [App\Http\Controllers\BillingController::class, 'processCheckout'])->name('checkout.process');
+    Route::get('/billing/portal', [App\Http\Controllers\BillingController::class, 'billingPortal'])->name('billing.portal');
+    Route::post('/subscription/cancel', [App\Http\Controllers\BillingController::class, 'cancel'])->name('subscription.cancel');
+    Route::post('/subscription/resume', [App\Http\Controllers\BillingController::class, 'resume'])->name('subscription.resume');
+    Route::post('/subscription/swap/{plan}', [App\Http\Controllers\BillingController::class, 'swap'])->name('subscription.swap');
+    Route::get('/billing/invoices/{invoiceId}', [App\Http\Controllers\BillingController::class, 'downloadInvoice'])->name('billing.invoice.download');
+
+    // Stripe Connect routes
+    Route::get('/connect/stripe', [App\Http\Controllers\BillingController::class, 'connectStripe'])->name('connect.stripe');
+    Route::get('/connect/stripe/callback', [App\Http\Controllers\BillingController::class, 'handleConnectCallback'])->name('connect.stripe.callback');
+    Route::post('/connect/stripe/disconnect', [App\Http\Controllers\BillingController::class, 'disconnectStripe'])->name('connect.stripe.disconnect');
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::patch('/profile/display', [ProfileController::class, 'updateDisplayMode'])->name('profile.update-display');
     Route::patch('/profile/watermark', [ProfileController::class, 'updateWatermark'])->name('profile.update-watermark');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::post('/upload-files', [PhotoController::class, 'upload'])->name('upload-files');
+    Route::post('/upload-files', [PhotoController::class, 'upload'])->name('upload-files')->middleware('photo.limit');
 
     Route::group(['prefix' => 'collections'], function () {
         Route::get('/', [CollectionController::class, 'index'])->name('collections.index');
-        Route::get('/create', [CollectionController::class, 'create'])->name('collections.create');
-        Route::post('/create', [CollectionController::class, 'store'])->name('collections.store');
+        Route::get('/create', [CollectionController::class, 'create'])->name('collections.create')->middleware('collection.limit');
+        Route::post('/create', [CollectionController::class, 'store'])->name('collections.store')->middleware('collection.limit');
         Route::get('/{collection}/edit', [CollectionController::class, 'edit'])->name('collections.edit');
         Route::patch('/{collection}', [CollectionController::class, 'update'])->name('collections.update');
         Route::delete('/{collection}', [CollectionController::class, 'destroy'])->name('collections.destroy');
@@ -82,5 +110,40 @@ Route::prefix('/@{username}')->group(function(){
 // Public photo download and purchase requests
 Route::post('/photos/{photo}/request-download', [PhotoController::class, 'requestDownload'])->name('photos.request-download');
 Route::post('/photos/{photo}/request-purchase', [PhotoController::class, 'requestPurchase'])->name('photos.request-purchase');
+
+// Stripe Webhooks
+Route::post('/stripe/webhook', [App\Http\Controllers\WebhookController::class, 'handleWebhook'])->name('cashier.webhook');
+
+// Cashier payment confirmation (SCA) route
+Route::get('/stripe/payment/{payment_intent}', [CashierPaymentController::class, 'show'])
+    ->name('cashier.payment');
+
+Route::middleware(['auth','admin'])->prefix('admin')->name('admin.')->group(function(){
+    Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/users', [AdminUsersController::class, 'index'])->name('users.index');
+    Route::post('/users/{user}/toggle-override', [AdminUsersController::class, 'toggleOverride'])->name('users.toggle-override');
+    Route::post('/users/{user}/override-expiry', [AdminUsersController::class, 'setOverrideExpiry'])->name('users.override-expiry');
+    Route::post('/users/{user}/toggle-admin', [AdminUsersController::class, 'toggleAdmin'])->name('users.toggle-admin');
+    Route::post('/users/{user}/impersonate', [AdminUsersController::class, 'impersonate'])->name('users.impersonate');
+
+    Route::get('/subscriptions', [AdminSubscriptionsController::class, 'index'])->name('subscriptions.index');
+    Route::get('/orders', [AdminOrdersController::class, 'index'])->name('orders.index');
+
+    Route::get('/settings', [AdminSettingsController::class, 'index'])->name('settings.index');
+    Route::put('/settings', [AdminSettingsController::class, 'update'])->name('settings.update');
+
+    // Subscription Plan CRUD
+    Route::get('/plans', [AdminSettingsController::class, 'plansIndex'])->name('plans.index');
+    Route::get('/plans/create', [AdminSettingsController::class, 'plansCreate'])->name('plans.create');
+    Route::post('/plans', [AdminSettingsController::class, 'plansStore'])->name('plans.store');
+    Route::get('/plans/{plan}/edit', [AdminSettingsController::class, 'plansEdit'])->name('plans.edit');
+    Route::put('/plans/{plan}', [AdminSettingsController::class, 'plansUpdate'])->name('plans.update');
+    Route::delete('/plans/{plan}', [AdminSettingsController::class, 'plansDestroy'])->name('plans.destroy');
+});
+
+// Route for stopping impersonation (available to all authenticated users)
+Route::post('/admin/stop-impersonating', [AdminUsersController::class, 'stopImpersonating'])
+    ->middleware('auth')
+    ->name('admin.users.stop-impersonating');
 
 require __DIR__.'/auth.php';

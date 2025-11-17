@@ -1,4 +1,13 @@
 <x-profile-layout>
+    @php($userAccent = $user->portfolio_accent_color ?? '#6366F1')
+    @php($userFont = $user->portfolio_font ?? null)
+    <style>
+        :root { --portfolio-accent: {{ $userAccent }}; }
+        a.portfolio-accent-link { color: var(--portfolio-accent); }
+        a.portfolio-accent-link:hover { text-decoration: underline; }
+        @if($userFont && $userFont !== 'system') body { font-family: '{{ $userFont }}', sans-serif; } @endif
+    </style>
+
     <x-slot name="header">
         <div class="flex flex-col items-center">
             <h2 class="font-bold text-3xl text-gray-900 dark:text-gray-100">
@@ -29,7 +38,8 @@
                             @if($collection->coverPhoto)
                                 <img src="{{ $collection->coverPhoto->getAwsThumbnail() }}"
                                      alt="{{ $collection->name }}"
-                                     class="w-full h-64 object-cover">
+                                     class="w-full h-64 object-cover"
+                                     style="object-position: {{ $collection->cover_photo_object_position ?? 'center center' }};">
                             @else
                                 <!-- Placeholder if no cover photo -->
                                 <div class="w-full h-64 flex items-center justify-center bg-gradient-to-br from-gray-300 to-gray-400">
