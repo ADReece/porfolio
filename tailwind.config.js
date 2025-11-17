@@ -8,6 +8,18 @@ module.exports = {
         './resources/views/**/*.blade.php',
     ],
 
+    safelist: [
+        'object-center',
+        'object-top',
+        'object-bottom',
+        'object-left',
+        'object-right',
+        'object-left-top',
+        'object-left-bottom',
+        'object-right-top',
+        'object-right-bottom',
+    ],
+
     theme: {
         extend: {
             fontFamily: {
