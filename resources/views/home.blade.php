@@ -128,7 +128,6 @@
     </div>
 
     <!-- Pricing Preview -->
-    @php($interval = request('interval','month'))
     <div class="py-16 bg-gray-50 dark:bg-gray-900">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12">
@@ -138,34 +137,46 @@
 
             <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
                 @foreach($plans as $plan)
-                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 {{ $plan->slug === 'photographer' ? 'ring-2 ring-indigo-600 transform scale-105' : '' }}">
-                    @if($plan->slug === 'photographer')
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 {{ $plan->recommended ? 'ring-2 ring-indigo-600 transform scale-105' : '' }}">
+                    @if($plan->recommended)
                     <div class="bg-indigo-600 text-white text-sm font-semibold px-3 py-1 rounded-full inline-block mb-4">
-                        MOST POPULAR
+                        RECOMMENDED
                     </div>
                     @endif
                     <h3 class="text-2xl font-bold mb-2 dark:text-white">{{ $plan->name }}</h3>
                     <div class="mb-6">
-                        <span class="text-4xl font-bold dark:text-white">${{ $plan->priceFor($interval) }}</span>
+                        <span class="text-4xl font-bold dark:text-white">£{{ $plan->priceFor('month') }}</span>
                         @if($plan->price > 0)
-                        <span class="text-gray-600 dark:text-gray-400">/{{ $interval === 'year' ? 'year' : 'month' }}</span>
+                        <span class="text-gray-600 dark:text-gray-400">/month</span>
                         @endif
                     </div>
-                    <ul class="space-y-3 mb-8">
+                    <ul class="space-y-3 mb-8 min-h-[250px]">
                         @foreach($plan->features as $feature)
                         <li class="flex items-start">
-                            <svg class="w-5 h-5 text-green-500 dark:text-green-400 mr-2 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-5 h-5 text-green-500 dark:text-green-400 mr-2 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                             </svg>
-                            <span class="dark:text-gray-300">{{ $feature }}</span>
+                            <span class="text-sm dark:text-gray-300">{{ $feature }}</span>
                         </li>
                         @endforeach
                     </ul>
-                    <a href="{{ route('register') }}" class="block w-full text-center {{ $plan->slug === 'photographer' ? 'bg-indigo-600 hover:bg-indigo-700 text-white' : 'bg-gray-100 hover:bg-gray-200 text-gray-900 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white' }} px-6 py-3 rounded-lg font-semibold transition">
-                        Get Started
-                    </a>
+                    @auth
+                        <a href="{{ route('pricing') }}" class="block w-full text-center {{ $plan->recommended ? 'bg-indigo-600 hover:bg-indigo-700 text-white' : 'bg-gray-100 hover:bg-gray-200 text-gray-900 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white' }} px-6 py-3 rounded-lg font-semibold transition">
+                            View Details
+                        </a>
+                    @else
+                        <a href="{{ route('register') }}" class="block w-full text-center {{ $plan->recommended ? 'bg-indigo-600 hover:bg-indigo-700 text-white' : 'bg-gray-100 hover:bg-gray-200 text-gray-900 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white' }} px-6 py-3 rounded-lg font-semibold transition">
+                            Get Started
+                        </a>
+                    @endauth
                 </div>
                 @endforeach
+            </div>
+
+            <div class="text-center mt-8">
+                <a href="{{ route('pricing') }}" class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 font-semibold">
+                    View full pricing details and annual plans →
+                </a>
             </div>
         </div>
     </div>
@@ -174,7 +185,7 @@
     <div class="py-16 bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
         <div class="max-w-4xl mx-auto text-center px-4">
             <h2 class="text-4xl font-bold mb-4">Ready to Showcase Your Work?</h2>
-            <p class="text-xl mb-8 opacity-90">Join thousands of photographers and videographers who trust PortfolioHub</p>
+            <p class="text-xl mb-8 opacity-90">Join thousands of photographers and videographers who trust {{ config('app.name') }}</p>
             <a href="{{ route('register') }}" class="bg-white text-indigo-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transform transition hover:scale-105 inline-block">
                 Start Your Free Trial
             </a>
@@ -186,7 +197,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid md:grid-cols-4 gap-8">
                 <div>
-                    <h4 class="text-white font-semibold mb-4">PortfolioHub</h4>
+                    <h4 class="text-white font-semibold mb-4">{{ config('app.name') }}</h4>
                     <p class="text-sm">Professional portfolio platform for photographers and videographers.</p>
                 </div>
                 <div>
@@ -207,13 +218,13 @@
                 <div>
                     <h4 class="text-white font-semibold mb-4">Support</h4>
                     <ul class="space-y-2 text-sm">
-                        <li><a href="mailto:support@portfoliohub.com" class="hover:text-white">Contact Support</a></li>
+                        <li><a href="mailto:support@{{ config('app.name') }}.com" class="hover:text-white">Contact Support</a></li>
                         <li><a href="#" class="hover:text-white">Help Center</a></li>
                     </ul>
                 </div>
             </div>
             <div class="border-t border-gray-800 mt-8 pt-8 text-sm text-center">
-                <p>&copy; {{ date('Y') }} PortfolioHub. All rights reserved.</p>
+                <p>&copy; {{ date('Y') }} {{ config('app.name') }}. All rights reserved.</p>
             </div>
         </div>
     </footer>

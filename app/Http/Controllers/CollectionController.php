@@ -79,6 +79,7 @@ class CollectionController extends Controller
             'cover_photo_id' => 'nullable|exists:photos,id',
             'watermarked' => 'nullable|boolean',
             'hide_from_portfolio' => 'nullable|boolean',
+            'cover_photo_object_position' => 'nullable|string|max:50', // new validation
         ]);
 
         $updateData = [
@@ -89,6 +90,7 @@ class CollectionController extends Controller
             'cover_photo_id' => $validated['cover_photo_id'] ?? $collection->cover_photo_id,
             'watermarked' => (bool) $request->input('watermarked', 0),
             'hide_from_portfolio' => (bool) $request->input('hide_from_portfolio', 0),
+            'cover_photo_object_position' => $validated['cover_photo_object_position'] ?? ($collection->cover_photo_object_position ?? 'center center'),
         ];
 
         if (isset($validated['password']) && $validated['password']) {

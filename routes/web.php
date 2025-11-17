@@ -124,13 +124,26 @@ Route::middleware(['auth','admin'])->prefix('admin')->name('admin.')->group(func
     Route::post('/users/{user}/toggle-override', [AdminUsersController::class, 'toggleOverride'])->name('users.toggle-override');
     Route::post('/users/{user}/override-expiry', [AdminUsersController::class, 'setOverrideExpiry'])->name('users.override-expiry');
     Route::post('/users/{user}/toggle-admin', [AdminUsersController::class, 'toggleAdmin'])->name('users.toggle-admin');
+    Route::post('/users/{user}/impersonate', [AdminUsersController::class, 'impersonate'])->name('users.impersonate');
 
     Route::get('/subscriptions', [AdminSubscriptionsController::class, 'index'])->name('subscriptions.index');
     Route::get('/orders', [AdminOrdersController::class, 'index'])->name('orders.index');
 
     Route::get('/settings', [AdminSettingsController::class, 'index'])->name('settings.index');
     Route::put('/settings', [AdminSettingsController::class, 'update'])->name('settings.update');
-    Route::put('/settings/plans', [AdminSettingsController::class, 'updatePlans'])->name('settings.plans.update');
+
+    // Subscription Plan CRUD
+    Route::get('/plans', [AdminSettingsController::class, 'plansIndex'])->name('plans.index');
+    Route::get('/plans/create', [AdminSettingsController::class, 'plansCreate'])->name('plans.create');
+    Route::post('/plans', [AdminSettingsController::class, 'plansStore'])->name('plans.store');
+    Route::get('/plans/{plan}/edit', [AdminSettingsController::class, 'plansEdit'])->name('plans.edit');
+    Route::put('/plans/{plan}', [AdminSettingsController::class, 'plansUpdate'])->name('plans.update');
+    Route::delete('/plans/{plan}', [AdminSettingsController::class, 'plansDestroy'])->name('plans.destroy');
 });
+
+// Route for stopping impersonation (available to all authenticated users)
+Route::post('/admin/stop-impersonating', [AdminUsersController::class, 'stopImpersonating'])
+    ->middleware('auth')
+    ->name('admin.users.stop-impersonating');
 
 require __DIR__.'/auth.php';

@@ -23,6 +23,7 @@ class SubscriptionPlanSeeder extends Seeder
                 'price' => 0.00,
                 'annual_price' => 0.00,
                 'annual_stripe_price_id' => null,
+                'annual_discount_percent' => 0,
                 'photo_limit' => 100,
                 'collection_limit' => 5,
                 'private_collections' => false,
@@ -39,15 +40,17 @@ class SubscriptionPlanSeeder extends Seeder
                 ],
                 'active' => true,
                 'sort_order' => 1,
+                'recommended' => false,
             ],
             [
                 'name' => 'Photographer',
                 'slug' => 'photographer',
                 'stripe_price_id' => null, // Set in Admin Settings
                 'stripe_product_id' => null, // Set in Admin Settings
-                'price' => 9.99, // £8.33/month
-                'annual_price' => 99.99, // £83/year (save 17% vs £99.96/year)
+                'price' => 9.99,
+                'annual_price' => 99.99, // £83/year (save 17%)
                 'annual_stripe_price_id' => null, // Set in Admin Settings
+                'annual_discount_percent' => 17,
                 'photo_limit' => null, // Unlimited
                 'collection_limit' => null, // Unlimited
                 'private_collections' => true,
@@ -69,15 +72,17 @@ class SubscriptionPlanSeeder extends Seeder
                 ],
                 'active' => true,
                 'sort_order' => 2,
+                'recommended' => true,
             ],
             [
                 'name' => 'Videographer',
                 'slug' => 'videographer',
                 'stripe_price_id' => null, // Set in Admin Settings
                 'stripe_product_id' => null, // Set in Admin Settings
-                'price' => 14.99, // £12.50/month
-                'annual_price' => 139.99, // £125/year (save 17% vs £150/year)
+                'price' => 14.99,
+                'annual_price' => 139.99, // Save 22%
                 'annual_stripe_price_id' => null, // Set in Admin Settings
+                'annual_discount_percent' => 22,
                 'photo_limit' => null, // Unlimited
                 'collection_limit' => null, // Unlimited
                 'private_collections' => true,
@@ -95,6 +100,7 @@ class SubscriptionPlanSeeder extends Seeder
                 ],
                 'active' => true,
                 'sort_order' => 3,
+                'recommended' => false,
             ],
         ];
 

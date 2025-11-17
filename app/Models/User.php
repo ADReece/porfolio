@@ -42,6 +42,9 @@ class User extends Authenticatable
         'feature_override',
         'feature_override_expires_at',
         'is_admin',
+        'portfolio_font', // new
+        'portfolio_accent_color', // new
+        'portfolio_theme', // new
     ];
 
     /**

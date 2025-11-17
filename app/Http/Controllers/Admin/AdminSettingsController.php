@@ -12,9 +12,8 @@ class AdminSettingsController extends Controller
     public function index()
     {
         $settings = Setting::all()->groupBy('group');
-        $plans = SubscriptionPlan::orderBy('sort_order')->get();
 
-        return view('admin.settings.index', compact('settings', 'plans'));
+        return view('admin.settings.index', compact('settings'));
     }
 
     public function update(Request $request)
@@ -34,25 +33,90 @@ class AdminSettingsController extends Controller
         return redirect()->back()->with('success', 'Settings updated successfully!');
     }
 
-    public function updatePlans(Request $request)
+    public function plansIndex()
+    {
+        $plans = SubscriptionPlan::orderBy('sort_order')->get();
+        return view('admin.plans.index', compact('plans'));
+    }
+
+    public function plansCreate()
+    {
+        return view('admin.plans.create');
+    }
+
+    public function plansStore(Request $request)
     {
         $validated = $request->validate([
-            'plans' => 'required|array',
-            'plans.*.id' => 'required|exists:subscription_plans,id',
-            'plans.*.stripe_product_id' => 'nullable|string|max:255',
-            'plans.*.stripe_price_id' => 'nullable|string|max:255',
-            'plans.*.annual_stripe_price_id' => 'nullable|string|max:255',
+            'name' => 'required|string|max:255',
+            'slug' => 'required|string|max:255|unique:subscription_plans,slug',
+            'stripe_product_id' => 'nullable|string|max:255',
+            'stripe_price_id' => 'nullable|string|max:255',
+            'price' => 'required|numeric|min:0',
+            'annual_price' => 'nullable|numeric|min:0',
+            'annual_stripe_price_id' => 'nullable|string|max:255',
+            'annual_discount_percent' => 'nullable|integer|min:0|max:100',
+            'photo_limit' => 'nullable|integer|min:0',
+            'collection_limit' => 'nullable|integer|min:0',
+            'private_collections' => 'boolean',
+            'watermarking' => 'boolean',
+            'selling' => 'boolean',
+            'video_upload' => 'boolean',
+            'custom_templates' => 'boolean',
+            'features' => 'nullable|array',
+            'features.*' => 'string|max:255',
+            'active' => 'boolean',
+            'recommended' => 'boolean',
+            'sort_order' => 'required|integer|min:0',
         ]);
 
-        foreach ($validated['plans'] as $planData) {
-            SubscriptionPlan::where('id', $planData['id'])->update([
-                'stripe_product_id' => $planData['stripe_product_id'],
-                'stripe_price_id' => $planData['stripe_price_id'],
-                'annual_stripe_price_id' => $planData['annual_stripe_price_id'],
-            ]);
+        SubscriptionPlan::create($validated);
+
+        return redirect()->route('admin.plans.index')->with('success', 'Subscription plan created successfully!');
+    }
+
+    public function plansEdit(SubscriptionPlan $plan)
+    {
+        return view('admin.plans.edit', compact('plan'));
+    }
+
+    public function plansUpdate(Request $request, SubscriptionPlan $plan)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'slug' => 'required|string|max:255|unique:subscription_plans,slug,' . $plan->id,
+            'stripe_product_id' => 'nullable|string|max:255',
+            'stripe_price_id' => 'nullable|string|max:255',
+            'price' => 'required|numeric|min:0',
+            'annual_price' => 'nullable|numeric|min:0',
+            'annual_stripe_price_id' => 'nullable|string|max:255',
+            'annual_discount_percent' => 'nullable|integer|min:0|max:100',
+            'photo_limit' => 'nullable|integer|min:0',
+            'collection_limit' => 'nullable|integer|min:0',
+            'private_collections' => 'boolean',
+            'watermarking' => 'boolean',
+            'selling' => 'boolean',
+            'video_upload' => 'boolean',
+            'custom_templates' => 'boolean',
+            'features' => 'nullable|array',
+            'features.*' => 'string|max:255',
+            'active' => 'boolean',
+            'recommended' => 'boolean',
+            'sort_order' => 'required|integer|min:0',
+        ]);
+
+        $plan->update($validated);
+
+        return redirect()->route('admin.plans.index')->with('success', 'Subscription plan updated successfully!');
+    }
+
+    public function plansDestroy(SubscriptionPlan $plan)
+    {
+        if ($plan->users()->count() > 0) {
+            return redirect()->back()->with('error', 'Cannot delete plan with active subscribers!');
         }
 
-        return redirect()->back()->with('success', 'Subscription plan Stripe IDs updated successfully!');
+        $plan->delete();
+
+        return redirect()->route('admin.plans.index')->with('success', 'Subscription plan deleted successfully!');
     }
 }
-

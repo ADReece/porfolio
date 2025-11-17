@@ -46,7 +46,21 @@ window.showInfoToast = (message) => window.showToast(message, 'info');
 
 window.fslightbox = fslightbox;
 
-
+// Refresh/reinitialize fslightbox for dynamically loaded content
+window.refreshFsLightbox = function() {
+    if (typeof fsLightboxInstances !== 'undefined') {
+        // Clear existing instances to prevent duplicates
+        Object.keys(fsLightboxInstances).forEach(key => {
+            if (fsLightboxInstances[key]) {
+                delete fsLightboxInstances[key];
+            }
+        });
+    }
+    // Reinitialize by calling the main fslightbox function
+    if (typeof refreshFsLightbox !== 'undefined') {
+        refreshFsLightbox();
+    }
+};
 
 import Alpine from 'alpinejs';
 import intersect from '@alpinejs/intersect';

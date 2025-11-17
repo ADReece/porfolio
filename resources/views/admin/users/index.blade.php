@@ -45,6 +45,12 @@
                                     @csrf
                                     <button class="px-3 py-1 rounded bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100 text-sm">{{ $user->is_admin ? 'Revoke Admin' : 'Make Admin' }}</button>
                                 </form>
+                                @if(!$user->is_admin && $user->id !== auth()->id())
+                                    <form action="{{ route('admin.users.impersonate', $user) }}" method="POST" class="inline">
+                                        @csrf
+                                        <button class="px-3 py-1 rounded bg-purple-600 text-white text-sm hover:bg-purple-700">Impersonate</button>
+                                    </form>
+                                @endif
                                 <form action="{{ route('admin.users.override-expiry', $user) }}" method="POST" class="inline">
                                     @csrf
                                     <input type="date" name="expires_at" class="border border-gray-300 dark:border-gray-700 rounded px-2 py-1 bg-white dark:bg-gray-900 text-sm text-gray-800 dark:text-gray-100" />
