@@ -22,6 +22,17 @@ class Set extends Model
         'hide_from_portfolio' => 'boolean',
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+        static::creating(function($model){
+            if (is_null($model->sort_order)) {
+                $max = Set::where('collection_id',$model->collection_id)->max('sort_order');
+                $model->sort_order = is_null($max) ? 1 : $max + 1;
+            }
+        });
+    }
+
     public function collection() : BelongsTo
     {
         return $this->belongsTo(Collection::class);

@@ -35,6 +35,17 @@ class Photo extends Model
         'hide_from_portfolio' => 'boolean',
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+        static::creating(function($model){
+            if (is_null($model->sort_order) && $model->set_id) {
+                $max = Photo::where('set_id',$model->set_id)->max('sort_order');
+                $model->sort_order = is_null($max) ? 1 : $max + 1;
+            }
+        });
+    }
+
     public function getUri() : string
     {
         // Show watermarked version ONLY if:

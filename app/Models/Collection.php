@@ -31,6 +31,20 @@ class Collection extends Model
         'hide_from_portfolio' => 'boolean',
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+        static::creating(function($model){
+            if (is_null($model->sort_order)) {
+                // Assign next max+1 for user's collections if user_id present
+                if ($model->user_id) {
+                    $max = Collection::where('user_id',$model->user_id)->max('sort_order');
+                    $model->sort_order = is_null($max) ? 1 : $max + 1;
+                }
+            }
+        });
+    }
+
     public function user() : BelongsTo
     {
         return $this->belongsTo(User::class);
