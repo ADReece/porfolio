@@ -13,7 +13,7 @@
             <!-- Hero Image -->
             <img src="{{ $collection->coverPhoto->getUri() }}"
                  alt="{{ $collection->name }}"
-                 class="absolute inset-0 w-full h-full object-cover">
+                 class="absolute inset-0 w-full h-full object-cover {{ $collection->cover_photo_object_position ?? '' }}">
 
             <!-- Dark Overlay -->
             <div class="absolute inset-0 bg-black bg-opacity-40"></div>
