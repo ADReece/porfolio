@@ -18,6 +18,9 @@ window.Toastify = Toastify;
 import fslightbox from 'fslightbox';
 window.fslightbox = fslightbox;
 
+import Sortable from 'sortablejs';
+window.Sortable = Sortable;
+
 // Global toast helper functions
 window.showToast = function(message, type = 'info') {
     const backgrounds = {
@@ -85,5 +88,3 @@ if (document.readyState === 'loading') {
 } else {
     startAlpineWhenLivewireReady();
 }
-
-

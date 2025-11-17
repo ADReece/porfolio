@@ -2,24 +2,24 @@
 
 namespace Database\Seeders;
 
-use App\Models\SubscriptionPlan;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class SubscriptionPlanSeeder extends Seeder
 {
     /**
      * Run the database seeds.
-     *
-     * @return void
+    /**
+     * Run the database seeds.
      */
-    public function run()
+    public function run(): void
     {
         $plans = [
             [
                 'name' => 'Free',
                 'slug' => 'free',
-                'stripe_price_id' => null,
                 'stripe_product_id' => null,
+                'stripe_price_id' => null,
                 'price' => 0.00,
                 'annual_price' => 0.00,
                 'annual_stripe_price_id' => null,
@@ -31,13 +31,7 @@ class SubscriptionPlanSeeder extends Seeder
                 'selling' => false,
                 'video_upload' => false,
                 'custom_templates' => false,
-                'features' => [
-                    'Up to 100 photos',
-                    'Up to 5 collections',
-                    'Public portfolio',
-                    'Basic templates',
-                    'Photo sharing',
-                ],
+                'features' => ['Up to 100 photos', 'Up to 5 collections', 'Public portfolio', 'Basic templates'],
                 'active' => true,
                 'sort_order' => 1,
                 'recommended' => false,
@@ -45,31 +39,20 @@ class SubscriptionPlanSeeder extends Seeder
             [
                 'name' => 'Photographer',
                 'slug' => 'photographer',
-                'stripe_price_id' => null, // Set in Admin Settings
-                'stripe_product_id' => null, // Set in Admin Settings
+                'stripe_product_id' => null,
+                'stripe_price_id' => null,
                 'price' => 9.99,
-                'annual_price' => 99.99, // £83/year (save 17%)
-                'annual_stripe_price_id' => null, // Set in Admin Settings
+                'annual_price' => 99.99,
+                'annual_stripe_price_id' => null,
                 'annual_discount_percent' => 17,
-                'photo_limit' => null, // Unlimited
-                'collection_limit' => null, // Unlimited
+                'photo_limit' => null,
+                'collection_limit' => null,
                 'private_collections' => true,
                 'watermarking' => true,
                 'selling' => true,
                 'video_upload' => false,
                 'custom_templates' => true,
-                'features' => [
-                    'Unlimited photos',
-                    'Unlimited collections',
-                    'Private collections with password protection',
-                    'Custom watermarking',
-                    'Sell digital downloads',
-                    'Sell physical prints & products',
-                    'More portfolio templates',
-                    'Customizable templates',
-                    'Client galleries',
-                    'Advanced sharing options',
-                ],
+                'features' => ['Unlimited photos', 'Unlimited collections', 'Private collections', 'Watermarking', 'Sell photos'],
                 'active' => true,
                 'sort_order' => 2,
                 'recommended' => true,
@@ -77,39 +60,30 @@ class SubscriptionPlanSeeder extends Seeder
             [
                 'name' => 'Videographer',
                 'slug' => 'videographer',
-                'stripe_price_id' => null, // Set in Admin Settings
-                'stripe_product_id' => null, // Set in Admin Settings
+                'stripe_product_id' => null,
+                'stripe_price_id' => null,
                 'price' => 14.99,
-                'annual_price' => 139.99, // Save 22%
-                'annual_stripe_price_id' => null, // Set in Admin Settings
+                'annual_price' => 139.99,
+                'annual_stripe_price_id' => null,
                 'annual_discount_percent' => 22,
-                'photo_limit' => null, // Unlimited
-                'collection_limit' => null, // Unlimited
+                'photo_limit' => null,
+                'collection_limit' => null,
                 'private_collections' => true,
                 'watermarking' => true,
                 'selling' => true,
                 'video_upload' => true,
                 'custom_templates' => true,
-                'features' => [
-                    'Everything in Photographer plan',
-                    'Video upload and hosting',
-                    'Video galleries',
-                    'Sell video downloads',
-                    'HD video streaming',
-                    'Priority support',
-                ],
+                'features' => ['Everything in Photographer', 'Video upload', 'Video galleries', 'HD streaming'],
                 'active' => true,
                 'sort_order' => 3,
                 'recommended' => false,
             ],
         ];
 
-        foreach ($plans as $plan) {
-            SubscriptionPlan::updateOrCreate(
-                ['slug' => $plan['slug']],
-                $plan
-            );
+        foreach ($plans as $planData) {
+            SubscriptionPlan::updateOrCreate(['slug' => $planData['slug']], $planData);
         }
+
+        $this->command->info('✅ Subscription plans seeded successfully!');
     }
 }
-

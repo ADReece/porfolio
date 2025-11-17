@@ -1,21 +1,39 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex items-center justify-between">
+        <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                 {{ __('My Collections') }}
             </h2>
-            <a href="{{ route('collections.create') }}"
-               class="inline-flex items-center px-4 py-2 bg-indigo-600 dark:bg-indigo-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 dark:hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150">
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                </svg>
-                Create New Collection
-            </a>
+            <div class="flex gap-3">
+                <a href="{{ route('collections.create') }}"
+                   class="px-3 py-2 bg-indigo-600 text-white rounded-md text-sm">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    Create New Collection
+                </a>
+                <button onclick="toggleReorder()"
+                        class="px-3 py-2 bg-gray-600 text-white rounded-md text-sm">
+                    Reorder
+                </button>
+            </div>
         </div>
     </x-slot>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <!-- Reorder Panel -->
+            <div id="reorder-panel" class="hidden mb-8">
+                <div class="bg-white dark:bg-gray-800 rounded-md shadow p-6">
+                    <livewire:collection-order-manager />
+                    <div class="mt-4 text-right">
+                        <button onclick="toggleReorder()"
+                                class="text-sm text-gray-600 dark:text-gray-400 hover:underline">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
 
             @if(!is_null($collections) && $collections->count() > 0)
                 <!-- Collections Grid -->
@@ -137,4 +155,10 @@
 
         </div>
     </div>
+    <script>
+        function toggleReorder(){
+            const panel = document.getElementById('reorder-panel');
+            panel.classList.toggle('hidden');
+        }
+    </script>
 </x-app-layout>

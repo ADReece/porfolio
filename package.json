@@ -21,6 +21,7 @@
         "fslightbox": "^3.4.1",
         "imagesloaded": "^5.0.0",
         "infinite-scroll": "^4.0.1",
+        "sortablejs": "^1.15.0",
         "toastify-js": "^1.12.0"
     }
 }
