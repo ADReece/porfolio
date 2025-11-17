@@ -49,11 +49,7 @@ window.showInfoToast = (message) => window.showToast(message, 'info');
 
 window.fslightbox = fslightbox;
 
-// Refresh/reinitialize fslightbox for dynamically loaded content
-window.refreshFsLightbox = function() {
-    // fslightbox automatically initializes when you call refreshFsLightbox()
-    // but we need to avoid recursion - just let the library handle it
-};
+// fslightbox automatically provides refreshFsLightbox() - don't override it
 
 import Alpine from 'alpinejs';
 import intersect from '@alpinejs/intersect';
