@@ -46,5 +46,46 @@ class AdminUsersController extends Controller
         $user->save();
         return back()->with('success', 'Admin status updated for '.$user->email);
     }
+
+    public function impersonate(User $user)
+    {
+        // Prevent impersonating yourself or another admin
+        if ($user->id === auth()->id()) {
+            return back()->with('error', 'You cannot impersonate yourself.');
+        }
+
+        if ($user->is_admin) {
+            return back()->with('error', 'You cannot impersonate another administrator.');
+        }
+
+        // Store the original admin user ID in session
+        session()->put('impersonate_admin_id', auth()->id());
+
+        // Login as the target user
+        auth()->login($user);
+
+        return redirect()->route('dashboard')->with('success', 'You are now impersonating '.$user->name);
+    }
+
+    public function stopImpersonating()
+    {
+        $adminId = session()->get('impersonate_admin_id');
+
+        if (!$adminId) {
+            return redirect()->route('dashboard')->with('error', 'Not impersonating anyone.');
+        }
+
+        $admin = User::find($adminId);
+
+        if (!$admin) {
+            session()->forget('impersonate_admin_id');
+            return redirect()->route('login')->with('error', 'Admin user not found.');
+        }
+
+        session()->forget('impersonate_admin_id');
+        auth()->login($admin);
+
+        return redirect()->route('admin.users.index')->with('success', 'Stopped impersonating user.');
+    }
 }
 

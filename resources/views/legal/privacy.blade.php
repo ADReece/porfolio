@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Privacy Policy - PortfolioHub</title>
+    <title>Privacy Policy - {{ config('app.name') }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="antialiased bg-gray-50">
@@ -12,7 +12,7 @@
             <div class="flex justify-between h-16">
                 <div class="flex items-center">
                     <a href="{{ route('home') }}" class="text-2xl font-bold text-gray-900">
-                        📸 PortfolioHub
+                        📸 {{ config('app.name') }}
                     </a>
                 </div>
             </div>
@@ -148,7 +148,7 @@
                 <h2 class="text-2xl font-bold mt-8 mb-4">13. Contact Us</h2>
                 <p class="mb-4">If you have questions about this Privacy Policy or our data practices, please contact us:</p>
                 <p class="mb-4">
-                    Email: <a href="mailto:privacy@portfoliohub.com" class="text-indigo-600 hover:underline">privacy@portfoliohub.com</a>
+                    Email: <a href="mailto:privacy@{{ config('app.name') }}.com" class="text-indigo-600 hover:underline">privacy@{{ config('app.name') }}.com</a>
                 </p>
             </div>
         </div>
@@ -156,7 +156,7 @@
 
     <footer class="bg-gray-900 text-gray-400 py-8 mt-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <p>&copy; {{ date('Y') }} PortfolioHub. All rights reserved.</p>
+            <p>&copy; {{ date('Y') }} {{ config('app.name') }}. All rights reserved.</p>
             <div class="mt-4 space-x-4">
                 <a href="{{ route('terms') }}" class="hover:text-white">Terms</a>
                 <a href="{{ route('privacy') }}" class="hover:text-white">Privacy</a>

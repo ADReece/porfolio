@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Terms of Service - PortfolioHub</title>
+    <title>Terms of Service - {{ config('app.name') }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="antialiased bg-gray-50">
@@ -12,7 +12,7 @@
             <div class="flex justify-between h-16">
                 <div class="flex items-center">
                     <a href="{{ route('home') }}" class="text-2xl font-bold text-gray-900">
-                        📸 PortfolioHub
+                        📸 {{ config('app.name') }}
                     </a>
                 </div>
             </div>
@@ -26,7 +26,7 @@
 
             <div class="prose max-w-none">
                 <h2 class="text-2xl font-bold mt-8 mb-4">1. Acceptance of Terms</h2>
-                <p class="mb-4">By accessing and using PortfolioHub ("Service"), you accept and agree to be bound by the terms and provision of this agreement.</p>
+                <p class="mb-4">By accessing and using {{ config('app.name') }} ("Service"), you accept and agree to be bound by the terms and provision of this agreement.</p>
 
                 <h2 class="text-2xl font-bold mt-8 mb-4">2. Use License</h2>
                 <p class="mb-4">Permission is granted to temporarily use the Service for personal, non-commercial transitory viewing only. This is the grant of a license, not a transfer of title.</p>
@@ -71,16 +71,16 @@
                 </ul>
 
                 <h2 class="text-2xl font-bold mt-8 mb-4">8. Intellectual Property</h2>
-                <p class="mb-4">The Service and its original content (excluding user-uploaded content), features, and functionality are and will remain the exclusive property of PortfolioHub and its licensors.</p>
+                <p class="mb-4">The Service and its original content (excluding user-uploaded content), features, and functionality are and will remain the exclusive property of {{ config('app.name') }} and its licensors.</p>
 
                 <h2 class="text-2xl font-bold mt-8 mb-4">9. Termination</h2>
                 <p class="mb-4">We may terminate or suspend your account immediately, without prior notice or liability, for any reason, including without limitation if you breach the Terms. Upon termination, your right to use the Service will immediately cease.</p>
 
                 <h2 class="text-2xl font-bold mt-8 mb-4">10. Limitation of Liability</h2>
-                <p class="mb-4">In no event shall PortfolioHub, nor its directors, employees, partners, agents, suppliers, or affiliates, be liable for any indirect, incidental, special, consequential or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses.</p>
+                <p class="mb-4">In no event shall {{ config('app.name') }}, nor its directors, employees, partners, agents, suppliers, or affiliates, be liable for any indirect, incidental, special, consequential or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses.</p>
 
                 <h2 class="text-2xl font-bold mt-8 mb-4">11. Governing Law</h2>
-                <p class="mb-4">These Terms shall be governed and construed in accordance with the laws of the jurisdiction in which PortfolioHub operates, without regard to its conflict of law provisions.</p>
+                <p class="mb-4">These Terms shall be governed and construed in accordance with the laws of the jurisdiction in which {{ config('app.name') }} operates, without regard to its conflict of law provisions.</p>
 
                 <h2 class="text-2xl font-bold mt-8 mb-4">12. Changes to Terms</h2>
                 <p class="mb-4">We reserve the right, at our sole discretion, to modify or replace these Terms at any time. We will provide notice of any significant changes by posting the new Terms on this page.</p>
@@ -88,7 +88,7 @@
                 <h2 class="text-2xl font-bold mt-8 mb-4">13. Contact Us</h2>
                 <p class="mb-4">If you have any questions about these Terms, please contact us at:</p>
                 <p class="mb-4">
-                    Email: <a href="mailto:legal@portfoliohub.com" class="text-indigo-600 hover:underline">legal@portfoliohub.com</a>
+                    Email: <a href="mailto:legal@{{ config('app.name') }}.com" class="text-indigo-600 hover:underline">legal@{{ config('app.name') }}.com</a>
                 </p>
             </div>
         </div>
@@ -96,7 +96,7 @@
 
     <footer class="bg-gray-900 text-gray-400 py-8 mt-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <p>&copy; {{ date('Y') }} PortfolioHub. All rights reserved.</p>
+            <p>&copy; {{ date('Y') }} {{ config('app.name') }}. All rights reserved.</p>
             <div class="mt-4 space-x-4">
                 <a href="{{ route('terms') }}" class="hover:text-white">Terms</a>
                 <a href="{{ route('privacy') }}" class="hover:text-white">Privacy</a>

@@ -1,3 +1,18 @@
+<!-- Impersonation Banner -->
+@if(session()->has('impersonate_admin_id'))
+    <div class="bg-purple-600 text-white px-4 py-2 text-center">
+        <div class="flex items-center justify-center gap-4">
+            <span class="font-semibold">🎭 You are impersonating {{ Auth::user()->name }}</span>
+            <form action="{{ route('admin.users.stop-impersonating') }}" method="POST" class="inline">
+                @csrf
+                <button type="submit" class="bg-white text-purple-600 px-4 py-1 rounded-lg hover:bg-purple-50 font-semibold text-sm">
+                    Stop Impersonating
+                </button>
+            </form>
+        </div>
+    </div>
+@endif
+
 <nav x-data="{ open: false }" class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 z-50 relative">
     <!-- Primary Navigation Menu -->
     <div class="px-4 sm:px-6 lg:px-8">

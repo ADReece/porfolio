@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Service Level Agreement - PortfolioHub</title>
+    <title>Service Level Agreement - {{ config('app.name') }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="antialiased bg-gray-50">
@@ -12,7 +12,7 @@
             <div class="flex justify-between h-16">
                 <div class="flex items-center">
                     <a href="{{ route('home') }}" class="text-2xl font-bold text-gray-900">
-                        📸 PortfolioHub
+                        📸 {{ config('app.name') }}
                     </a>
                 </div>
             </div>
@@ -26,7 +26,7 @@
 
             <div class="prose max-w-none">
                 <h2 class="text-2xl font-bold mt-8 mb-4">1. Service Availability</h2>
-                <p class="mb-4">PortfolioHub is committed to providing reliable service to our customers. We guarantee the following uptime levels:</p>
+                <p class="mb-4">{{ config('app.name') }} is committed to providing reliable service to our customers. We guarantee the following uptime levels:</p>
 
                 <h3 class="text-xl font-semibold mt-6 mb-3">Uptime Guarantee</h3>
                 <ul class="list-disc pl-6 mb-4 space-y-2">
@@ -195,8 +195,8 @@
                 <h2 class="text-2xl font-bold mt-8 mb-4">14. Contact for SLA Issues</h2>
                 <p class="mb-4">For questions about this SLA or to report service issues:</p>
                 <p class="mb-4">
-                    Email: <a href="mailto:sla@portfoliohub.com" class="text-indigo-600 hover:underline">sla@portfoliohub.com</a><br>
-                    Support: <a href="mailto:support@portfoliohub.com" class="text-indigo-600 hover:underline">support@portfoliohub.com</a>
+                    Email: <a href="mailto:sla@{{ config('app.name') }}.com" class="text-indigo-600 hover:underline">sla@{{ config('app.name') }}.com</a><br>
+                    Support: <a href="mailto:support@{{ config('app.name') }}.com" class="text-indigo-600 hover:underline">support@{{ config('app.name') }}.com</a>
                 </p>
             </div>
         </div>
@@ -204,7 +204,7 @@
 
     <footer class="bg-gray-900 text-gray-400 py-8 mt-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <p>&copy; {{ date('Y') }} PortfolioHub. All rights reserved.</p>
+            <p>&copy; {{ date('Y') }} {{ config('app.name') }}. All rights reserved.</p>
             <div class="mt-4 space-x-4">
                 <a href="{{ route('terms') }}" class="hover:text-white">Terms</a>
                 <a href="{{ route('privacy') }}" class="hover:text-white">Privacy</a>
