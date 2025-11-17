@@ -46,6 +46,11 @@ class Collection extends Model
         });
     }
 
+    public function coverPhotoPosition()
+    {
+        return 'object-' . $this->cover_photo_object_position ?? 'center-center';
+    }
+
     public function user() : BelongsTo
     {
         return $this->belongsTo(User::class);
