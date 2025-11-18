@@ -20,11 +20,6 @@
                         </div>
                     </div>
 
-                    <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-                        <div class="max-w-xl">
-                            @include('profile.partials.update-portfolio-display-form')
-                        </div>
-                    </div>
 
                     <!-- Link to Customize Portfolio Page -->
                     <div class="p-4 sm:p-8 bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 shadow sm:rounded-lg border-2 border-indigo-200 dark:border-indigo-700">
