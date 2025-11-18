@@ -34,7 +34,7 @@
                 @endif
             </a>
         </div>
-        <main class="portfolio-content w-full sm:max-w-md mt-6 px-6 py-4 bg-white dark:bg-gray-800 shadow-md overflow-hidden sm:rounded-lg guest-card">
+        <main class="portfolio-content w-full sm:max-w-md mt-6 px-6 py-4 {{ $canPortfolio ? '' : 'bg-white dark:bg-gray-800' }} shadow-md overflow-hidden sm:rounded-lg guest-card">
             {{ $slot }}
         </main>
     </div>
