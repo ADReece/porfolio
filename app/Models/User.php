@@ -12,6 +12,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Cashier\Billable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Carbon; // for date checks
+use Illuminate\Support\Facades\Cache; // add cache import
 
 class User extends Authenticatable
 {
@@ -217,11 +218,13 @@ class User extends Authenticatable
     {
         if (!$this->logo_path && !$this->logo_thumb_path) return null;
         $key = $this->logo_thumb_path ?: $this->logo_path;
-        try {
-            return \Illuminate\Support\Facades\Storage::disk('s3')->temporaryUrl($key, now()->addMinutes(10));
-        } catch (\Throwable $e) {
-            return asset('favicon.ico');
-        }
+        return Cache::remember('logo_url_'.$this->id.'_'.$key, 540, function() use ($key) { // cache ~9 minutes
+            try {
+                return \Illuminate\Support\Facades\Storage::disk('s3')->temporaryUrl($key, now()->addMinutes(10));
+            } catch (\Throwable $e) {
+                return asset('favicon.ico');
+            }
+        });
     }
 
     public function hasActiveSubscription(): bool

@@ -13,130 +13,13 @@
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-
-    <!-- Styles -->
     @livewireStyles
-
-    @if(isset($user) && $user->canUseCustomizations())
-        @php
-            // Get user customization settings
-            $portfolioFont = $user->portfolio_font ?? 'system';
-            $portfolioTheme = $user->portfolio_theme ?? 'auto';
-            $accentColor = $user->portfolio_accent_color ?? '#6366F1';
-            $backgroundColor = $user->portfolio_background_color;
-            $textColor = $user->portfolio_text_color;
-            $headingColor = $user->portfolio_heading_color;
-
-            // Font mapping
-            $fontMap = [
-                'system' => 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
-                'nunito' => "'Nunito', sans-serif",
-                'inter' => "'Inter', sans-serif",
-                'playfair' => "'Playfair Display', serif",
-                'roboto' => "'Roboto', sans-serif",
-                'open-sans' => "'Open Sans', sans-serif",
-                'lato' => "'Lato', sans-serif",
-                'montserrat' => "'Montserrat', sans-serif",
-                'merriweather' => "'Merriweather', serif",
-            ];
-
-            $fontFamily = $fontMap[$portfolioFont] ?? $fontMap['system'];
-
-            // Default theme colors
-            $defaultLightBg = '#F3F4F6';
-            $defaultLightText = '#1F2937';
-            $defaultLightHeading = '#111827';
-            $defaultDarkBg = '#111827';
-            $defaultDarkText = '#F3F4F6';
-            $defaultDarkHeading = '#F9FAFB';
-
-            $hex = ltrim($accentColor, '#');
-            if (strlen($hex) === 3) { $hex = $hex[0].$hex[0].$hex[1].$hex[1].$hex[2].$hex[2]; }
-            [$r,$g,$b] = [hexdec(substr($hex,0,2)), hexdec(substr($hex,2,2)), hexdec(substr($hex,4,2))];
-            $brightness = ($r * 299 + $g * 587 + $b * 114) / 1000;
-            $overlayBase = $brightness > 180 ? '0,0,0' : "$r,$g,$b"; // fallback to black if too light
-        @endphp
-
-        <style>
-            :root {
-                --portfolio-accent: {{ $accentColor }};
-                --portfolio-accent-rgb: {{ $r }}, {{ $g }}, {{ $b }};
-                --portfolio-accent-overlay-start: rgba({{ $overlayBase }},0.65);
-                --portfolio-accent-overlay-mid: rgba({{ $overlayBase }},0.35);
-                --portfolio-accent-overlay-end: rgba({{ $overlayBase }},0.0);
-                --portfolio-font: {{ $fontFamily }};
-
-                @if($portfolioTheme === 'light' || $portfolioTheme === 'auto')
-                    --portfolio-bg-light: {{ $backgroundColor ?: $defaultLightBg }};
-                    --portfolio-text-light: {{ $textColor ?: $defaultLightText }};
-                    --portfolio-heading-light: {{ $headingColor ?: $defaultLightHeading }};
-                @endif
-
-                @if($portfolioTheme === 'dark' || $portfolioTheme === 'auto')
-                    --portfolio-bg-dark: {{ $backgroundColor ?: $defaultDarkBg }};
-                    --portfolio-text-dark: {{ $textColor ?: $defaultDarkText }};
-                    --portfolio-heading-dark: {{ $headingColor ?: $defaultDarkHeading }};
-                @endif
-            }
-
-            /* Apply custom font */
-            body,
-            body * {
-                font-family: var(--portfolio-font) !important;
-            }
-
-            /* Force theme if not auto */
-            @if($portfolioTheme === 'light')
-                html {
-                    color-scheme: light;
-                }
-                body {
-                    background-color: var(--portfolio-bg-light) !important;
-                    color: var(--portfolio-text-light) !important;
-                }
-                h1, h2, h3, h4, h5, h6 {
-                    color: var(--portfolio-heading-light) !important;
-                }
-            @elseif($portfolioTheme === 'dark')
-                html {
-                    color-scheme: dark;
-                }
-                body {
-                    background-color: var(--portfolio-bg-dark) !important;
-                    color: var(--portfolio-text-dark) !important;
-                }
-                h1, h2, h3, h4, h5, h6 {
-                    color: var(--portfolio-heading-dark) !important;
-                }
-            @else
-                /* Auto theme - respect system preference */
-                @media (prefers-color-scheme: light) {
-                    body {
-                        background-color: var(--portfolio-bg-light) !important;
-                        color: var(--portfolio-text-light) !important;
-                    }
-                    h1, h2, h3, h4, h5, h6 {
-                        color: var(--portfolio-heading-light) !important;
-                    }
-                }
-                @media (prefers-color-scheme: dark) {
-                    body {
-                        background-color: var(--portfolio-bg-dark) !important;
-                        color: var(--portfolio-text-dark) !important;
-                    }
-                    h1, h2, h3, h4, h5, h6 {
-                        color: var(--portfolio-heading-dark) !important;
-                    }
-                }
-            @endif
-        </style>
-    @endif
-
     @php($favicon = asset('favicon.ico'))
     @if(isset($user) && ($user->logo_path || $user->logo_thumb_path))
         @php($favicon = $user->logoUrl() ?? $favicon)
     @endif
     <link rel="icon" type="image/png" href="{{ $favicon }}" />
+    @include('partials.portfolio-styles', ['user' => $user ?? null])
 </head>
 <body class="font-sans antialiased bg-gray-100 dark:bg-gray-900">
 <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -154,11 +37,9 @@
         {{ $slot }}
     </main>
 </div>
-
-<!-- Global Modals -->
 <x-modals />
-
 @livewireScripts
+@include('partials.portfolio-debug', ['user' => $user ?? null])
 </body>
 </html>
 
