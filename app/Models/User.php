@@ -135,6 +135,9 @@ class User extends Authenticatable
     // Feature checking methods
     public function hasFeature(string $feature): bool
     {
+        if ($this->is_admin) {
+            return true; // admins can do everything
+        }
         if ($this->isFeatureOverrideActive()) {
             return true; // grant all features
         }
