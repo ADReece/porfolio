@@ -1,7 +1,10 @@
 <div class="relative">
     <div x-data="masonryData" class="relative">
         <!-- Loading Overlay -->
-        <div class="absolute inset-0 m-0 overflow-hidden bg-gray-100 dark:bg-gray-900 z-40"
+        @php
+            $hasCustomStyles = isset($user) && method_exists($user,'canUseCustomizations') && $user->canUseCustomizations();
+        @endphp
+        <div class="absolute inset-0 m-0 overflow-hidden loading-overlay {{ $hasCustomStyles ? '' : 'bg-gray-100 dark:bg-gray-900' }} z-40"
              x-show="initialLoading"
              x-transition>
             <div class="loader"></div>
@@ -191,6 +194,17 @@
         .masonry-sizer,
         .masonry-gutter-sizer {
             display: none;
+        }
+
+        /* Loading overlay inherits portfolio background */
+        .loading-overlay {
+            background: var(--portfolio-bg-light, #F3F4F6);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .loading-overlay {
+                background: var(--portfolio-bg-dark, #111827);
+            }
         }
 
         .loader {
