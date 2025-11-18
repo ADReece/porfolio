@@ -200,10 +200,10 @@ class ProfileController extends Controller
         if($collection->private){
             $password = $request->get('password');
             if(is_null($password)){
-                return view('collections.frontend.password', ['collection' => $collection]);
+                return view('collections.frontend.password', ['collection' => $collection, 'user' => $user]);
             }
             if(!password_verify($password, $collection->password)){
-                return view('collections.frontend.password', ['collection' => $collection])->withErrors(['password' => 'Invalid Password']);
+                return view('collections.frontend.password', ['collection' => $collection, 'user' => $user])->withErrors(['password' => 'Invalid Password']);
             }
         }
 
@@ -218,7 +218,7 @@ class ProfileController extends Controller
             }]);
         }]);
 
-        return view('collections.frontend.show', ['collection' => $collection]);
+        return view('collections.frontend.show', ['collection' => $collection, 'user' => $user]);
     }
 
 }

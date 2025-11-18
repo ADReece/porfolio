@@ -40,10 +40,13 @@
                                     </svg>
                                 </div>
                             @endif
+
+                            <!-- Always-visible dark overlay for text readability -->
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent group-hover:from-black/90 group-hover:via-black/50 transition-all duration-300"></div>
                         </div>
 
                         <!-- Title bar with enhanced hover state -->
-                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-4 group-hover:from-black group-hover:via-black/80 transition-all duration-300">
+                        <div class="absolute bottom-0 left-0 right-0 p-4">
                             <h3 class="text-white text-lg font-semibold mb-1 group-hover:text-xl transition-all duration-200">
                                 {{ $collection->name }}
                             </h3>
