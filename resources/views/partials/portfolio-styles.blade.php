@@ -75,6 +75,7 @@
             header.portfolio-header h1, header.portfolio-header h2, header.portfolio-header h3, header.portfolio-header h4, header.portfolio-header h5, header.portfolio-header h6,
             main.portfolio-content h1, main.portfolio-content h2, main.portfolio-content h3, main.portfolio-content h4, main.portfolio-content h5, main.portfolio-content h6 { color: var(--portfolio-heading-dark) !important; }
         @else
+            /* Auto theme - respect system preference with custom or default colors */
             @media (prefers-color-scheme: light){
                 body { background: var(--portfolio-bg-light) !important; color: var(--portfolio-text-light) !important; }
                 header.portfolio-header, main.portfolio-content { background: var(--portfolio-bg-light) !important; color: var(--portfolio-text-light) !important; }
@@ -89,5 +90,5 @@
             }
         @endif
     </style>
-    <!-- customization-debug: applied theme={{ $theme }} font={{ $fontKey }} accent={{ $accent }} override={{ $user->isFeatureOverrideActive() ? 'yes':'no' }} -->
+    <!-- customization-debug: applied theme={{ $theme }} font={{ $fontKey }} accent={{ $accent }} bg={{ $bg ?? 'default' }} text={{ $text ?? 'default' }} heading={{ $heading ?? 'default' }} override={{ $user->isFeatureOverrideActive() ? 'yes':'no' }} lightBg={{ $lightBg }} darkBg={{ $darkBg }} -->
 @endif
