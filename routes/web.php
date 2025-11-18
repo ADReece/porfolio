@@ -63,7 +63,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile/customize', [ProfileController::class, 'customize'])->name('profile.customize');
     Route::patch('/profile/customize', [ProfileController::class, 'updateCustomization'])->name('profile.customize.update');
     Route::patch('/profile/display', [ProfileController::class, 'updateDisplayMode'])->name('profile.update-display');
-    Route::patch('/profile/watermark', [ProfileController::class, 'updateWatermark'])->name('profile.update-watermark');
+    Route::patch('/profile/watermark', [ProfileController::class, 'updateWatermark'])->name('profile.watermark.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::post('/upload-files', [PhotoController::class, 'upload'])->name('upload-files')->middleware('photo.limit');
 
