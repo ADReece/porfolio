@@ -109,7 +109,7 @@
                 <div>
                     <h4 class="text-white font-semibold mb-4">Support</h4>
                     <ul class="space-y-2 text-sm">
-                        <li><a href="mailto:support@{{ config('app.name') }}.com" class="hover:text-white">Contact Support</a></li>
+                        <li><a href="mailto:{{ 'support@' . config('app.name') . '.com' }}" class="hover:text-white">Contact Support</a></li>
                     </ul>
                 </div>
             </div>
@@ -120,4 +120,3 @@
     </footer>
 </body>
 </html>
-

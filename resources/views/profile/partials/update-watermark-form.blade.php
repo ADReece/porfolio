@@ -9,27 +9,17 @@
         </p>
     </header>
 
-    <form method="post" action="{{ route('profile.update-watermark') }}" class="mt-6 space-y-6">
+    <form method="post" action="{{ route('profile.watermark.update') }}" class="mt-6 space-y-6">
         @csrf
         @method('patch')
 
         <div>
-            <label for="watermark_text" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                {{ __('Custom Watermark Text') }}
-            </label>
-            <input type="text"
-                   name="watermark_text"
-                   id="watermark_text"
-                   value="{{ old('watermark_text', $user->watermark_text) }}"
-                   placeholder="{{ _('@' . $user->username) }}"
-                   class="w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-
-            <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                Leave blank to use <strong>@{{ $user->username }}</strong> as your watermark.
-                Your custom text will be tiled across watermarked images.
+            <x-input-label for="watermark_text" value="{{ __('Watermark Text') }}" />
+            <x-text-input id="watermark_text" name="watermark_text" type="text" class="mt-1 block w-full" :value="old('watermark_text', $user->watermark_text)" autocomplete="off" />
+            <x-input-error :messages="$errors->get('watermark_text')" class="mt-2" />
+            <p class="text-sm text-gray-500 mt-2">
+                {{ __('Leave blank to use') }} <strong>{{ _('@' . $user->username) }}</strong> {{ __('as your watermark.') }}
             </p>
-
-            <x-input-error class="mt-2" :messages="$errors->get('watermark_text')" />
         </div>
 
         <div class="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
@@ -70,4 +60,3 @@
         </div>
     </form>
 </section>
-

@@ -39,6 +39,42 @@ class ProfileController extends Controller
     }
 
     /**
+     * Display the portfolio customization form.
+     */
+    public function customize(Request $request): View
+    {
+        return view('profile.customize', [
+            'user' => $request->user(),
+        ]);
+    }
+
+    /**
+     * Update the user's portfolio customization.
+     */
+    public function updateCustomization(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'portfolio_font' => 'nullable|string|in:system,nunito,inter,playfair,roboto,open-sans,lato,montserrat,merriweather',
+            'portfolio_accent_color' => 'nullable|regex:/^#([A-Fa-f0-9]{6})$/',
+            'portfolio_theme' => 'nullable|in:auto,light,dark',
+            'portfolio_background_color' => 'nullable|regex:/^#([A-Fa-f0-9]{6})$/',
+            'portfolio_text_color' => 'nullable|regex:/^#([A-Fa-f0-9]{6})$/',
+            'portfolio_heading_color' => 'nullable|regex:/^#([A-Fa-f0-9]{6})$/',
+        ]);
+
+        $request->user()->update([
+            'portfolio_font' => $validated['portfolio_font'] ?? $request->user()->portfolio_font,
+            'portfolio_accent_color' => $validated['portfolio_accent_color'] ?? $request->user()->portfolio_accent_color,
+            'portfolio_theme' => $validated['portfolio_theme'] ?? $request->user()->portfolio_theme,
+            'portfolio_background_color' => $validated['portfolio_background_color'] ?? null,
+            'portfolio_text_color' => $validated['portfolio_text_color'] ?? null,
+            'portfolio_heading_color' => $validated['portfolio_heading_color'] ?? null,
+        ]);
+
+        return Redirect::route('profile.customize')->with('status', 'portfolio-customized');
+    }
+
+    /**
      * Update the user's portfolio display mode.
      */
     public function updateDisplayMode(Request $request): RedirectResponse

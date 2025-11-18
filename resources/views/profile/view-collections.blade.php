@@ -1,12 +1,4 @@
-<x-profile-layout>
-    @php($userAccent = $user->portfolio_accent_color ?? '#6366F1')
-    @php($userFont = $user->portfolio_font ?? null)
-    <style>
-        :root { --portfolio-accent: {{ $userAccent }}; }
-        a.portfolio-accent-link { color: var(--portfolio-accent); }
-        a.portfolio-accent-link:hover { text-decoration: underline; }
-        @if($userFont && $userFont !== 'system') body { font-family: '{{ $userFont }}', sans-serif; } @endif
-    </style>
+<x-profile-layout :user="$user">
 
     <x-slot name="header">
         <div class="flex flex-col items-center">

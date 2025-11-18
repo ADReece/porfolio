@@ -5,13 +5,13 @@ namespace App\Models\Traits;
 use Illuminate\Support\Str;
 
 trait UsesUuid {
-    protected static function boot()
+    // Ensure this trait's boot logic runs even if the model defines its own boot()
+    protected static function bootUsesUuid()
     {
-        parent::boot();
         static::creating(function($model)
         {
-            if(empty($model->{$model->getKeyName()})){
-                $model->{$model->getKeyName()} = Str::uuid()->toString();
+            if (!$model->getKey()) {
+                $model->{$model->getKeyName()} = (string) Str::uuid();
             }
         });
     }
@@ -25,6 +25,4 @@ trait UsesUuid {
     {
         return 'string';
     }
-
-
 }
