@@ -165,6 +165,12 @@
                 }
             </style>
         @endif
+
+        @php($favicon = asset('favicon.ico'))
+        @if(isset($user) && $user->logo_thumb_path ?? $user->logo_path)
+            @php($favicon = \Cache::remember('user_logo_url_'.$user->id, 600, fn() => $user->logo_thumb_path ? \Storage::disk('s3')->url($user->logo_thumb_path) : \Storage::disk('s3')->url($user->logo_path)))
+        @endif
+        <link rel="icon" type="image/png" href="{{ $favicon }}" />
     </head>
     <body class="font-sans antialiased bg-gray-100 dark:bg-gray-900 overflow-x-hidden">
         @if(Auth::check())

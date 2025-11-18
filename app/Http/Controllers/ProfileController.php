@@ -30,8 +30,13 @@ class ProfileController extends Controller
         $user = $request->user();
         $user->fill($request->validated());
 
+        $canUploadLogo = $user->hasFeature('upload_logo') || $user->isFeatureOverrideActive();
+
         // Handle logo upload
         if ($request->hasFile('logo')) {
+            if (!$canUploadLogo) {
+                return Redirect::route('profile.edit')->withErrors(['logo' => 'Logo uploads are available to subscribers only.']);
+            }
             $request->validate([
                 'logo' => 'image|mimes:png,jpg,jpeg,webp,svg|max:2048'
             ]);

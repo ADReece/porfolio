@@ -126,21 +126,26 @@
             @endif
         </div>
 
+        @php($canUploadLogo = $user->hasFeature('upload_logo') || $user->isFeatureOverrideActive())
         <div>
             <x-input-label for="logo" :value="__('Profile Logo')" />
-            @if($user->logo_thumb_path ?? $user->logo_path)
-                <div class="mb-2 flex items-center gap-4">
-                    <img src="{{ $user->logo_thumb_path ? \Storage::disk('s3')->url($user->logo_thumb_path) : \Storage::disk('s3')->url($user->logo_path) }}" alt="Current Logo" class="h-16 object-contain">
-                    <form method="POST" action="{{ route('profile.logo.remove') }}" onsubmit="return confirm('Remove logo?')">
-                        @csrf
-                        @method('DELETE')
-                        <x-danger-button>{{ __('Remove') }}</x-danger-button>
-                    </form>
-                </div>
+            @if(!$canUploadLogo)
+                <p class="text-xs mt-1 text-gray-500 dark:text-gray-400">Logo branding is available on subscriber plans. <a href="{{ route('pricing') }}" class="text-indigo-600 dark:text-indigo-400 underline">Upgrade</a></p>
+            @else
+                @if($user->logo_thumb_path ?? $user->logo_path)
+                    <div class="mb-2 flex items-center gap-4">
+                        <img src="{{ $user->logo_thumb_path ? \Storage::disk('s3')->url($user->logo_thumb_path) : \Storage::disk('s3')->url($user->logo_path) }}" alt="Current Logo" class="h-16 object-contain">
+                        <form method="POST" action="{{ route('profile.logo.remove') }}" onsubmit="return confirm('Remove logo?')">
+                            @csrf
+                            @method('DELETE')
+                            <x-danger-button>{{ __('Remove') }}</x-danger-button>
+                        </form>
+                    </div>
+                @endif
+                <input id="logo" name="logo" type="file" accept="image/*" class="mt-1 block w-full text-sm text-gray-700 dark:text-gray-300" />
+                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">PNG, JPG, WebP, or SVG up to 2MB.</p>
+                <x-input-error class="mt-2" :messages="$errors->get('logo')" />
             @endif
-            <input id="logo" name="logo" type="file" accept="image/*" class="mt-1 block w-full text-sm text-gray-700 dark:text-gray-300" />
-            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">PNG, JPG, WebP, or SVG up to 2MB.</p>
-            <x-input-error class="mt-2" :messages="$errors->get('logo')" />
         </div>
 
         <div class="flex items-center gap-4">
