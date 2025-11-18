@@ -86,11 +86,11 @@
                     body { background-color: var(--portfolio-bg-dark) !important; color: var(--portfolio-text-dark) !important; }
                     h1,h2,h3,h4,h5,h6 { color: var(--portfolio-heading-dark) !important; }
                 @else
-                    @media (prefers-color-scheme: light) {
+                    @@media (prefers-color-scheme: light) {
                         body { background-color: var(--portfolio-bg-light) !important; color: var(--portfolio-text-light) !important; }
                         h1,h2,h3,h4,h5,h6 { color: var(--portfolio-heading-light) !important; }
                     }
-                    @media (prefers-color-scheme: dark) {
+                    @@media (prefers-color-scheme: dark) {
                         body { background-color: var(--portfolio-bg-dark) !important; color: var(--portfolio-text-dark) !important; }
                         h1,h2,h3,h4,h5,h6 { color: var(--portfolio-heading-dark) !important; }
                     }
@@ -119,5 +119,11 @@
                 {{ $slot }}
             </div>
         </div>
+
+        @if(app()->environment('local') && isset($user))
+            <div class="fixed left-4 bottom-4 z-50 text-xs px-3 py-2 rounded bg-black/70 text-white">
+                Font: {{ $user->portfolio_font ?? 'system' }} | Theme: {{ $user->portfolio_theme ?? 'auto' }} | Accent: {{ $user->portfolio_accent_color ?? '#6366F1' }} | Override: {{ $user->isFeatureOverrideActive() ? 'yes' : 'no' }} | Customizations: {{ (method_exists($user,'canUseCustomizations') && $user->canUseCustomizations()) ? 'on' : 'off' }}
+            </div>
+        @endif
     </body>
 </html>
