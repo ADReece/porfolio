@@ -28,7 +28,9 @@ class ProfileController extends Controller
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
         $user = $request->user();
-        $user->fill($request->validated());
+
+        // Only allow specific fields to be updated (exclude username and email)
+        $user->fill($request->only(['name', 'bio', 'phone', 'twitter', 'instagram', 'facebook']));
 
         $canUploadLogo = $user->hasFeature('upload_logo') || $user->isFeatureOverrideActive();
 
@@ -59,9 +61,6 @@ class ProfileController extends Controller
             }
         }
 
-        if ($user->isDirty('email')) {
-            $user->email_verified_at = null;
-        }
 
         $user->save();
 

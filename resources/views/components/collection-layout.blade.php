@@ -17,7 +17,7 @@
     <!-- Styles -->
     @livewireStyles
 
-    @if(isset($user))
+    @if(isset($user) && $user->canUseCustomizations())
         @php
             // Get user customization settings
             $portfolioFont = $user->portfolio_font ?? 'system';

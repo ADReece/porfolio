@@ -223,4 +223,28 @@ class User extends Authenticatable
             return asset('favicon.ico');
         }
     }
+
+    public function hasActiveSubscription(): bool
+    {
+        if ($this->is_admin || $this->isFeatureOverrideActive()) {
+            return true;
+        }
+
+        if (!$this->subscriptionPlan) {
+            return false;
+        }
+
+        // Free plan is always "active" (no expiry)
+        if ($this->subscriptionPlan->isFree()) {
+            return true;
+        }
+
+        // Check if user has an active Stripe subscription
+        return $this->subscribed('default');
+    }
+
+    public function canUseCustomizations(): bool
+    {
+        return $this->hasActiveSubscription() && ($this->hasFeature('upload_logo') || $this->isFeatureOverrideActive());
+    }
 }
