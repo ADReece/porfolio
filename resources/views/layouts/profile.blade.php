@@ -83,89 +83,84 @@
                     @endif
                 }
 
-                /* Apply custom font - only to portfolio content, not navigation */
+                /* Apply custom font - to portfolio content and header, not top navigation */
+                header.portfolio-header,
                 main.portfolio-content {
                     font-family: var(--portfolio-font) !important;
                 }
 
-                /* Force theme if not auto - scoped to portfolio content only */
+                /* Force theme if not auto - scoped to portfolio areas only (header + content) */
                 @if($portfolioTheme === 'light')
                     html {
                         color-scheme: light;
                     }
+                    header.portfolio-header,
                     main.portfolio-content {
                         background-color: var(--portfolio-bg-light) !important;
                         color: var(--portfolio-text-light) !important;
                     }
-                    main.portfolio-content h1,
-                    main.portfolio-content h2,
-                    main.portfolio-content h3,
-                    main.portfolio-content h4,
-                    main.portfolio-content h5,
-                    main.portfolio-content h6 {
+                    header.portfolio-header h1, header.portfolio-header h2, header.portfolio-header h3, header.portfolio-header h4, header.portfolio-header h5, header.portfolio-header h6,
+                    main.portfolio-content h1, main.portfolio-content h2, main.portfolio-content h3, main.portfolio-content h4, main.portfolio-content h5, main.portfolio-content h6 {
                         color: var(--portfolio-heading-light) !important;
                     }
                 @elseif($portfolioTheme === 'dark')
                     html {
                         color-scheme: dark;
                     }
+                    header.portfolio-header,
                     main.portfolio-content {
                         background-color: var(--portfolio-bg-dark) !important;
                         color: var(--portfolio-text-dark) !important;
                     }
-                    main.portfolio-content h1,
-                    main.portfolio-content h2,
-                    main.portfolio-content h3,
-                    main.portfolio-content h4,
-                    main.portfolio-content h5,
-                    main.portfolio-content h6 {
+                    header.portfolio-header h1, header.portfolio-header h2, header.portfolio-header h3, header.portfolio-header h4, header.portfolio-header h5, header.portfolio-header h6,
+                    main.portfolio-content h1, main.portfolio-content h2, main.portfolio-content h3, main.portfolio-content h4, main.portfolio-content h5, main.portfolio-content h6 {
                         color: var(--portfolio-heading-dark) !important;
                     }
                 @else
-                    /* Auto theme - respect system preference, scoped to portfolio content */
+                    /* Auto theme - respect system preference, scoped to portfolio areas */
                     @media (prefers-color-scheme: light) {
+                        header.portfolio-header,
                         main.portfolio-content {
                             background-color: var(--portfolio-bg-light) !important;
                             color: var(--portfolio-text-light) !important;
                         }
-                        main.portfolio-content h1,
-                        main.portfolio-content h2,
-                        main.portfolio-content h3,
-                        main.portfolio-content h4,
-                        main.portfolio-content h5,
-                        main.portfolio-content h6 {
+                        header.portfolio-header h1, header.portfolio-header h2, header.portfolio-header h3, header.portfolio-header h4, header.portfolio-header h5, header.portfolio-header h6,
+                        main.portfolio-content h1, main.portfolio-content h2, main.portfolio-content h3, main.portfolio-content h4, main.portfolio-content h5, main.portfolio-content h6 {
                             color: var(--portfolio-heading-light) !important;
                         }
                     }
                     @media (prefers-color-scheme: dark) {
+                        header.portfolio-header,
                         main.portfolio-content {
                             background-color: var(--portfolio-bg-dark) !important;
                             color: var(--portfolio-text-dark) !important;
                         }
-                        main.portfolio-content h1,
-                        main.portfolio-content h2,
-                        main.portfolio-content h3,
-                        main.portfolio-content h4,
-                        main.portfolio-content h5,
-                        main.portfolio-content h6 {
+                        header.portfolio-header h1, header.portfolio-header h2, header.portfolio-header h3, header.portfolio-header h4, header.portfolio-header h5, header.portfolio-header h6,
+                        main.portfolio-content h1, main.portfolio-content h2, main.portfolio-content h3, main.portfolio-content h4, main.portfolio-content h5, main.portfolio-content h6 {
                             color: var(--portfolio-heading-dark) !important;
                         }
                     }
                 @endif
 
-                /* Accent color application - scoped to portfolio content */
+                /* Accent color application - scoped to portfolio areas */
+                header.portfolio-header a.portfolio-link,
+                header.portfolio-header a[href^="/@"]:not(.no-accent),
+                header.portfolio-header .portfolio-accent,
                 main.portfolio-content a.portfolio-link,
                 main.portfolio-content a[href^="/@"]:not(.no-accent),
                 main.portfolio-content .portfolio-accent {
                     color: var(--portfolio-accent) !important;
                 }
 
+                header.portfolio-header button.portfolio-button,
+                header.portfolio-header .portfolio-button,
                 main.portfolio-content button.portfolio-button,
                 main.portfolio-content .portfolio-button {
                     background-color: var(--portfolio-accent) !important;
                     border-color: var(--portfolio-accent) !important;
                 }
 
+                header.portfolio-header a.portfolio-link:hover,
                 main.portfolio-content a.portfolio-link:hover {
                     opacity: 0.8;
                 }
@@ -184,7 +179,7 @@
         @endif
         <div class="bg-gray-100 dark:bg-gray-900">
             <!-- Page Heading -->
-            <header class="md:fixed md:top-0 md:left-0 md:w-80 md:min-h-screen bg-white dark:bg-gray-800 shadow-lg z-10">
+            <header class="portfolio-header md:fixed md:top-0 md:left-0 md:w-80 md:min-h-screen bg-white dark:bg-gray-800 shadow-lg z-10">
                 @if (isset($header))
                 <div class="max-w-7xl md:mx-auto py-6 px-4 sm:px-6 lg:px-8">
                     {{ $header }}
