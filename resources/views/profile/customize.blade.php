@@ -44,7 +44,9 @@
                                 <h1 class="text-4xl font-bold mb-2">{{ $user->name ?? $user->username }}</h1>
                                 <p class="text-lg mb-4">{{ _('@' . $user->username) }}</p>
                                 @if($user->bio)
-                                    <p class="text-base mb-6">{{ $user->bio }}</p>
+                                    <div class="text-base mb-6 prose prose-sm dark:prose-invert mx-auto">
+                                        {!! $user->bio !!}
+                                    </div>
                                 @endif
                                 <button class="px-6 py-3 rounded-lg font-semibold">Sample Button</button>
                                 <div class="mt-6">

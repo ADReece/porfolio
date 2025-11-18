@@ -31,9 +31,56 @@
 
         <div>
             <x-input-label for="bio" :value="__('Bio')" />
-            <x-multi-text-input id="bio" name="bio" type="text" class="mt-1 block w-full" :value="old('bio', $user->bio)" autofocus/>
+            <div id="bio-editor" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300" style="min-height: 200px;"></div>
+            <input type="hidden" name="bio" id="bio" value="{{ old('bio', $user->bio) }}">
+            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                Use the toolbar to format your bio. You can add bold, italic, lists, and links.
+            </p>
             <x-input-error class="mt-2" :messages="$errors->get('bio')" />
         </div>
+
+        @push('styles')
+        <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+        @endpush
+
+        @push('scripts')
+        <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var quill = new Quill('#bio-editor', {
+                    theme: 'snow',
+                    placeholder: 'Tell your visitors about yourself...',
+                    modules: {
+                        toolbar: [
+                            ['bold', 'italic', 'underline'],
+                            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                            ['link'],
+                            ['clean']
+                        ]
+                    }
+                });
+
+                // Set initial content
+                var bioInput = document.getElementById('bio');
+                if (bioInput.value) {
+                    quill.root.innerHTML = bioInput.value;
+                }
+
+                // Update hidden input on text change
+                quill.on('text-change', function() {
+                    bioInput.value = quill.root.innerHTML;
+                });
+
+                // Update hidden input before form submission
+                var form = document.querySelector('form[action="{{ route('profile.update') }}"]');
+                if (form) {
+                    form.addEventListener('submit', function() {
+                        bioInput.value = quill.root.innerHTML;
+                    });
+                }
+            });
+        </script>
+        @endpush
 
         <div>
             <x-input-label for="email" :value="__('Email')" />
