@@ -23,7 +23,8 @@
     @include('partials.portfolio-styles', ['user' => $user ?? null])
 </head>
 <body class="font-sans antialiased">
-    <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100 dark:bg-gray-900">
+    @php($canPortfolio = isset($user) && method_exists($user,'canUseCustomizations') && $user->canUseCustomizations())
+    <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 {{ $canPortfolio ? '' : 'bg-gray-100 dark:bg-gray-900' }}">
         <div>
             <a href="/">
                 @if(isset($user) && ($user->logo_path || $user->logo_thumb_path) && isset($logoUrl))
@@ -33,9 +34,9 @@
                 @endif
             </a>
         </div>
-        <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white dark:bg-gray-800 shadow-md overflow-hidden sm:rounded-lg guest-card">
+        <main class="portfolio-content w-full sm:max-w-md mt-6 px-6 py-4 bg-white dark:bg-gray-800 shadow-md overflow-hidden sm:rounded-lg guest-card">
             {{ $slot }}
-        </div>
+        </main>
     </div>
 
     @include('partials.portfolio-debug', ['user' => $user ?? null])
