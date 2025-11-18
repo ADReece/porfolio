@@ -14,9 +14,8 @@
                 <div class="p-6 bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 shadow-lg sm:rounded-lg border-2 border-indigo-200 dark:border-indigo-700">
                     <div class="flex items-center justify-between">
                         <div>
-                            <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2 flex items-center gap-2">
+                            <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
                                 🎨 Customize Your Portfolio
-                                <span class="px-2 py-0.5 text-xs rounded bg-green-100 text-green-700 dark:bg-green-800 dark:text-green-200">Subscriber</span>
                             </h3>
                             <p class="text-sm text-gray-600 dark:text-gray-400">
                                 Personalize fonts, colors, themes, logo branding, and watermarks for your public portfolio.

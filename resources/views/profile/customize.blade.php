@@ -43,9 +43,7 @@
                     <div class="mb-8 border-t border-gray-200 dark:border-gray-700 pt-8">
                         <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200 flex items-center gap-2 mb-4">
                             <span>Image Watermarking</span>
-                            @if($user->hasFeature('watermarking') || $user->isFeatureOverrideActive())
-                                <span class="px-2 py-0.5 text-xs rounded bg-green-100 text-green-700 dark:bg-green-800 dark:text-green-200">Subscriber</span>
-                            @else
+                            @if(!($user->hasFeature('watermarking') || $user->isFeatureOverrideActive()))
                                 <span class="px-2 py-0.5 text-xs rounded bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-300">Locked</span>
                             @endif
                         </h3>

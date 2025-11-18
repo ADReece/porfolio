@@ -1,9 +1,7 @@
 <div class="space-y-4">
     <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200 flex items-center gap-2">
         <span>Brand Logo</span>
-        @if($canUpload)
-            <span class="px-2 py-0.5 text-xs rounded bg-green-100 text-green-700 dark:bg-green-800 dark:text-green-200">Subscriber</span>
-        @else
+        @if(!$canUpload)
             <span class="px-2 py-0.5 text-xs rounded bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-300">Locked</span>
         @endif
     </h3>
