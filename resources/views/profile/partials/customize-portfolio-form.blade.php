@@ -256,63 +256,6 @@
         </div>
     </div>
 
-    <!-- Quick Presets -->
-    <div class="border-b pb-6 dark:border-gray-700">
-        <h3 class="text-md font-semibold text-gray-900 dark:text-gray-100 mb-4">
-            🎯 Quick Presets
-        </h3>
-
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-            <button type="button" class="preset-btn p-4 rounded-lg border-2 border-gray-300 dark:border-gray-600 hover:border-indigo-500 transition-all"
-                    data-preset='{"theme":"light","accent":"#6366F1","bg":"#FFFFFF","text":"#1F2937","heading":"#111827"}'>
-                <div class="w-full h-8 rounded mb-2 bg-white border"></div>
-                <div class="text-xs font-medium">Classic Light</div>
-            </button>
-
-            <button type="button" class="preset-btn p-4 rounded-lg border-2 border-gray-300 dark:border-gray-600 hover:border-indigo-500 transition-all"
-                    data-preset='{"theme":"dark","accent":"#818CF8","bg":"#111827","text":"#F3F4F6","heading":"#F9FAFB"}'>
-                <div class="w-full h-8 rounded mb-2 bg-gray-900 border border-gray-700"></div>
-                <div class="text-xs font-medium">Classic Dark</div>
-            </button>
-
-            <button type="button" class="preset-btn p-4 rounded-lg border-2 border-gray-300 dark:border-gray-600 hover:border-rose-500 transition-all"
-                    data-preset='{"theme":"light","accent":"#E11D48","bg":"#FFF1F2","text":"#881337","heading":"#4C0519"}'>
-                <div class="w-full h-8 rounded mb-2 bg-rose-50 border border-rose-200"></div>
-                <div class="text-xs font-medium">Rose Garden</div>
-            </button>
-
-            <button type="button" class="preset-btn p-4 rounded-lg border-2 border-gray-300 dark:border-gray-600 hover:border-emerald-500 transition-all"
-                    data-preset='{"theme":"dark","accent":"#10B981","bg":"#064E3B","text":"#D1FAE5","heading":"#ECFDF5"}'>
-                <div class="w-full h-8 rounded mb-2 bg-emerald-900 border border-emerald-700"></div>
-                <div class="text-xs font-medium">Forest Night</div>
-            </button>
-
-            <button type="button" class="preset-btn p-4 rounded-lg border-2 border-gray-300 dark:border-gray-600 hover:border-amber-500 transition-all"
-                    data-preset='{"theme":"light","accent":"#F59E0B","bg":"#FFFBEB","text":"#78350F","heading":"#451A03"}'>
-                <div class="w-full h-8 rounded mb-2 bg-amber-50 border border-amber-200"></div>
-                <div class="text-xs font-medium">Golden Hour</div>
-            </button>
-
-            <button type="button" class="preset-btn p-4 rounded-lg border-2 border-gray-300 dark:border-gray-600 hover:border-purple-500 transition-all"
-                    data-preset='{"theme":"dark","accent":"#A855F7","bg":"#1E1B4B","text":"#E9D5FF","heading":"#F3E8FF"}'>
-                <div class="w-full h-8 rounded mb-2 bg-purple-950 border border-purple-800"></div>
-                <div class="text-xs font-medium">Purple Dream</div>
-            </button>
-
-            <button type="button" class="preset-btn p-4 rounded-lg border-2 border-gray-300 dark:border-gray-600 hover:border-slate-500 transition-all"
-                    data-preset='{"theme":"light","accent":"#0F172A","bg":"#F8FAFC","text":"#475569","heading":"#0F172A"}'>
-                <div class="w-full h-8 rounded mb-2 bg-slate-50 border border-slate-200"></div>
-                <div class="text-xs font-medium">Minimal Gray</div>
-            </button>
-
-            <button type="button" class="preset-btn p-4 rounded-lg border-2 border-gray-300 dark:border-gray-600 hover:border-cyan-500 transition-all"
-                    data-preset='{"theme":"dark","accent":"#06B6D4","bg":"#083344","text":"#CFFAFE","heading":"#ECFEFF"}'>
-                <div class="w-full h-8 rounded mb-2 bg-cyan-950 border border-cyan-800"></div>
-                <div class="text-xs font-medium">Ocean Deep</div>
-            </button>
-        </div>
-    </div>
-
     <!-- Reset Button -->
     <div class="flex items-center justify-between">
         <button type="button" id="reset-defaults" class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 underline">

@@ -54,6 +54,88 @@
                         </div>
                     </div>
 
+                    <!-- Quick Presets (Collapsible) -->
+                    <div class="mb-8" x-data="{ presetsOpen: false }">
+                        <button type="button" @click="presetsOpen = !presetsOpen"
+                                class="w-full flex items-center justify-between p-4 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 rounded-lg border border-indigo-200 dark:border-indigo-700 hover:border-indigo-300 dark:hover:border-indigo-600 transition-all">
+                            <div class="flex items-center gap-3">
+                                <span class="text-2xl">🎯</span>
+                                <div class="text-left">
+                                    <h3 class="text-md font-semibold text-gray-900 dark:text-gray-100">
+                                        Quick Style Presets
+                                    </h3>
+                                    <p class="text-xs text-gray-600 dark:text-gray-400">
+                                        Apply professionally designed color schemes instantly
+                                    </p>
+                                </div>
+                            </div>
+                            <svg class="w-5 h-5 text-gray-600 dark:text-gray-400 transition-transform"
+                                 :class="{ 'rotate-180': presetsOpen }"
+                                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </button>
+
+                        <div x-show="presetsOpen"
+                             x-collapse
+                             class="mt-4 p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                                <button type="button" class="preset-btn p-4 rounded-lg border-2 border-gray-300 dark:border-gray-600 hover:border-indigo-500 transition-all"
+                                        data-preset='{"theme":"light","accent":"#6366F1","bg":"#FFFFFF","text":"#1F2937","heading":"#111827"}'>
+                                    <div class="w-full h-8 rounded mb-2 bg-white border"></div>
+                                    <div class="text-xs font-medium">Classic Light</div>
+                                </button>
+
+                                <button type="button" class="preset-btn p-4 rounded-lg border-2 border-gray-300 dark:border-gray-600 hover:border-indigo-500 transition-all"
+                                        data-preset='{"theme":"dark","accent":"#818CF8","bg":"#111827","text":"#F3F4F6","heading":"#F9FAFB"}'>
+                                    <div class="w-full h-8 rounded mb-2 bg-gray-900 border border-gray-700"></div>
+                                    <div class="text-xs font-medium">Classic Dark</div>
+                                </button>
+
+                                <button type="button" class="preset-btn p-4 rounded-lg border-2 border-gray-300 dark:border-gray-600 hover:border-rose-500 transition-all"
+                                        data-preset='{"theme":"light","accent":"#E11D48","bg":"#FFF1F2","text":"#881337","heading":"#4C0519"}'>
+                                    <div class="w-full h-8 rounded mb-2 bg-rose-50 border border-rose-200"></div>
+                                    <div class="text-xs font-medium">Rose Garden</div>
+                                </button>
+
+                                <button type="button" class="preset-btn p-4 rounded-lg border-2 border-gray-300 dark:border-gray-600 hover:border-emerald-500 transition-all"
+                                        data-preset='{"theme":"dark","accent":"#10B981","bg":"#064E3B","text":"#D1FAE5","heading":"#ECFDF5"}'>
+                                    <div class="w-full h-8 rounded mb-2 bg-emerald-900 border border-emerald-700"></div>
+                                    <div class="text-xs font-medium">Forest Night</div>
+                                </button>
+
+                                <button type="button" class="preset-btn p-4 rounded-lg border-2 border-gray-300 dark:border-gray-600 hover:border-amber-500 transition-all"
+                                        data-preset='{"theme":"light","accent":"#F59E0B","bg":"#FFFBEB","text":"#78350F","heading":"#451A03"}'>
+                                    <div class="w-full h-8 rounded mb-2 bg-amber-50 border border-amber-200"></div>
+                                    <div class="text-xs font-medium">Golden Hour</div>
+                                </button>
+
+                                <button type="button" class="preset-btn p-4 rounded-lg border-2 border-gray-300 dark:border-gray-600 hover:border-purple-500 transition-all"
+                                        data-preset='{"theme":"dark","accent":"#A855F7","bg":"#1E1B4B","text":"#E9D5FF","heading":"#F3E8FF"}'>
+                                    <div class="w-full h-8 rounded mb-2 bg-purple-950 border border-purple-800"></div>
+                                    <div class="text-xs font-medium">Purple Dream</div>
+                                </button>
+
+                                <button type="button" class="preset-btn p-4 rounded-lg border-2 border-gray-300 dark:border-gray-600 hover:border-slate-500 transition-all"
+                                        data-preset='{"theme":"light","accent":"#0F172A","bg":"#F8FAFC","text":"#475569","heading":"#0F172A"}'>
+                                    <div class="w-full h-8 rounded mb-2 bg-slate-50 border border-slate-200"></div>
+                                    <div class="text-xs font-medium">Minimal Gray</div>
+                                </button>
+
+                                <button type="button" class="preset-btn p-4 rounded-lg border-2 border-gray-300 dark:border-gray-600 hover:border-cyan-500 transition-all"
+                                        data-preset='{"theme":"dark","accent":"#06B6D4","bg":"#083344","text":"#CFFAFE","heading":"#ECFEFF"}'>
+                                    <div class="w-full h-8 rounded mb-2 bg-cyan-950 border border-cyan-800"></div>
+                                    <div class="text-xs font-medium">Ocean Deep</div>
+                                </button>
+                            </div>
+                            <div class="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                                <p class="text-xs text-blue-800 dark:text-blue-200">
+                                    <strong>💡 Tip:</strong> Click a preset to apply it instantly to your portfolio. You can fine-tune the settings below after applying.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Customization Form -->
                     @include('profile.partials.customize-portfolio-form')
 
