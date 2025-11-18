@@ -60,6 +60,9 @@ class ProfileController extends Controller
             'portfolio_background_color' => 'nullable|regex:/^#([A-Fa-f0-9]{6})$/',
             'portfolio_text_color' => 'nullable|regex:/^#([A-Fa-f0-9]{6})$/',
             'portfolio_heading_color' => 'nullable|regex:/^#([A-Fa-f0-9]{6})$/',
+            'portfolio_display_mode' => 'nullable|in:grid,collections',
+            'masonry_columns' => 'nullable|integer|min:2|max:6',
+            'photos_per_page' => 'nullable|integer|min:10|max:100',
         ]);
 
         $request->user()->update([
@@ -69,6 +72,9 @@ class ProfileController extends Controller
             'portfolio_background_color' => $validated['portfolio_background_color'] ?? null,
             'portfolio_text_color' => $validated['portfolio_text_color'] ?? null,
             'portfolio_heading_color' => $validated['portfolio_heading_color'] ?? null,
+            'portfolio_display_mode' => $validated['portfolio_display_mode'] ?? $request->user()->portfolio_display_mode,
+            'masonry_columns' => $validated['masonry_columns'] ?? $request->user()->masonry_columns,
+            'photos_per_page' => $validated['photos_per_page'] ?? $request->user()->photos_per_page,
         ]);
 
         return Redirect::route('profile.customize')->with('status', 'portfolio-customized');
@@ -194,10 +200,10 @@ class ProfileController extends Controller
         if($collection->private){
             $password = $request->get('password');
             if(is_null($password)){
-                return view('collections.frontend.password', ['collection' => $collection]);
+                return view('collections.frontend.password', ['collection' => $collection, 'user' => $user]);
             }
             if(!password_verify($password, $collection->password)){
-                return view('collections.frontend.password', ['collection' => $collection])->withErrors(['password' => 'Invalid Password']);
+                return view('collections.frontend.password', ['collection' => $collection, 'user' => $user])->withErrors(['password' => 'Invalid Password']);
             }
         }
 
@@ -212,7 +218,7 @@ class ProfileController extends Controller
             }]);
         }]);
 
-        return view('collections.frontend.show', ['collection' => $collection]);
+        return view('collections.frontend.show', ['collection' => $collection, 'user' => $user]);
     }
 
 }

@@ -1,4 +1,4 @@
-<x-collection-layout>
+<x-collection-layout :user="$user">
     <!-- Full-Page Loading Spinner -->
     <div id="collection-loader" class="fixed inset-0 bg-gray-900 dark:bg-black z-50 flex items-center justify-center">
         <div class="text-center">

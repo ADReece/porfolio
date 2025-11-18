@@ -144,60 +144,115 @@
         </div>
     </div>
 
-    <!-- Quick Presets -->
+    <!-- Layout & Display Settings -->
     <div class="border-b pb-6 dark:border-gray-700">
         <h3 class="text-md font-semibold text-gray-900 dark:text-gray-100 mb-4">
-            🎯 Quick Presets
+            📐 Layout & Grid Settings
         </h3>
 
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-            <button type="button" class="preset-btn p-4 rounded-lg border-2 border-gray-300 dark:border-gray-600 hover:border-indigo-500 transition-all"
-                    data-preset='{"theme":"light","accent":"#6366F1","bg":"#FFFFFF","text":"#1F2937","heading":"#111827"}'>
-                <div class="w-full h-8 rounded mb-2 bg-white border"></div>
-                <div class="text-xs font-medium">Classic Light</div>
-            </button>
+        <!-- Display Mode -->
+        <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                {{ __('Portfolio Display Mode') }}
+            </label>
 
-            <button type="button" class="preset-btn p-4 rounded-lg border-2 border-gray-300 dark:border-gray-600 hover:border-indigo-500 transition-all"
-                    data-preset='{"theme":"dark","accent":"#818CF8","bg":"#111827","text":"#F3F4F6","heading":"#F9FAFB"}'>
-                <div class="w-full h-8 rounded mb-2 bg-gray-900 border border-gray-700"></div>
-                <div class="text-xs font-medium">Classic Dark</div>
-            </button>
+            <div class="space-y-4">
+                <!-- Grid Option -->
+                <label class="relative flex items-start p-4 border rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition {{ (old('portfolio_display_mode', auth()->user()->portfolio_display_mode ?? 'grid')) === 'grid' ? 'border-indigo-600 bg-indigo-50 dark:bg-indigo-900/20' : 'border-gray-300 dark:border-gray-600' }}">
+                    <input type="radio" name="portfolio_display_mode" value="grid"
+                           {{ (old('portfolio_display_mode', auth()->user()->portfolio_display_mode ?? 'grid')) === 'grid' ? 'checked' : '' }}
+                           class="mt-1 h-4 w-4 text-indigo-600 focus:ring-indigo-600">
+                    <div class="ml-3">
+                        <span class="block text-sm font-semibold text-gray-900 dark:text-white">
+                            Masonry Grid
+                        </span>
+                        <span class="block text-sm text-gray-500 dark:text-gray-400 mt-1">
+                            Display all your public photos in a beautiful masonry grid layout. Great for showcasing your full portfolio at a glance.
+                        </span>
+                        <div class="mt-2 flex items-center gap-2">
+                            <div class="grid grid-cols-3 gap-1 w-24 h-16 bg-gray-200 dark:bg-gray-600 rounded p-1">
+                                <div class="bg-gray-400 dark:bg-gray-400 rounded"></div>
+                                <div class="bg-gray-400 dark:bg-gray-400 rounded row-span-2"></div>
+                                <div class="bg-gray-400 dark:bg-gray-400 rounded"></div>
+                                <div class="bg-gray-400 dark:bg-gray-400 rounded"></div>
+                                <div class="bg-gray-400 dark:bg-gray-400 rounded"></div>
+                            </div>
+                        </div>
+                    </div>
+                </label>
 
-            <button type="button" class="preset-btn p-4 rounded-lg border-2 border-gray-300 dark:border-gray-600 hover:border-rose-500 transition-all"
-                    data-preset='{"theme":"light","accent":"#E11D48","bg":"#FFF1F2","text":"#881337","heading":"#4C0519"}'>
-                <div class="w-full h-8 rounded mb-2 bg-rose-50 border border-rose-200"></div>
-                <div class="text-xs font-medium">Rose Garden</div>
-            </button>
+                <!-- Collections Option -->
+                <label class="relative flex items-start p-4 border rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition {{ (old('portfolio_display_mode', auth()->user()->portfolio_display_mode ?? 'grid')) === 'collections' ? 'border-indigo-600 bg-indigo-50 dark:bg-indigo-900/20' : 'border-gray-300 dark:border-gray-600' }}">
+                    <input type="radio" name="portfolio_display_mode" value="collections"
+                           {{ (old('portfolio_display_mode', auth()->user()->portfolio_display_mode ?? 'grid')) === 'collections' ? 'checked' : '' }}
+                           class="mt-1 h-4 w-4 text-indigo-600 focus:ring-indigo-600">
+                    <div class="ml-3">
+                        <span class="block text-sm font-semibold text-gray-900 dark:text-white">
+                            Collections View
+                        </span>
+                        <span class="block text-sm text-gray-500 dark:text-gray-400 mt-1">
+                            Display your collections as individual galleries with cover photos. Perfect for organizing work by project or event.
+                        </span>
+                        <div class="mt-2 flex items-center gap-2">
+                            <div class="grid grid-cols-2 gap-1 w-24 h-16 bg-gray-200 dark:bg-gray-600 rounded p-1">
+                                <div class="bg-gray-400 dark:bg-gray-400 rounded"></div>
+                                <div class="bg-gray-400 dark:bg-gray-400 rounded"></div>
+                                <div class="bg-gray-400 dark:bg-gray-400 rounded"></div>
+                                <div class="bg-gray-400 dark:bg-gray-400 rounded"></div>
+                            </div>
+                        </div>
+                    </div>
+                </label>
+            </div>
+            <x-input-error class="mt-2" :messages="$errors->get('portfolio_display_mode')" />
+        </div>
 
-            <button type="button" class="preset-btn p-4 rounded-lg border-2 border-gray-300 dark:border-gray-600 hover:border-emerald-500 transition-all"
-                    data-preset='{"theme":"dark","accent":"#10B981","bg":"#064E3B","text":"#D1FAE5","heading":"#ECFDF5"}'>
-                <div class="w-full h-8 rounded mb-2 bg-emerald-900 border border-emerald-700"></div>
-                <div class="text-xs font-medium">Forest Night</div>
-            </button>
+        <!-- Grid Settings -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Masonry Columns -->
+            <div>
+                <label for="masonry_columns" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    {{ __('Masonry Grid Columns') }}
+                </label>
+                <select name="masonry_columns" id="masonry_columns"
+                        class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100">
+                    <option value="2" {{ (old('masonry_columns', auth()->user()->masonry_columns ?? 4)) == 2 ? 'selected' : '' }}>2 Columns (Mobile-like)</option>
+                    <option value="3" {{ (old('masonry_columns', auth()->user()->masonry_columns ?? 4)) == 3 ? 'selected' : '' }}>3 Columns</option>
+                    <option value="4" {{ (old('masonry_columns', auth()->user()->masonry_columns ?? 4)) == 4 ? 'selected' : '' }}>4 Columns (Default)</option>
+                    <option value="5" {{ (old('masonry_columns', auth()->user()->masonry_columns ?? 4)) == 5 ? 'selected' : '' }}>5 Columns</option>
+                    <option value="6" {{ (old('masonry_columns', auth()->user()->masonry_columns ?? 4)) == 6 ? 'selected' : '' }}>6 Columns (Dense)</option>
+                </select>
+                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                    Number of columns in the masonry grid layout. Desktop only - mobile always uses 2.
+                </p>
+                <x-input-error class="mt-2" :messages="$errors->get('masonry_columns')" />
+            </div>
 
-            <button type="button" class="preset-btn p-4 rounded-lg border-2 border-gray-300 dark:border-gray-600 hover:border-amber-500 transition-all"
-                    data-preset='{"theme":"light","accent":"#F59E0B","bg":"#FFFBEB","text":"#78350F","heading":"#451A03"}'>
-                <div class="w-full h-8 rounded mb-2 bg-amber-50 border border-amber-200"></div>
-                <div class="text-xs font-medium">Golden Hour</div>
-            </button>
+            <!-- Photos Per Page -->
+            <div>
+                <label for="photos_per_page" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    {{ __('Photos Per Load') }}
+                </label>
+                <select name="photos_per_page" id="photos_per_page"
+                        class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100">
+                    <option value="10" {{ (old('photos_per_page', auth()->user()->photos_per_page ?? 20)) == 10 ? 'selected' : '' }}>10 Photos (Fast)</option>
+                    <option value="20" {{ (old('photos_per_page', auth()->user()->photos_per_page ?? 20)) == 20 ? 'selected' : '' }}>20 Photos (Default)</option>
+                    <option value="30" {{ (old('photos_per_page', auth()->user()->photos_per_page ?? 20)) == 30 ? 'selected' : '' }}>30 Photos</option>
+                    <option value="40" {{ (old('photos_per_page', auth()->user()->photos_per_page ?? 20)) == 40 ? 'selected' : '' }}>40 Photos</option>
+                    <option value="50" {{ (old('photos_per_page', auth()->user()->photos_per_page ?? 20)) == 50 ? 'selected' : '' }}>50 Photos (Slower)</option>
+                    <option value="100" {{ (old('photos_per_page', auth()->user()->photos_per_page ?? 20)) == 100 ? 'selected' : '' }}>100 Photos (Debug)</option>
+                </select>
+                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                    Number of photos loaded at once during infinite scroll. Higher = slower initial load but fewer requests.
+                </p>
+                <x-input-error class="mt-2" :messages="$errors->get('photos_per_page')" />
+            </div>
+        </div>
 
-            <button type="button" class="preset-btn p-4 rounded-lg border-2 border-gray-300 dark:border-gray-600 hover:border-purple-500 transition-all"
-                    data-preset='{"theme":"dark","accent":"#A855F7","bg":"#1E1B4B","text":"#E9D5FF","heading":"#F3E8FF"}'>
-                <div class="w-full h-8 rounded mb-2 bg-purple-950 border border-purple-800"></div>
-                <div class="text-xs font-medium">Purple Dream</div>
-            </button>
-
-            <button type="button" class="preset-btn p-4 rounded-lg border-2 border-gray-300 dark:border-gray-600 hover:border-slate-500 transition-all"
-                    data-preset='{"theme":"light","accent":"#0F172A","bg":"#F8FAFC","text":"#475569","heading":"#0F172A"}'>
-                <div class="w-full h-8 rounded mb-2 bg-slate-50 border border-slate-200"></div>
-                <div class="text-xs font-medium">Minimal Gray</div>
-            </button>
-
-            <button type="button" class="preset-btn p-4 rounded-lg border-2 border-gray-300 dark:border-gray-600 hover:border-cyan-500 transition-all"
-                    data-preset='{"theme":"dark","accent":"#06B6D4","bg":"#083344","text":"#CFFAFE","heading":"#ECFEFF"}'>
-                <div class="w-full h-8 rounded mb-2 bg-cyan-950 border border-cyan-800"></div>
-                <div class="text-xs font-medium">Ocean Deep</div>
-            </button>
+        <div class="mt-4 p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
+            <p class="text-xs text-amber-800 dark:text-amber-200">
+                <strong>⚡ Performance Tip:</strong> More columns = more visual density. More photos per load = fewer server requests but slower initial loading. Find your balance!
+            </p>
         </div>
     </div>
 
