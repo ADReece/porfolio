@@ -47,36 +47,56 @@
         <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
         <script>
             document.addEventListener('DOMContentLoaded', function() {
-                var quill = new Quill('#bio-editor', {
-                    theme: 'snow',
-                    placeholder: 'Tell your visitors about yourself...',
-                    modules: {
-                        toolbar: [
-                            ['bold', 'italic', 'underline'],
-                            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                            ['link'],
-                            ['clean']
-                        ]
+                try {
+                    // Check if Quill editor container exists
+                    var editorContainer = document.getElementById('bio-editor');
+                    var bioInput = document.getElementById('bio');
+
+                    if (!editorContainer || !bioInput) {
+                        console.warn('Quill editor elements not found');
+                        return;
                     }
-                });
 
-                // Set initial content
-                var bioInput = document.getElementById('bio');
-                if (bioInput.value) {
-                    quill.root.innerHTML = bioInput.value;
-                }
+                    // Initialize Quill
+                    var quill = new Quill('#bio-editor', {
+                        theme: 'snow',
+                        placeholder: 'Tell your visitors about yourself...',
+                        modules: {
+                            toolbar: [
+                                ['bold', 'italic', 'underline'],
+                                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                                ['link'],
+                                ['clean']
+                            ]
+                        }
+                    });
 
-                // Update hidden input on text change
-                quill.on('text-change', function() {
-                    bioInput.value = quill.root.innerHTML;
-                });
+                    // Set initial content
+                    if (bioInput.value) {
+                        quill.root.innerHTML = bioInput.value;
+                    }
 
-                // Update hidden input before form submission
-                var form = document.querySelector('form[action="{{ route('profile.update') }}"]');
-                if (form) {
-                    form.addEventListener('submit', function() {
+                    // Update hidden input on text change
+                    quill.on('text-change', function() {
                         bioInput.value = quill.root.innerHTML;
                     });
+
+                    // Update hidden input before form submission
+                    var form = document.querySelector('form[action="{{ route('profile.update') }}"]');
+                    if (form) {
+                        form.addEventListener('submit', function(e) {
+                            bioInput.value = quill.root.innerHTML;
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error initializing Quill editor:', error);
+                    // Fallback: show the hidden input as a textarea if Quill fails
+                    var bioInput = document.getElementById('bio');
+                    if (bioInput) {
+                        bioInput.type = 'text';
+                        bioInput.classList.remove('hidden');
+                        bioInput.style.display = 'block';
+                    }
                 }
             });
         </script>
