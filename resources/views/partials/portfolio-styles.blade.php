@@ -58,6 +58,15 @@
         .portfolio-accent, a.portfolio-link, a[href^="/@"]:not(.no-accent) { color: var(--portfolio-accent) !important; }
         .portfolio-button, button.portfolio-button, .portfolio-bg-accent { background: var(--portfolio-accent) !important; border-color: var(--portfolio-accent) !important; color:#fff !important; }
         .portfolio-button:hover, button.portfolio-button:hover { filter: brightness(.92); }
+        /* Form element styling */
+        main.portfolio-content button, main.portfolio-content .inline-flex.items-center {
+            background: var(--portfolio-accent) !important;
+            border-color: var(--portfolio-accent) !important;
+            color: #fff !important;
+        }
+        main.portfolio-content button:hover, main.portfolio-content .inline-flex.items-center:hover {
+            filter: brightness(.92);
+        }
         /* Hero overlay helper */
         .portfolio-hero-overlay {
             background: linear-gradient(180deg,var(--portfolio-accent-overlay-start),var(--portfolio-accent-overlay-mid),var(--portfolio-accent-overlay-end));
@@ -68,12 +77,26 @@
             header.portfolio-header, main.portfolio-content { background: var(--portfolio-bg-light) !important; color: var(--portfolio-text-light) !important; }
             header.portfolio-header h1, header.portfolio-header h2, header.portfolio-header h3, header.portfolio-header h4, header.portfolio-header h5, header.portfolio-header h6,
             main.portfolio-content h1, main.portfolio-content h2, main.portfolio-content h3, main.portfolio-content h4, main.portfolio-content h5, main.portfolio-content h6 { color: var(--portfolio-heading-light) !important; }
+            /* Input fields */
+            main.portfolio-content input[type="text"], main.portfolio-content input[type="password"], main.portfolio-content input[type="email"], main.portfolio-content textarea, main.portfolio-content select {
+                background: #fff !important;
+                color: var(--portfolio-text-light) !important;
+                border-color: rgba(0,0,0,0.2) !important;
+            }
+            main.portfolio-content label { color: var(--portfolio-text-light) !important; }
         @elseif($theme === 'dark')
             html { color-scheme: dark; }
             body { background: var(--portfolio-bg-dark) !important; color: var(--portfolio-text-dark) !important; }
             header.portfolio-header, main.portfolio-content { background: var(--portfolio-bg-dark) !important; color: var(--portfolio-text-dark) !important; }
             header.portfolio-header h1, header.portfolio-header h2, header.portfolio-header h3, header.portfolio-header h4, header.portfolio-header h5, header.portfolio-header h6,
             main.portfolio-content h1, main.portfolio-content h2, main.portfolio-content h3, main.portfolio-content h4, main.portfolio-content h5, main.portfolio-content h6 { color: var(--portfolio-heading-dark) !important; }
+            /* Input fields */
+            main.portfolio-content input[type="text"], main.portfolio-content input[type="password"], main.portfolio-content input[type="email"], main.portfolio-content textarea, main.portfolio-content select {
+                background: rgba(255,255,255,0.1) !important;
+                color: var(--portfolio-text-dark) !important;
+                border-color: rgba(255,255,255,0.2) !important;
+            }
+            main.portfolio-content label { color: var(--portfolio-text-dark) !important; }
         @else
             /* Auto theme - respect system preference with custom or default colors */
             @media (prefers-color-scheme: light){
@@ -81,12 +104,24 @@
                 header.portfolio-header, main.portfolio-content { background: var(--portfolio-bg-light) !important; color: var(--portfolio-text-light) !important; }
                 header.portfolio-header h1, header.portfolio-header h2, header.portfolio-header h3, header.portfolio-header h4, header.portfolio-header h5, header.portfolio-header h6,
                 main.portfolio-content h1, main.portfolio-content h2, main.portfolio-content h3, main.portfolio-content h4, main.portfolio-content h5, main.portfolio-content h6 { color: var(--portfolio-heading-light) !important; }
+                main.portfolio-content input[type="text"], main.portfolio-content input[type="password"], main.portfolio-content input[type="email"], main.portfolio-content textarea, main.portfolio-content select {
+                    background: #fff !important;
+                    color: var(--portfolio-text-light) !important;
+                    border-color: rgba(0,0,0,0.2) !important;
+                }
+                main.portfolio-content label { color: var(--portfolio-text-light) !important; }
             }
             @media (prefers-color-scheme: dark){
                 body { background: var(--portfolio-bg-dark) !important; color: var(--portfolio-text-dark) !important; }
                 header.portfolio-header, main.portfolio-content { background: var(--portfolio-bg-dark) !important; color: var(--portfolio-text-dark) !important; }
                 header.portfolio-header h1, header.portfolio-header h2, header.portfolio-header h3, header.portfolio-header h4, header.portfolio-header h5, header.portfolio-header h6,
                 main.portfolio-content h1, main.portfolio-content h2, main.portfolio-content h3, main.portfolio-content h4, main.portfolio-content h5, main.portfolio-content h6 { color: var(--portfolio-heading-dark) !important; }
+                main.portfolio-content input[type="text"], main.portfolio-content input[type="password"], main.portfolio-content input[type="email"], main.portfolio-content textarea, main.portfolio-content select {
+                    background: rgba(255,255,255,0.1) !important;
+                    color: var(--portfolio-text-dark) !important;
+                    border-color: rgba(255,255,255,0.2) !important;
+                }
+                main.portfolio-content label { color: var(--portfolio-text-dark) !important; }
             }
         @endif
     </style>
