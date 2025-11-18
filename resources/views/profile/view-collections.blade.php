@@ -2,6 +2,11 @@
 
     <x-slot name="header">
         <div class="flex flex-col items-center lg:mt-32">
+            @if($user->logo_path)
+                <div class="flex justify-center mb-6">
+                    <img src="{{ $user->logoUrl() }}" alt="Logo" class="h-20 object-contain drop-shadow" />
+                </div>
+            @endif
             <h2 class="font-bold text-3xl text-gray-900 dark:text-gray-100">
                 {{ $user->name ?? $user->username }}
             </h2>

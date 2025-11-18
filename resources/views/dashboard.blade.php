@@ -70,7 +70,12 @@
                         <div class="flex-1">
                             <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Subscription</h3>
                             @if($isSubscribed)
-                                <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Current Plan: <span class="font-medium text-gray-900 dark:text-gray-100">{{ $plan->name ?? '—' }}</span></p>
+                                <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                                    Current Plan: <span class="font-medium text-gray-900 dark:text-gray-100">{{ $plan->name ?? '—' }}</span>
+                                    @if($user->isFeatureOverrideActive())
+                                        <span class="ml-2 px-2 py-0.5 text-xs rounded-full bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300">Unlimited Access</span>
+                                    @endif
+                                </p>
                                 <p class="text-sm text-gray-600 dark:text-gray-400">Status:
                                     @if($onGrace)
                                         <span class="text-yellow-700 dark:text-yellow-400 font-medium">Cancels on {{ optional($subscription->ends_at)->toDayDateTimeString() }}</span>
@@ -78,7 +83,9 @@
                                         <span class="text-green-700 dark:text-green-400 font-medium">Active</span>
                                     @endif
                                 </p>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">Next Billing: <span class="font-medium">{{ $nextBilling ? $nextBilling->toDayDateTimeString() : '—' }}</span></p>
+                                @if(!$user->isFeatureOverrideActive())
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">Next Billing: <span class="font-medium">{{ $nextBilling ? $nextBilling->toDayDateTimeString() : '—' }}</span></p>
+                                @endif
                                 @if($lastInvoice)
                                     @php
                                         $invoiceAmount = (float)$lastInvoice->total() / 100;
@@ -88,8 +95,17 @@
                                     @endif
                                 @endif
                             @else
-                                <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Current Plan: <span class="font-medium text-gray-900 dark:text-gray-100">{{ $plan->name ?? 'Free' }}</span></p>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">You're not currently subscribed. Explore paid plans to unlock premium features.</p>
+                                <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                                    Current Plan: <span class="font-medium text-gray-900 dark:text-gray-100">{{ $plan->name ?? 'Free' }}</span>
+                                    @if($user->isFeatureOverrideActive())
+                                        <span class="ml-2 px-2 py-0.5 text-xs rounded-full bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300">Unlimited Access</span>
+                                    @endif
+                                </p>
+                                @if(!$user->isFeatureOverrideActive())
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">You're not currently subscribed. Explore paid plans to unlock premium features.</p>
+                                @else
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">You have unlimited access to all features.</p>
+                                @endif
                             @endif
                         </div>
                         <div class="flex flex-wrap items-center gap-3">

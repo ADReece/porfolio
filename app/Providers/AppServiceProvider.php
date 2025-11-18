@@ -5,6 +5,8 @@ namespace App\Providers;
 use App\Models\User;
 use App\Observers\UserObserver;
 use Illuminate\Support\ServiceProvider;
+use Livewire\Livewire;
+use App\Http\Livewire\LogoUploader;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -32,5 +34,7 @@ class AppServiceProvider extends ServiceProvider
             $currencySymbol = \App\Models\Setting::where('key', 'currency_symbol')->value('value') ?? '£';
             $view->with('currencySymbol', $currencySymbol);
         });
+
+        Livewire::component('logo-uploader', LogoUploader::class);
     }
 }

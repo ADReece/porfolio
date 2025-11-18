@@ -60,8 +60,6 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::get('/profile/customize', [ProfileController::class, 'customize'])->name('profile.customize');
-    Route::patch('/profile/customize', [ProfileController::class, 'updateCustomization'])->name('profile.customize.update');
     Route::patch('/profile/display', [ProfileController::class, 'updateDisplayMode'])->name('profile.update-display');
     Route::patch('/profile/watermark', [ProfileController::class, 'updateWatermark'])->name('profile.watermark.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -97,8 +95,14 @@ Route::middleware('auth')->group(function () {
         Route::post('/bulk-delete', [PhotoController::class, 'bulkDelete'])->name('photos.bulk-delete');
         Route::post('/{photo}/move', [PhotoController::class, 'move'])->name('photos.move');
     });
+
+    Route::delete('/profile/logo', [ProfileController::class, 'removeLogo'])->name('profile.logo.remove');
 });
 
+Route::middleware(['auth','subscription:upload_logo'])->group(function(){
+    Route::get('/profile/customize', [ProfileController::class, 'customize'])->name('profile.customize');
+    Route::patch('/profile/customize', [ProfileController::class, 'updateCustomization'])->name('profile.customize.update');
+});
 
 
 //Public facing Routes

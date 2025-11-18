@@ -4,11 +4,10 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\SubscriptionPlan;
 
 class SubscriptionPlanSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
     /**
      * Run the database seeds.
      */
@@ -31,6 +30,8 @@ class SubscriptionPlanSeeder extends Seeder
                 'selling' => false,
                 'video_upload' => false,
                 'custom_templates' => false,
+                'upload_logo' => false,
+                'can_impersonate' => false,
                 'features' => ['Up to 100 photos', 'Up to 5 collections', 'Public portfolio', 'Basic templates'],
                 'active' => true,
                 'sort_order' => 1,
@@ -52,7 +53,9 @@ class SubscriptionPlanSeeder extends Seeder
                 'selling' => true,
                 'video_upload' => false,
                 'custom_templates' => true,
-                'features' => ['Unlimited photos', 'Unlimited collections', 'Private collections', 'Watermarking', 'Sell photos'],
+                'upload_logo' => true,
+                'can_impersonate' => false,
+                'features' => ['Unlimited photos', 'Unlimited collections', 'Private collections', 'Watermarking', 'Sell photos', 'Logo branding', 'Custom templates'],
                 'active' => true,
                 'sort_order' => 2,
                 'recommended' => true,
@@ -73,7 +76,9 @@ class SubscriptionPlanSeeder extends Seeder
                 'selling' => true,
                 'video_upload' => true,
                 'custom_templates' => true,
-                'features' => ['Everything in Photographer', 'Video upload', 'Video galleries', 'HD streaming'],
+                'upload_logo' => true,
+                'can_impersonate' => false,
+                'features' => ['Everything in Photographer', 'Video upload', 'Video galleries', 'HD streaming', 'Logo branding'],
                 'active' => true,
                 'sort_order' => 3,
                 'recommended' => false,

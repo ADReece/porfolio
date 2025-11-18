@@ -12,6 +12,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Cashier\Billable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Carbon; // for date checks
+use Illuminate\Support\Facades\Cache; // add cache import
 
 class User extends Authenticatable
 {
@@ -48,6 +49,8 @@ class User extends Authenticatable
         'portfolio_background_color',
         'portfolio_text_color',
         'portfolio_heading_color',
+        'logo_path',
+        'logo_thumb_path',
     ];
 
     /**
@@ -133,6 +136,9 @@ class User extends Authenticatable
     // Feature checking methods
     public function hasFeature(string $feature): bool
     {
+        if ($this->is_admin) {
+            return true; // admins can do everything
+        }
         if ($this->isFeatureOverrideActive()) {
             return true; // grant all features
         }
@@ -207,5 +213,48 @@ class User extends Authenticatable
     public function totalPhotoSize(): float
     {
         return $this->photos->sum('size') / 1024000; //(Size is store in Bytes.  /1024k for mb.)
+    }
+    public function logoUrl(): ?string
+    {
+        if (!$this->logo_path && !$this->logo_thumb_path) return null;
+        $key = $this->logo_thumb_path ?: $this->logo_path;
+        return Cache::remember('logo_url_'.$this->id.'_'.$key, 540, function() use ($key) { // cache ~9 minutes
+            try {
+                return \Illuminate\Support\Facades\Storage::disk('s3')->temporaryUrl($key, now()->addMinutes(10));
+            } catch (\Throwable $e) {
+                return asset('favicon.ico');
+            }
+        });
+    }
+
+    public function hasActiveSubscription(): bool
+    {
+        if ($this->is_admin || $this->isFeatureOverrideActive()) {
+            return true;
+        }
+
+        if (!$this->subscriptionPlan) {
+            return false;
+        }
+
+        // Free plan is always "active" (no expiry)
+        if ($this->subscriptionPlan->isFree()) {
+            return true;
+        }
+
+        // Check if user has an active Stripe subscription
+        return $this->subscribed('default');
+    }
+
+    public function canUseCustomizations(): bool
+    {
+        // Grant if override, admin, or plan exposes either custom_templates or upload_logo
+        if ($this->is_admin || $this->isFeatureOverrideActive()) {
+            return true;
+        }
+        if (!$this->subscriptionPlan) {
+            return false;
+        }
+        return $this->subscriptionPlan->hasFeature('custom_templates') || $this->subscriptionPlan->hasFeature('upload_logo');
     }
 }

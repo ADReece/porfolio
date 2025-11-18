@@ -48,13 +48,20 @@
                                         Your subscription is scheduled to cancel
                                     @else
                                         You're subscribed to {{ auth()->user()->subscriptionPlan->name }}
+                                        @if(auth()->user()->isFeatureOverrideActive())
+                                            <span class="ml-2 px-2 py-0.5 text-xs rounded-full bg-green-100 dark:bg-green-800 text-green-700 dark:text-green-200">Unlimited</span>
+                                        @endif
                                     @endif
                                 </h3>
                                 <p class="text-sm text-blue-800 dark:text-blue-200 mt-1">
                                     @if($onGrace)
                                         Your subscription will end on {{ optional($subscription->ends_at)->format('M d, Y') }}. You can resume it anytime before then.
                                     @else
-                                        Next billing date: {{ $nextBilling ? $nextBilling->format('M d, Y') : 'Not available' }}
+                                        @if(auth()->user()->isFeatureOverrideActive())
+                                            You have unlimited access to all features.
+                                        @else
+                                            Next billing date: {{ $nextBilling ? $nextBilling->format('M d, Y') : 'Not available' }}
+                                        @endif
                                     @endif
                                 </p>
                             </div>
@@ -136,7 +143,12 @@
             @auth
                 @if(optional(auth()->user())->subscriptionPlan)
                 <div class="mt-12 bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                    <h3 class="text-xl font-bold mb-4 dark:text-white">Current Plan: {{ auth()->user()->subscriptionPlan->name }}</h3>
+                    <h3 class="text-xl font-bold mb-4 dark:text-white">
+                        Current Plan: {{ auth()->user()->subscriptionPlan->name }}
+                        @if(auth()->user()->isFeatureOverrideActive())
+                            <span class="ml-2 px-3 py-1 text-sm rounded-full bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300">Unlimited Access</span>
+                        @endif
+                    </h3>
 
                     @if(!auth()->user()->subscriptionPlan->isFree())
                     <div class="flex gap-4">
@@ -169,7 +181,9 @@
                             <p class="text-sm text-gray-600 dark:text-gray-400">Photos Used</p>
                             <p class="text-2xl font-bold dark:text-white">
                                 {{ auth()->user()->photos()->count() }}
-                                @if(auth()->user()->subscriptionPlan->photo_limit)
+                                @if(auth()->user()->isFeatureOverrideActive())
+                                    / <span class="text-green-600 dark:text-green-400">Unlimited</span>
+                                @elseif(auth()->user()->subscriptionPlan->photo_limit)
                                     / {{ auth()->user()->subscriptionPlan->photo_limit }}
                                 @else
                                     / Unlimited
@@ -180,7 +194,9 @@
                             <p class="text-sm text-gray-600 dark:text-gray-400">Collections Used</p>
                             <p class="text-2xl font-bold dark:text-white">
                                 {{ auth()->user()->collections()->count() }}
-                                @if(auth()->user()->subscriptionPlan->collection_limit)
+                                @if(auth()->user()->isFeatureOverrideActive())
+                                    / <span class="text-green-600 dark:text-green-400">Unlimited</span>
+                                @elseif(auth()->user()->subscriptionPlan->collection_limit)
                                     / {{ auth()->user()->subscriptionPlan->collection_limit }}
                                 @else
                                     / Unlimited

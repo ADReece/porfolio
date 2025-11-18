@@ -27,13 +27,42 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $user = $request->user();
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        // Only allow specific fields to be updated (exclude username and email)
+        $user->fill($request->only(['name', 'bio', 'phone', 'twitter', 'instagram', 'facebook']));
+
+        $canUploadLogo = $user->hasFeature('upload_logo') || $user->isFeatureOverrideActive();
+
+        // Handle logo upload
+        if ($request->hasFile('logo')) {
+            if (!$canUploadLogo) {
+                return Redirect::route('profile.edit')->withErrors(['logo' => 'Logo uploads are available to subscribers only.']);
+            }
+            $request->validate([
+                'logo' => 'image|mimes:png,jpg,jpeg,webp,svg|max:2048'
+            ]);
+            // Delete old logo if present
+            if ($user->logo_path) {
+                \Storage::disk('s3')->delete($user->logo_path);
+                if ($user->logo_thumb_path) {
+                    \Storage::disk('s3')->delete($user->logo_thumb_path);
+                }
+            }
+            $file = $request->file('logo');
+            $path = $file->store('logos', 's3');
+            $user->logo_path = $path;
+            // Create thumbnail (skip svg)
+            if($file->getClientOriginalExtension() !== 'svg') {
+                $image = \Intervention\Image\ImageManagerStatic::make($file)->resize(160, null, function($constraint){ $constraint->aspectRatio(); $constraint->upsize(); });
+                $thumbName = 'logos/thumb_'.uniqid().'.'.$file->getClientOriginalExtension();
+                \Storage::disk('s3')->put($thumbName, (string) $image->encode());
+                $user->logo_thumb_path = $thumbName;
+            }
         }
 
-        $request->user()->save();
+
+        $user->save();
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
@@ -221,4 +250,21 @@ class ProfileController extends Controller
         return view('collections.frontend.show', ['collection' => $collection, 'user' => $user]);
     }
 
+    /**
+     * Remove the user's logo.
+     */
+    public function removeLogo(Request $request): RedirectResponse
+    {
+        $user = $request->user();
+        if ($user->logo_path) {
+            \Storage::disk('s3')->delete($user->logo_path);
+        }
+        if ($user->logo_thumb_path) {
+            \Storage::disk('s3')->delete($user->logo_thumb_path);
+        }
+        $user->logo_path = null;
+        $user->logo_thumb_path = null;
+        $user->save();
+        return Redirect::route('profile.edit')->with('status', 'logo-removed');
+    }
 }
