@@ -1,7 +1,7 @@
 <x-profile-layout :user="$user">
 
     <x-slot name="header">
-        <div class="flex flex-col items-center">
+        <div class="flex flex-col items-center lg:mt-32">
             <h2 class="font-bold text-3xl text-gray-900 dark:text-gray-100">
                 {{ $user->name ?? $user->username }}
             </h2>
