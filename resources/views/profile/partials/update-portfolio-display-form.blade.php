@@ -125,52 +125,6 @@
             <x-input-error class="mt-2" :messages="$errors->get('portfolio_display_mode')" />
         </div>
 
-        <!-- Font, Color, and Theme Settings -->
-        <div class="border-t pt-6">
-            <h3 class="text-md font-medium text-gray-900 dark:text-gray-100 mb-4">
-                {{ __('Styling Settings') }}
-            </h3>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Portfolio Font -->
-                <div>
-                    <x-input-label for="portfolio_font" value="{{ __('Portfolio Font') }}" />
-                    <select id="portfolio_font" name="portfolio_font" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">
-                        @php($fonts = ['system' => 'System Default','nunito' => 'Nunito','inter' => 'Inter','playfair' => 'Playfair Display','roboto' => 'Roboto','open-sans' => 'Open Sans'])
-                        @foreach($fonts as $value => $label)
-                            <option value="{{ $value }}" {{ old('portfolio_font', auth()->user()->portfolio_font ?? 'system') === $value ? 'selected' : '' }}>{{ $label }}</option>
-                        @endforeach
-                    </select>
-                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                        {{ __('Choose a base font for your public portfolio pages.') }}
-                    </p>
-                </div>
-
-                <!-- Accent Color -->
-                <div>
-                    <x-input-label for="portfolio_accent_color" value="{{ __('Accent Color') }}" />
-                    <input type="color" id="portfolio_accent_color" name="portfolio_accent_color" value="{{ old('portfolio_accent_color', auth()->user()->portfolio_accent_color ?? '#6366F1') }}"
-                           class="mt-1 h-10 w-24 rounded-md border border-gray-300 dark:border-gray-600">
-                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                        {{ __('Used for links, buttons and highlights.') }}
-                    </p>
-                </div>
-
-                <!-- Portfolio Theme -->
-                <div>
-                    <x-input-label for="portfolio_theme" value="{{ __('Portfolio Theme') }}" />
-                    <select id="portfolio_theme" name="portfolio_theme" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">
-                        @php($themes = ['auto' => 'Auto (match system)','light' => 'Light','dark' => 'Dark'])
-                        @foreach($themes as $value => $label)
-                            <option value="{{ $value }}" {{ old('portfolio_theme', auth()->user()->portfolio_theme ?? 'auto') === $value ? 'selected' : '' }}>{{ $label }}</option>
-                        @endforeach
-                    </select>
-                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                        {{ __('Choose a theme override for visitors.') }}
-                    </p>
-                </div>
-            </div>
-        </div>
 
         <div class="flex items-center gap-4">
             <x-primary-button>{{ __('Save') }}</x-primary-button>

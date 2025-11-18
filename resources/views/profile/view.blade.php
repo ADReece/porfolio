@@ -1,4 +1,4 @@
-<x-profile-layout>
+<x-profile-layout :user="$user">
     <x-slot name="name">
         {{ $user->name }}
     </x-slot>

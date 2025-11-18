@@ -1,14 +1,14 @@
 <div class="relative">
     <div x-data="masonryData" class="relative">
         <!-- Loading Overlay -->
-        <div class="absolute inset-0 m-0 overflow-hidden bg-gray-100 dark:bg-gray-900 z-40 min-h-screen"
+        <div class="absolute inset-0 m-0 overflow-hidden bg-gray-100 dark:bg-gray-900 z-40"
              x-show="initialLoading"
              x-transition>
             <div class="loader"></div>
         </div>
 
         <!-- Masonry Grid Container -->
-        <div class="masonry-container w-full min-h-screen">
+        <div class="masonry-container w-full">
             <!-- Hidden template that Livewire renders into -->
             <div id="masonry-template" style="display: none;">
                 @foreach($media as $index => $m)
@@ -104,26 +104,21 @@
 
         @if($loadedCount === 0)
             <!-- No photos message -->
-            <div class="w-full py-12 flex justify-center">
+            <div class="w-full py-24 flex items-center justify-center">
                 <div class="text-center">
-                    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="mx-auto h-16 w-16 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                     </svg>
-                    <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">No photos</h3>
-                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">No photos found in this collection.</p>
+                    <h3 class="mt-4 text-lg font-medium text-gray-900 dark:text-gray-100">No photos</h3>
+                    <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">No photos found in this collection.</p>
                 </div>
             </div>
         @endif
     </div>
 
-    @php($cols = $columns ?? 4);
-    @php($mobile_cols = 2)
-
-    @if(preg_match("/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i", $_SERVER["HTTP_USER_AGENT"]))
-        @php($cols = $mobile_cols)
-    @endif
-
-    @php($size = (100 / $cols) - 1)
+    @php
+        $cols = $columns ?? 4;
+    @endphp
 
     <style>
         /* Custom Column-Based Masonry Layout */

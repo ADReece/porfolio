@@ -148,7 +148,7 @@
                 <h2 class="text-2xl font-bold mt-8 mb-4">13. Contact Us</h2>
                 <p class="mb-4">If you have questions about this Privacy Policy or our data practices, please contact us:</p>
                 <p class="mb-4">
-                    Email: <a href="mailto:privacy@{{ config('app.name') }}.com" class="text-indigo-600 hover:underline">privacy@{{ config('app.name') }}.com</a>
+                    Email: <a href="mailto:{{ 'privacy@' . config('app.name') . '.com' }}" class="text-indigo-600 hover:underline">{{ 'privacy@' . config('app.name') . '.com' }}</a>
                 </p>
             </div>
         </div>
@@ -166,4 +166,3 @@
     </footer>
 </body>
 </html>
-

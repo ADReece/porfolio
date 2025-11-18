@@ -195,8 +195,8 @@
                 <h2 class="text-2xl font-bold mt-8 mb-4">14. Contact for SLA Issues</h2>
                 <p class="mb-4">For questions about this SLA or to report service issues:</p>
                 <p class="mb-4">
-                    Email: <a href="mailto:sla@{{ config('app.name') }}.com" class="text-indigo-600 hover:underline">sla@{{ config('app.name') }}.com</a><br>
-                    Support: <a href="mailto:support@{{ config('app.name') }}.com" class="text-indigo-600 hover:underline">support@{{ config('app.name') }}.com</a>
+                    Email: <a href="mailto:{{ 'sla@' . config('app.name') . '.com' }}" class="text-indigo-600 hover:underline">{{ 'sla@' . config('app.name') . '.com' }}</a><br>
+                    Support: <a href="mailto:{{ 'support@' . config('app.name') . '.com' }}" class="text-indigo-600 hover:underline">{{ 'support@' . config('app.name') . '.com' }}</a>
                 </p>
             </div>
         </div>
@@ -214,4 +214,3 @@
     </footer>
 </body>
 </html>
-

@@ -88,7 +88,7 @@
                 <h2 class="text-2xl font-bold mt-8 mb-4">13. Contact Us</h2>
                 <p class="mb-4">If you have any questions about these Terms, please contact us at:</p>
                 <p class="mb-4">
-                    Email: <a href="mailto:legal@{{ config('app.name') }}.com" class="text-indigo-600 hover:underline">legal@{{ config('app.name') }}.com</a>
+                    Email: <a href="mailto:{{ 'legal@' . config('app.name') . '.com' }}" class="text-indigo-600 hover:underline">{{ 'legal@' . config('app.name') . '.com' }}</a>
                 </p>
             </div>
         </div>
@@ -106,4 +106,3 @@
     </footer>
 </body>
 </html>
-
