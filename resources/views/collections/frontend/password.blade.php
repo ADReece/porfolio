@@ -2,7 +2,7 @@
     @isset($user)
         @if($user->logo_path)
             <div class="flex justify-center mb-6 mt-8">
-                <img src="{{ \Storage::disk('s3')->url($user->logo_path) }}" alt="Logo" class="h-20 object-contain" />
+                <img src="{{ $user->logoUrl() }}" alt="Logo" class="h-20 object-contain" />
             </div>
         @endif
         <h1 class="text-center text-2xl font-semibold mb-4">{{ $user->name ?? $user->username }}</h1>

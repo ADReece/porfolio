@@ -213,4 +213,14 @@ class User extends Authenticatable
     {
         return $this->photos->sum('size') / 1024000; //(Size is store in Bytes.  /1024k for mb.)
     }
+    public function logoUrl(): ?string
+    {
+        if (!$this->logo_path && !$this->logo_thumb_path) return null;
+        $key = $this->logo_thumb_path ?: $this->logo_path;
+        try {
+            return \Illuminate\Support\Facades\Storage::disk('s3')->temporaryUrl($key, now()->addMinutes(10));
+        } catch (\Throwable $e) {
+            return asset('favicon.ico');
+        }
+    }
 }
