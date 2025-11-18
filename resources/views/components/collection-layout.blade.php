@@ -80,7 +80,8 @@
             }
 
             /* Apply custom font */
-            body {
+            body,
+            body * {
                 font-family: var(--portfolio-font) !important;
             }
 

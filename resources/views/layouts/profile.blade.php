@@ -85,7 +85,9 @@
 
                 /* Apply custom font - to portfolio content and header, not top navigation */
                 header.portfolio-header,
-                main.portfolio-content {
+                header.portfolio-header *,
+                main.portfolio-content,
+                main.portfolio-content * {
                     font-family: var(--portfolio-font) !important;
                 }
 
