@@ -22,6 +22,10 @@ class CheckSubscription
             return redirect()->route('login');
         }
 
+        if ($user->isFeatureOverrideActive()) {
+            return $next($request);
+        }
+
         if (!$user->subscriptionPlan) {
             return redirect()->route('pricing')
                 ->with('error', 'Please select a subscription plan to continue.');
