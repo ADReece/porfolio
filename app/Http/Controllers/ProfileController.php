@@ -27,13 +27,27 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $user = $request->user();
+        $user->fill($request->validated());
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        // Handle logo upload
+        if ($request->hasFile('logo')) {
+            $request->validate([
+                'logo' => 'image|mimes:png,jpg,jpeg,webp,svg|max:2048'
+            ]);
+            // Delete old logo if present
+            if ($user->logo_path) {
+                \Storage::disk('s3')->delete($user->logo_path);
+            }
+            $path = $request->file('logo')->store('logos', 's3');
+            $user->logo_path = $path;
         }
 
-        $request->user()->save();
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
+        }
+
+        $user->save();
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }

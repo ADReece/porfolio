@@ -13,7 +13,7 @@
         @csrf
     </form>
 
-    <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6">
+    <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6" enctype="multipart/form-data">
         @csrf
         @method('patch')
 
@@ -124,6 +124,18 @@
                     @endif
                 </div>
             @endif
+        </div>
+
+        <div>
+            <x-input-label for="logo" :value="__('Profile Logo')" />
+            @if($user->logo_path)
+                <div class="mb-2">
+                    <img src="{{ asset('storage/'.$user->logo_path) }}" alt="Current Logo" class="h-16 object-contain">
+                </div>
+            @endif
+            <input id="logo" name="logo" type="file" accept="image/*" class="mt-1 block w-full text-sm text-gray-700 dark:text-gray-300" />
+            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">PNG, JPG, WebP, or SVG up to 2MB.</p>
+            <x-input-error class="mt-2" :messages="$errors->get('logo')" />
         </div>
 
         <div class="flex items-center gap-4">
