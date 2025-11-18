@@ -1,19 +1,19 @@
 <x-profile-layout :user="$user">
 
     <x-slot name="header">
-        <div class="flex flex-col items-center">
+        <div class="flex flex-col items-center lg:mt-32">
             <h2 class="font-bold text-3xl text-gray-900 dark:text-gray-100">
                 {{ $user->name ?? $user->username }}
             </h2>
             @if($user->bio)
-            <p class="mt-2 text-gray-600 dark:text-gray-400 text-center max-w-2xl">
-                {{ $user->bio }}
-            </p>
+            <div class="mt-2 text-gray-600 dark:text-gray-400 text-center max-w-2xl prose prose-sm dark:prose-invert mx-auto">
+                {!! $user->bio !!}
+            </div>
             @endif
         </div>
     </x-slot>
 
-    <div class="w-full mx-auto px-4 sm:px-6 lg:px-8 overflow-x-hidden">
+    <div class="w-full mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-12 overflow-x-hidden">
         @if($collections->isEmpty())
             <div class="text-center py-16">
                 <p class="text-gray-500 dark:text-gray-400">No collections available yet.</p>
@@ -23,10 +23,10 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach($collections as $collection)
                     <a href="{{ route('profile.collection', ['username' => $user->username, 'collection_id' => $collection->id]) }}"
-                       class="group relative overflow-hidden rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02] block">
+                       class="group relative overflow-hidden rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 block">
 
-                        <!-- Cover Photo -->
-                        <div class="aspect-w-16 aspect-h-9 bg-gray-200 dark:bg-gray-700">
+                        <!-- Cover Photo Container -->
+                        <div class="relative aspect-w-16 aspect-h-9 bg-gray-200 dark:bg-gray-700 overflow-hidden">
                             @if($collection->coverPhoto)
                                 <img src="{{ $collection->coverPhoto->getAwsThumbnail() }}"
                                      alt="{{ $collection->name }}"
@@ -42,42 +42,42 @@
                             @endif
 
                             <!-- Always-visible dark overlay for text readability -->
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent group-hover:from-black/90 group-hover:via-black/50 transition-all duration-300"></div>
-                        </div>
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent group-hover:from-black/90 group-hover:via-black/50 transition-all duration-300 pointer-events-none"></div>
 
-                        <!-- Title bar with enhanced hover state -->
-                        <div class="absolute bottom-0 left-0 right-0 p-4">
-                            <h3 class="text-white text-lg font-semibold mb-1 group-hover:text-xl transition-all duration-200">
-                                {{ $collection->name }}
-                            </h3>
-                            @if($collection->event_date)
-                                <p class="text-gray-300 text-sm mb-2">
-                                    {{ $collection->event_date->format('F j, Y') }}
-                                </p>
-                            @endif
+                            <!-- Title bar with enhanced hover state -->
+                            <div class="absolute bottom-0 left-0 right-0 p-4 pointer-events-none">
+                                <h3 class="text-white text-lg font-semibold mb-1 transition-all duration-200">
+                                    {{ $collection->name }}
+                                </h3>
+                                @if($collection->event_date)
+                                    <p class="text-gray-300 text-sm mb-2">
+                                        {{ $collection->event_date->format('F j, Y') }}
+                                    </p>
+                                @endif
 
-                            <!-- Badges - visible on hover -->
-                            <div class="flex flex-wrap gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                @if($collection->private)
-                                    <span class="inline-block px-2 py-1 bg-yellow-500/90 text-yellow-900 text-xs font-semibold rounded-full">
-                                        🔒 Private
-                                    </span>
-                                @endif
-                                @if($collection->watermarked)
-                                    <span class="inline-block px-2 py-1 bg-blue-500/90 text-white text-xs font-semibold rounded-full">
-                                        💎 Premium
-                                    </span>
-                                @endif
-                                @php
-                                    $photoCount = $collection->sets->sum(function($set) {
-                                        return $set->photos->count();
-                                    });
-                                @endphp
-                                @if($photoCount > 0)
-                                    <span class="inline-block px-2 py-1 bg-white/20 text-white text-xs font-semibold rounded-full">
-                                        📷 {{ $photoCount }} {{ Str::plural('photo', $photoCount) }}
-                                    </span>
-                                @endif
+                                <!-- Badges - visible on hover -->
+                                <div class="flex flex-wrap gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                    @if($collection->private)
+                                        <span class="inline-block px-2 py-1 bg-yellow-500/90 text-yellow-900 text-xs font-semibold rounded-full">
+                                            🔒 Private
+                                        </span>
+                                    @endif
+                                    @if($collection->watermarked)
+                                        <span class="inline-block px-2 py-1 bg-blue-500/90 text-white text-xs font-semibold rounded-full">
+                                            💎 Premium
+                                        </span>
+                                    @endif
+                                    @php
+                                        $photoCount = $collection->sets->sum(function($set) {
+                                            return $set->photos->count();
+                                        });
+                                    @endphp
+                                    @if($photoCount > 0)
+                                        <span class="inline-block px-2 py-1 bg-white/20 text-white text-xs font-semibold rounded-full">
+                                            📷 {{ $photoCount }} {{ Str::plural('photo', $photoCount) }}
+                                        </span>
+                                    @endif
+                                </div>
                             </div>
                         </div>
                     </a>
@@ -85,4 +85,24 @@
             </div>
         @endif
     </div>
+
+    <style>
+        /* Ensure bio text has proper contrast */
+        .prose {
+            color: inherit;
+        }
+
+        .prose p, .prose strong, .prose em, .prose ul, .prose ol, .prose li {
+            color: inherit !important;
+        }
+
+        .prose a {
+            color: var(--portfolio-accent, #6366F1) !important;
+        }
+
+        /* Prevent layout shift and scrollbar on hover */
+        .group:hover {
+            transform: translateY(-2px);
+        }
+    </style>
 </x-profile-layout>

@@ -18,7 +18,21 @@ class ProfileUpdateRequest extends FormRequest
         return [
             'name' => ['string', 'max:255'],
             'email' => ['email', 'max:255', Rule::unique(User::class)->ignore($this->user()->id)],
-            'bio' => ['sometimes', 'nullable', 'string', 'max:255']
+            'bio' => ['sometimes', 'nullable', 'string', 'max:1000']
         ];
+    }
+
+    /**
+     * Prepare the data for validation.
+     */
+    protected function prepareForValidation(): void
+    {
+        if ($this->has('bio') && $this->bio) {
+            // Sanitize HTML - only allow safe tags from Quill editor
+            $allowedTags = '<p><br><strong><em><u><ol><ul><li><a>';
+            $this->merge([
+                'bio' => strip_tags($this->bio, $allowedTags)
+            ]);
+        }
     }
 }
