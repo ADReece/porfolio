@@ -248,8 +248,13 @@ class User extends Authenticatable
 
     public function canUseCustomizations(): bool
     {
-        // Apply portfolio styles if user has an active subscription (or free plan) and the plan includes customization features
-        // hasFeature already returns true for override/admin
-        return $this->hasActiveSubscription() && $this->hasFeature('custom_templates');
+        // Grant if override, admin, or plan exposes either custom_templates or upload_logo
+        if ($this->is_admin || $this->isFeatureOverrideActive()) {
+            return true;
+        }
+        if (!$this->subscriptionPlan) {
+            return false;
+        }
+        return $this->subscriptionPlan->hasFeature('custom_templates') || $this->subscriptionPlan->hasFeature('upload_logo');
     }
 }
