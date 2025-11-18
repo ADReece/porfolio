@@ -58,7 +58,8 @@
             @if($collection->private)
                 <div class="mb-8">
                     <button onclick="requestArchive()"
-                            class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white text-lg font-semibold rounded-lg shadow-lg transition-all transform hover:scale-105 flex items-center gap-2">
+                            class="px-6 py-3 text-white text-lg font-semibold rounded-lg shadow-lg transition-all transform hover:scale-105 flex items-center gap-2"
+                            style="background-color: var(--portfolio-accent, #6366F1);">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                         </svg>
@@ -77,11 +78,43 @@
     </div>
 
     <!-- Photo Gallery Section -->
-    <div class="py-12 px-8 bg-gray-50 dark:bg-gray-900">
+    <div class="py-12 px-8" style="background-color: var(--portfolio-bg-light, #F9FAFB); color: var(--portfolio-text-light, #1F2937);">
         <div class="max-w-7xl mx-auto">
             <livewire:masonry-grid :collectionId="$collection->id" />
         </div>
     </div>
+
+    @if(isset($user))
+    <style>
+        /* Custom accent color for buttons */
+        button[onclick="requestArchive()"]:hover {
+            opacity: 0.9;
+            filter: brightness(0.95);
+        }
+
+        /* Gallery background respects theme */
+        @media (prefers-color-scheme: dark) {
+            .py-12.px-8 {
+                background-color: var(--portfolio-bg-dark, #111827) !important;
+                color: var(--portfolio-text-dark, #F3F4F6) !important;
+            }
+        }
+
+        @if(isset($user->portfolio_theme))
+            @if($user->portfolio_theme === 'dark')
+                .py-12.px-8 {
+                    background-color: var(--portfolio-bg-dark, #111827) !important;
+                    color: var(--portfolio-text-dark, #F3F4F6) !important;
+                }
+            @elseif($user->portfolio_theme === 'light')
+                .py-12.px-8 {
+                    background-color: var(--portfolio-bg-light, #F9FAFB) !important;
+                    color: var(--portfolio-text-light, #1F2937) !important;
+                }
+            @endif
+        @endif
+    </style>
+    @endif
 
     <style>
         .loader-large {
