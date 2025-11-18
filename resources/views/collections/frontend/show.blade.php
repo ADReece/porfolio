@@ -15,8 +15,8 @@
                  alt="{{ $collection->name }}"
                  class="absolute inset-0 w-full h-full object-cover {{ $collection->coverPhotoPosition() ?? '' }}">
 
-            <!-- Dark Overlay -->
-            <div class="absolute inset-0 bg-black bg-opacity-40"></div>
+            <!-- Accent Overlay (dynamic) -->
+            <div class="absolute inset-0" style="background: linear-gradient(to bottom, var(--portfolio-accent-overlay-start), var(--portfolio-accent-overlay-mid), var(--portfolio-accent-overlay-end));"></div>
         @else
             <!-- Fallback gradient if no cover photo -->
             <div class="absolute inset-0 bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900"></div>

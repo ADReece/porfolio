@@ -49,11 +49,25 @@
                 $defaultDarkBg = '#111827';
                 $defaultDarkText = '#F3F4F6';
                 $defaultDarkHeading = '#F9FAFB';
+
+                // Convert hex to rgb components
+                $hex = ltrim($accentColor, '#');
+                if (strlen($hex) === 3) {
+                    $hex = $hex[0].$hex[0].$hex[1].$hex[1].$hex[2].$hex[2];
+                }
+                [$r,$g,$b] = [hexdec(substr($hex,0,2)), hexdec(substr($hex,2,2)), hexdec(substr($hex,4,2))];
+                $brightness = ($r * 299 + $g * 587 + $b * 114) / 1000; // YIQ contrast
+                // If accent is very light, darken overlay base to ensure readability
+                $overlayBase = $brightness > 180 ? '0,0,0' : "$r,$g,$b";
             @endphp
 
             <style>
                 :root {
                     --portfolio-accent: {{ $accentColor }};
+                    --portfolio-accent-rgb: {{ $r }}, {{ $g }}, {{ $b }};
+                    --portfolio-accent-overlay-start: rgba({{ $overlayBase }},0.70);
+                    --portfolio-accent-overlay-mid: rgba({{ $overlayBase }},0.40);
+                    --portfolio-accent-overlay-end: rgba({{ $overlayBase }},0.0);
                     --portfolio-font: {{ $fontFamily }};
 
                     @if($portfolioTheme === 'light' || $portfolioTheme === 'auto')
