@@ -83,84 +83,90 @@
                     @endif
                 }
 
-                /* Apply custom font */
-                body {
+                /* Apply custom font - only to portfolio content, not navigation */
+                main.portfolio-content {
                     font-family: var(--portfolio-font) !important;
                 }
 
-                /* Force theme if not auto */
+                /* Force theme if not auto - scoped to portfolio content only */
                 @if($portfolioTheme === 'light')
                     html {
                         color-scheme: light;
                     }
-                    body {
+                    main.portfolio-content {
                         background-color: var(--portfolio-bg-light) !important;
                         color: var(--portfolio-text-light) !important;
                     }
-                    h1, h2, h3, h4, h5, h6 {
+                    main.portfolio-content h1,
+                    main.portfolio-content h2,
+                    main.portfolio-content h3,
+                    main.portfolio-content h4,
+                    main.portfolio-content h5,
+                    main.portfolio-content h6 {
                         color: var(--portfolio-heading-light) !important;
-                    }
-                    /* Override Tailwind dark mode classes */
-                    .dark\:bg-gray-900, .dark\:bg-gray-800 {
-                        background-color: var(--portfolio-bg-light) !important;
-                    }
-                    .dark\:text-gray-100, .dark\:text-gray-200, .dark\:text-gray-300 {
-                        color: var(--portfolio-text-light) !important;
                     }
                 @elseif($portfolioTheme === 'dark')
                     html {
                         color-scheme: dark;
                     }
-                    body {
+                    main.portfolio-content {
                         background-color: var(--portfolio-bg-dark) !important;
                         color: var(--portfolio-text-dark) !important;
                     }
-                    h1, h2, h3, h4, h5, h6 {
+                    main.portfolio-content h1,
+                    main.portfolio-content h2,
+                    main.portfolio-content h3,
+                    main.portfolio-content h4,
+                    main.portfolio-content h5,
+                    main.portfolio-content h6 {
                         color: var(--portfolio-heading-dark) !important;
                     }
-                    /* Override light mode Tailwind classes */
-                    .bg-gray-100, .bg-white {
-                        background-color: var(--portfolio-bg-dark) !important;
-                    }
-                    .text-gray-900, .text-gray-800, .text-gray-700 {
-                        color: var(--portfolio-text-dark) !important;
-                    }
                 @else
-                    /* Auto theme - respect system preference */
+                    /* Auto theme - respect system preference, scoped to portfolio content */
                     @media (prefers-color-scheme: light) {
-                        body {
+                        main.portfolio-content {
                             background-color: var(--portfolio-bg-light) !important;
                             color: var(--portfolio-text-light) !important;
                         }
-                        h1, h2, h3, h4, h5, h6 {
+                        main.portfolio-content h1,
+                        main.portfolio-content h2,
+                        main.portfolio-content h3,
+                        main.portfolio-content h4,
+                        main.portfolio-content h5,
+                        main.portfolio-content h6 {
                             color: var(--portfolio-heading-light) !important;
                         }
                     }
                     @media (prefers-color-scheme: dark) {
-                        body {
+                        main.portfolio-content {
                             background-color: var(--portfolio-bg-dark) !important;
                             color: var(--portfolio-text-dark) !important;
                         }
-                        h1, h2, h3, h4, h5, h6 {
+                        main.portfolio-content h1,
+                        main.portfolio-content h2,
+                        main.portfolio-content h3,
+                        main.portfolio-content h4,
+                        main.portfolio-content h5,
+                        main.portfolio-content h6 {
                             color: var(--portfolio-heading-dark) !important;
                         }
                     }
                 @endif
 
-                /* Accent color application */
-                a.portfolio-link,
-                a[href^="/@"]:not(.no-accent),
-                .portfolio-accent {
+                /* Accent color application - scoped to portfolio content */
+                main.portfolio-content a.portfolio-link,
+                main.portfolio-content a[href^="/@"]:not(.no-accent),
+                main.portfolio-content .portfolio-accent {
                     color: var(--portfolio-accent) !important;
                 }
 
-                button.portfolio-button,
-                .portfolio-button {
+                main.portfolio-content button.portfolio-button,
+                main.portfolio-content .portfolio-button {
                     background-color: var(--portfolio-accent) !important;
                     border-color: var(--portfolio-accent) !important;
                 }
 
-                a.portfolio-link:hover {
+                main.portfolio-content a.portfolio-link:hover {
                     opacity: 0.8;
                 }
             </style>
@@ -187,7 +193,7 @@
             </header>
 
             <!-- Page Content -->
-            <main class="md:ml-80 bg-gray-100 dark:bg-gray-900 overflow-x-hidden" @if(Auth::check()) style="min-height: calc(100vh - 4rem);" @endif>
+            <main class="portfolio-content md:ml-80 bg-gray-100 dark:bg-gray-900 overflow-x-hidden" @if(Auth::check()) style="min-height: calc(100vh - 4rem);" @endif>
                 {{ $slot }}
             </main>
         </div>
