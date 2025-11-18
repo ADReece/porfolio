@@ -201,10 +201,10 @@
             font-size: 10px;
             position: relative;
             text-indent: -9999em;
-            border-top: 1.1em solid rgba(0, 0, 0, 0.2);
-            border-right: 1.1em solid rgba(0, 0, 0, 0.2);
-            border-bottom: 1.1em solid rgba(0, 0, 0, 0.2);
-            border-left: 1.1em solid #000;
+            border-top: 1.1em solid rgba(var(--portfolio-accent-rgb, 99, 102, 241), 0.2);
+            border-right: 1.1em solid rgba(var(--portfolio-accent-rgb, 99, 102, 241), 0.2);
+            border-bottom: 1.1em solid rgba(var(--portfolio-accent-rgb, 99, 102, 241), 0.2);
+            border-left: 1.1em solid var(--portfolio-accent, #6366F1);
             transform: translateZ(0);
             animation: load8 1.1s infinite linear;
         }
@@ -217,14 +217,6 @@
             font-size: 10px;
         }
 
-        /* Dark mode - make spinner white */
-        .dark .loader,
-        .dark .loader.small {
-            border-top-color: rgba(255, 255, 255, 0.2) !important;
-            border-right-color: rgba(255, 255, 255, 0.2) !important;
-            border-bottom-color: rgba(255, 255, 255, 0.2) !important;
-            border-left-color: rgba(255, 255, 255, 0.9) !important;
-        }
 
         @keyframes load8 {
             0% {
@@ -368,13 +360,6 @@
                         grid.setAttribute('data-masonry-initialized', 'true');
                         refreshFsLightbox();
                     });
-
-                    // Failsafe
-                    setTimeout(() => {
-                        if (this.initialLoading) {
-                            this.initialLoading = false;
-                        }
-                    }, 3000);
                 },
 
                 createColumns(grid, existingItems) {
