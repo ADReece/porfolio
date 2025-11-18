@@ -33,7 +33,12 @@
             </div>
 
             <div class="bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-                <div class="p-6">
+                <div class="p-6 space-y-10">
+                    <!-- Branding / Logo Uploader -->
+                    <div class="mb-8">
+                        @livewire('logo-uploader', ['user' => $user])
+                    </div>
+
                     <!-- Preview Section -->
                     <div class="mb-8 p-6 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600" id="preview-area">
                         <h3 class="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100">
