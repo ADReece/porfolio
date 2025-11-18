@@ -97,6 +97,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/bulk-delete', [PhotoController::class, 'bulkDelete'])->name('photos.bulk-delete');
         Route::post('/{photo}/move', [PhotoController::class, 'move'])->name('photos.move');
     });
+
+    Route::delete('/profile/logo', [ProfileController::class, 'removeLogo'])->name('profile.logo.remove');
 });
 
 

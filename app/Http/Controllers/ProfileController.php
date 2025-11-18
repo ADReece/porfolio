@@ -38,9 +38,20 @@ class ProfileController extends Controller
             // Delete old logo if present
             if ($user->logo_path) {
                 \Storage::disk('s3')->delete($user->logo_path);
+                if ($user->logo_thumb_path) {
+                    \Storage::disk('s3')->delete($user->logo_thumb_path);
+                }
             }
-            $path = $request->file('logo')->store('logos', 's3');
+            $file = $request->file('logo');
+            $path = $file->store('logos', 's3');
             $user->logo_path = $path;
+            // Create thumbnail (skip svg)
+            if($file->getClientOriginalExtension() !== 'svg') {
+                $image = \Intervention\Image\ImageManagerStatic::make($file)->resize(160, null, function($constraint){ $constraint->aspectRatio(); $constraint->upsize(); });
+                $thumbName = 'logos/thumb_'.uniqid().'.'.$file->getClientOriginalExtension();
+                \Storage::disk('s3')->put($thumbName, (string) $image->encode());
+                $user->logo_thumb_path = $thumbName;
+            }
         }
 
         if ($user->isDirty('email')) {
@@ -235,4 +246,21 @@ class ProfileController extends Controller
         return view('collections.frontend.show', ['collection' => $collection, 'user' => $user]);
     }
 
+    /**
+     * Remove the user's logo.
+     */
+    public function removeLogo(Request $request): RedirectResponse
+    {
+        $user = $request->user();
+        if ($user->logo_path) {
+            \Storage::disk('s3')->delete($user->logo_path);
+        }
+        if ($user->logo_thumb_path) {
+            \Storage::disk('s3')->delete($user->logo_thumb_path);
+        }
+        $user->logo_path = null;
+        $user->logo_thumb_path = null;
+        $user->save();
+        return Redirect::route('profile.edit')->with('status', 'logo-removed');
+    }
 }

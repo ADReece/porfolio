@@ -49,6 +49,7 @@ class User extends Authenticatable
         'portfolio_text_color',
         'portfolio_heading_color',
         'logo_path',
+        'logo_thumb_path',
     ];
 
     /**

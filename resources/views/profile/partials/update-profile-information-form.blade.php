@@ -128,9 +128,14 @@
 
         <div>
             <x-input-label for="logo" :value="__('Profile Logo')" />
-            @if($user->logo_path)
-                <div class="mb-2">
-                    <img src="{{ asset('storage/'.$user->logo_path) }}" alt="Current Logo" class="h-16 object-contain">
+            @if($user->logo_thumb_path ?? $user->logo_path)
+                <div class="mb-2 flex items-center gap-4">
+                    <img src="{{ $user->logo_thumb_path ? \Storage::disk('s3')->url($user->logo_thumb_path) : \Storage::disk('s3')->url($user->logo_path) }}" alt="Current Logo" class="h-16 object-contain">
+                    <form method="POST" action="{{ route('profile.logo.remove') }}" onsubmit="return confirm('Remove logo?')">
+                        @csrf
+                        @method('DELETE')
+                        <x-danger-button>{{ __('Remove') }}</x-danger-button>
+                    </form>
                 </div>
             @endif
             <input id="logo" name="logo" type="file" accept="image/*" class="mt-1 block w-full text-sm text-gray-700 dark:text-gray-300" />
