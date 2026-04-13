@@ -37,9 +37,11 @@
 
                     const pond = window.FilePond.create(inputElement, {
                         allowMultiple: true,
+                        allowReplace: false,
                         acceptedFileTypes: ['image/*'],
                         maxFiles: 100,
                         maxFileSize: '100MB',
+                        maxParallelUploads: 1,
                         credits: false,
                         labelIdle: 'Drag & Drop your photos or <span class="filepond--label-action">Browse</span>',
                         server: {
