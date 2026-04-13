@@ -30,8 +30,9 @@ class PhotoController extends Controller
         // Store temporarily
         $temporaryPath = $uploadedFile->storeAs('temp', $fileName);
 
-        // Dispatch job to process the image
-        \App\Jobs\ProcessImageUpload::dispatch(
+        // Process image synchronously so the Photo record exists in DB before
+        // the response returns and FilePond triggers the Livewire refresh.
+        \App\Jobs\ProcessImageUpload::dispatchSync(
             auth()->user(),
             $temporaryPath,
             $set,
@@ -41,7 +42,7 @@ class PhotoController extends Controller
         return response()->json([
             'success' => true,
             'fileName' => $fileName,
-            'message' => 'File uploaded and queued for processing'
+            'message' => 'File uploaded successfully'
         ]);
     }
 
