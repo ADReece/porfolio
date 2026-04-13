@@ -26,7 +26,6 @@ services:
             - redis
             - meilisearch
             - mailpit
-            - selenium
     mysql:
         image: 'mysql/mysql-server:8.0'
         ports:

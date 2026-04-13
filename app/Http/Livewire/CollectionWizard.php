@@ -25,12 +25,20 @@ class CollectionWizard extends Component
     public $setName = '';
     public $editingSetId = null;
     public $editingSetName = '';
+    public $quickSetTemplates = [
+        'Getting Ready',
+        'Ceremony',
+        'Reception',
+        'Portraits',
+        'Family',
+        'Details',
+    ];
 
     protected function rules()
     {
         return [
             'name' => 'required|string|max:255',
-            'event_date' => 'required|date',
+            'event_date' => 'nullable|date',
             'private' => 'boolean',
             'watermarked' => 'boolean',
             'hide_from_portfolio' => 'boolean',
@@ -41,6 +49,8 @@ class CollectionWizard extends Component
 
     public function mount($collectionId = null)
     {
+        $this->event_date = now()->toDateString();
+
         if ($collectionId) {
             $this->collectionId = $collectionId;
             $collection = Collection::findOrFail($collectionId);
@@ -59,7 +69,7 @@ class CollectionWizard extends Component
     {
         $this->validate([
             'name' => 'required|string|max:255',
-            'event_date' => 'required|date',
+            'event_date' => 'nullable|date',
             'private' => 'boolean',
             'watermarked' => 'boolean',
             'hide_from_portfolio' => 'boolean',
@@ -70,7 +80,7 @@ class CollectionWizard extends Component
             'name' => $this->name,
             'user_id' => auth()->id(),
             'status' => 'Draft',
-            'event_date' => $this->event_date,
+            'event_date' => $this->event_date ?: null,
             'private' => $this->private,
             'watermarked' => $this->watermarked,
             'hide_from_portfolio' => $this->hide_from_portfolio ?? $this->private,
@@ -87,19 +97,44 @@ class CollectionWizard extends Component
     {
         $this->validate(['setName' => 'required|string|max:255']);
 
+        $this->createSetByName($this->setName);
+    }
+
+    public function createSetFromTemplate(string $templateName)
+    {
+        $this->createSetByName($templateName);
+    }
+
+    private function createSetByName(string $name): void
+    {
+        $normalized = trim($name);
+
+        if ($normalized === '') {
+            return;
+        }
+
         $collection = Collection::findOrFail($this->collectionId);
 
         if ($collection->user_id !== auth()->id()) {
             abort(403);
         }
 
+        $exists = $collection->sets()
+            ->whereRaw('LOWER(name) = ?', [mb_strtolower($normalized)])
+            ->exists();
+
+        if ($exists) {
+            session()->flash('message', 'That set already exists. Try a different name.');
+            return;
+        }
+
         $collection->sets()->create([
-            'name' => $this->setName,
+            'name' => $normalized,
         ]);
 
         $this->setName = '';
         $this->emit('set-created');
-        session()->flash('message', 'Set created successfully.');
+        session()->flash('message', 'Set created.');
     }
 
     public function editSet($setId)

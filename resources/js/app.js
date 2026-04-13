@@ -3,15 +3,24 @@ import '../css/app.css';
 import './components/modal';
 
 import imagesLoaded from 'imagesloaded';
-import Dropzone from 'dropzone';
-import 'dropzone/dist/dropzone.css';
+import * as FilePond from 'filepond';
+import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
+import FilePondPluginFileValidateSize from 'filepond-plugin-file-validate-size';
+import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type';
+import 'filepond/dist/filepond.min.css';
+import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
 
 import Toastify from 'toastify-js';
 import 'toastify-js/src/toastify.css';
 
 // Make libraries available globally
-Dropzone.autoDiscover = false;
-window.Dropzone = Dropzone;
+FilePond.registerPlugin(
+    FilePondPluginImagePreview,
+    FilePondPluginFileValidateSize,
+    FilePondPluginFileValidateType,
+);
+
+window.FilePond = FilePond;
 window.imagesLoaded = imagesLoaded;
 window.Toastify = Toastify;
 

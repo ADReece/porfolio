@@ -9,7 +9,7 @@ return new class extends Migration {
     {
         Schema::table('subscription_plans', function (Blueprint $table) {
             if (!Schema::hasColumn('subscription_plans', 'upload_logo')) {
-                $table->boolean('upload_logo')->default(false)->after('can_impersonate');
+                $table->boolean('upload_logo')->default(false)->after('custom_templates');
             }
         });
     }

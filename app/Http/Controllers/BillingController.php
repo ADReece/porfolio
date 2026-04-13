@@ -104,16 +104,17 @@ class BillingController extends Controller
     public function resume(Request $request)
     {
         $user = $request->user();
+        $subscription = $user->subscription('default');
 
-        if ($user->subscription('default')->onGracePeriod()) {
-            $user->subscription('default')->resume();
+        if ($subscription && $subscription->onGracePeriod()) {
+            $subscription->resume();
 
             return redirect()->back()
                 ->with('success', 'Your subscription has been resumed!');
         }
 
         return redirect()->back()
-            ->with('error', 'Unable to resume subscription.');
+            ->with('error', 'No resumable subscription found.');
     }
 
     public function swap(Request $request, SubscriptionPlan $plan)

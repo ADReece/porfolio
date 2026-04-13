@@ -10,11 +10,14 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Intervention\Image\ImageManager;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Auth;
+use RuntimeException;
 
 class ProcessImageUpload implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    public $tries = 3;
+    public $timeout = 300;
 
     public $user;
     public $temporaryPath;
@@ -50,30 +53,30 @@ class ProcessImageUpload implements ShouldQueue
      */
     public function handle()
     {
-        // Retrieve the file from the temporary storage
         $temporaryFile = storage_path('app/' . $this->temporaryPath);
 
-        // Upload the full-resolution image to S3
-        $photo = $this->uploadFullResolutionImage($temporaryFile);
+        if (!is_file($temporaryFile)) {
+            throw new RuntimeException('Temporary upload file is missing: '.$this->temporaryPath);
+        }
 
-        // Generate a thumbnail and upload it to S3
-        $thumbnail = $this->createThumbnail($temporaryFile);
-        Storage::disk('s3')->put("thumbnails/".$this->filepath, $thumbnail->stream());
+        try {
+            $photoSize = $this->uploadFullResolutionImage($temporaryFile);
 
-        // Process the image to create a watermarked version
-        $watermarkedImage = $this->processWatermarkedImage($temporaryFile);
-        Storage::disk('s3')->put("watermarked/".$this->filepath, $watermarkedImage->stream());
+            $thumbnail = $this->createThumbnail($temporaryFile);
+            Storage::disk('s3')->put('thumbnails/'.$this->filepath, $thumbnail->stream()->__toString());
 
-        // Store the photo information in the database
-        $this->set->photos()->create([
-            'user_id' => $this->user->id,
-            'url' => "photos/{$this->filepath}",
-            'private' => $this->set->collection->private,
-            'size' => $photo,
-        ]);
+            $watermarkedImage = $this->processWatermarkedImage($temporaryFile);
+            Storage::disk('s3')->put('watermarked/'.$this->filepath, $watermarkedImage->stream()->__toString());
 
-        // Remove the temporary file after processing
-        Storage::delete($this->temporaryPath);
+            $this->set->photos()->create([
+                'user_id' => $this->user->id,
+                'url' => "photos/{$this->filepath}",
+                'private' => $this->set->collection->private,
+                'size' => $photoSize,
+            ]);
+        } finally {
+            Storage::delete($this->temporaryPath);
+        }
     }
 
     /**

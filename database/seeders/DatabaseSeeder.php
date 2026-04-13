@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
         // Seed subscription plans first (no dependencies)
         $this->command->info('📋 Seeding subscription plans...');
         $this->call(SubscriptionPlanSeeder::class);
+        $this->call(DemoAccountSeeder::class);
 
         $this->command->info('');
         $this->command->info('🎉 Database seeding completed successfully!');
