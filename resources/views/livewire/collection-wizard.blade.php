@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
+<div class="min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-gray-900 dark:to-gray-900 py-10">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 
         <!-- Progress Steps -->
@@ -15,7 +15,7 @@
                             1
                         @endif
                     </div>
-                    <span class="ml-2 text-sm font-medium {{ $currentStep >= 1 ? 'text-gray-900 dark:text-gray-100' : 'text-gray-500' }}">Collection Details</span>
+                    <span class="ml-2 text-sm font-medium {{ $currentStep >= 1 ? 'text-gray-900 dark:text-gray-100' : 'text-gray-500' }}">Name Collection</span>
                 </div>
 
                 <!-- Connector -->
@@ -26,7 +26,7 @@
                     <div class="flex items-center justify-center w-10 h-10 rounded-full {{ $currentStep >= 2 ? 'bg-indigo-600 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-500' }} font-semibold">
                         2
                     </div>
-                    <span class="ml-2 text-sm font-medium {{ $currentStep >= 2 ? 'text-gray-900 dark:text-gray-100' : 'text-gray-500' }}">Create Sets</span>
+                    <span class="ml-2 text-sm font-medium {{ $currentStep >= 2 ? 'text-gray-900 dark:text-gray-100' : 'text-gray-500' }}">Add Sets</span>
                 </div>
             </div>
         </div>
@@ -45,10 +45,10 @@
 
         <!-- Step 1: Collection Details -->
         @if($currentStep === 1)
-            <div class="bg-white dark:bg-gray-800 shadow-sm rounded-lg border border-gray-200 dark:border-gray-700">
+            <div class="bg-white dark:bg-gray-800 shadow-sm rounded-2xl border border-gray-200 dark:border-gray-700">
                 <div class="p-6 border-b border-gray-200 dark:border-gray-700">
-                    <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Create New Collection</h2>
-                    <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Set up your collection details and privacy settings.</p>
+                    <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Create Collection in 30 Seconds</h2>
+                    <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Type a name, hit continue, done. You can tweak advanced settings later.</p>
                 </div>
 
                 <form wire:submit.prevent="saveCollection" class="p-6 space-y-6">
@@ -61,16 +61,16 @@
                                id="name"
                                wire:model="name"
                                class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                               placeholder="e.g., Summer Wedding 2024">
+                               placeholder="e.g., Sam & Maya Wedding"
+                               autofocus>
                         @error('name')
                             <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                         @enderror
                     </div>
 
-                    <!-- Event Date -->
                     <div>
                         <label for="event_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Event Date <span class="text-red-500">*</span>
+                            Date (optional)
                         </label>
                         <input type="date"
                                id="event_date"
@@ -81,67 +81,64 @@
                         @enderror
                     </div>
 
-                    <!-- Privacy Settings -->
-                    <div class="space-y-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-                        <h3 class="text-sm font-semibold text-gray-900 dark:text-gray-100">Privacy & Display Settings</h3>
+                    <details class="pt-2 border-t border-gray-200 dark:border-gray-700">
+                        <summary class="cursor-pointer text-sm font-semibold text-gray-900 dark:text-gray-100">Advanced privacy and display options</summary>
 
-                        <!-- Private Collection -->
-                        <div class="flex items-start">
-                            <div class="flex items-center h-5">
-                                <input type="checkbox"
-                                       id="private"
-                                       wire:model="private"
-                                       class="rounded border-gray-300 dark:border-gray-600 text-indigo-600 focus:ring-indigo-500 dark:bg-gray-700">
+                        <div class="space-y-4 mt-4">
+                            <div class="flex items-start">
+                                <div class="flex items-center h-5">
+                                    <input type="checkbox"
+                                           id="private"
+                                           wire:model="private"
+                                           class="rounded border-gray-300 dark:border-gray-600 text-indigo-600 focus:ring-indigo-500 dark:bg-gray-700">
+                                </div>
+                                <div class="ml-3">
+                                    <label for="private" class="text-sm font-medium text-gray-700 dark:text-gray-300">Private Collection</label>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">Require a password to view this collection</p>
+                                </div>
                             </div>
-                            <div class="ml-3">
-                                <label for="private" class="text-sm font-medium text-gray-700 dark:text-gray-300">Private Collection</label>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">Require a password to view this collection</p>
+
+                            <div x-data="{ isPrivate: @entangle('private') }" x-show="isPrivate" x-transition>
+                                <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Password <span class="text-red-500">*</span>
+                                </label>
+                                <input type="password"
+                                       id="password"
+                                       wire:model="password"
+                                       class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                       placeholder="Enter a secure password">
+                                @error('password')
+                                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div class="flex items-start">
+                                <div class="flex items-center h-5">
+                                    <input type="checkbox"
+                                           id="watermarked"
+                                           wire:model="watermarked"
+                                           class="rounded border-gray-300 dark:border-gray-600 text-indigo-600 focus:ring-indigo-500 dark:bg-gray-700">
+                                </div>
+                                <div class="ml-3">
+                                    <label for="watermarked" class="text-sm font-medium text-gray-700 dark:text-gray-300">Watermarked</label>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">Add watermark to preview images</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start">
+                                <div class="flex items-center h-5">
+                                    <input type="checkbox"
+                                           id="hide_from_portfolio"
+                                           wire:model="hide_from_portfolio"
+                                           class="rounded border-gray-300 dark:border-gray-600 text-indigo-600 focus:ring-indigo-500 dark:bg-gray-700">
+                                </div>
+                                <div class="ml-3">
+                                    <label for="hide_from_portfolio" class="text-sm font-medium text-gray-700 dark:text-gray-300">Hide from Public Portfolio</label>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">Only visible in your dashboard/client links</p>
+                                </div>
                             </div>
                         </div>
-
-                        <!-- Password Field -->
-                        <div x-data="{ isPrivate: @entangle('private') }" x-show="isPrivate" x-transition>
-                            <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                Password <span class="text-red-500">*</span>
-                            </label>
-                            <input type="password"
-                                   id="password"
-                                   wire:model="password"
-                                   class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                   placeholder="Enter a secure password">
-                            @error('password')
-                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <!-- Watermarked -->
-                        <div class="flex items-start">
-                            <div class="flex items-center h-5">
-                                <input type="checkbox"
-                                       id="watermarked"
-                                       wire:model="watermarked"
-                                       class="rounded border-gray-300 dark:border-gray-600 text-indigo-600 focus:ring-indigo-500 dark:bg-gray-700">
-                            </div>
-                            <div class="ml-3">
-                                <label for="watermarked" class="text-sm font-medium text-gray-700 dark:text-gray-300">Watermarked</label>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">Add watermarks to images (requires payment for full resolution)</p>
-                            </div>
-                        </div>
-
-                        <!-- Hide from Portfolio -->
-                        <div class="flex items-start">
-                            <div class="flex items-center h-5">
-                                <input type="checkbox"
-                                       id="hide_from_portfolio"
-                                       wire:model="hide_from_portfolio"
-                                       class="rounded border-gray-300 dark:border-gray-600 text-indigo-600 focus:ring-indigo-500 dark:bg-gray-700">
-                            </div>
-                            <div class="ml-3">
-                                <label for="hide_from_portfolio" class="text-sm font-medium text-gray-700 dark:text-gray-300">Hide from Portfolio</label>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">Don't show these images on your public portfolio</p>
-                            </div>
-                        </div>
-                    </div>
+                    </details>
 
                     <!-- Actions -->
                     <div class="flex justify-end gap-3 pt-6 border-t border-gray-200 dark:border-gray-700">
@@ -150,8 +147,8 @@
                             Cancel
                         </a>
                         <button type="submit"
-                                class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                            Continue to Sets →
+                                class="px-5 py-2.5 text-sm font-semibold text-white bg-indigo-600 border border-transparent rounded-xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            Continue
                         </button>
                     </div>
                 </form>
@@ -162,11 +159,13 @@
         @if($currentStep === 2)
             <div class="space-y-6">
                 <!-- Collection Info Card -->
-                <div class="bg-white dark:bg-gray-800 shadow-sm rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+                <div class="bg-white dark:bg-gray-800 shadow-sm rounded-2xl border border-gray-200 dark:border-gray-700 p-6">
                     <div class="flex items-center justify-between">
                         <div>
                             <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">{{ $collection->name }}</h2>
-                            <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">{{ \Carbon\Carbon::parse($collection->event_date)->format('F j, Y') }}</p>
+                            @if($collection->event_date)
+                                <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">{{ \Carbon\Carbon::parse($collection->event_date)->format('F j, Y') }}</p>
+                            @endif
                         </div>
                         <a href="{{ route('collections.edit', $collectionId) }}"
                            class="inline-flex items-center px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm">
@@ -180,21 +179,31 @@
                 </div>
 
                 <!-- Create New Set Card -->
-                <div class="bg-white dark:bg-gray-800 shadow-sm rounded-lg border border-gray-200 dark:border-gray-700">
+                <div class="bg-white dark:bg-gray-800 shadow-sm rounded-2xl border border-gray-200 dark:border-gray-700">
                     <div class="p-6 border-b border-gray-200 dark:border-gray-700">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Create New Set</h3>
-                        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Organize your photos into sets (e.g., "Ceremony", "Reception", "Portraits")</p>
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Create Sets Fast</h3>
+                        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Tap a template or type your own.</p>
                     </div>
 
-                    <form wire:submit.prevent="createSet" class="p-6">
+                    <div class="px-6 pt-6 pb-2 flex flex-wrap gap-2">
+                        @foreach($quickSetTemplates as $template)
+                            <button type="button"
+                                    wire:click="createSetFromTemplate('{{ $template }}')"
+                                    class="px-3 py-1.5 text-sm rounded-full border border-indigo-200 text-indigo-700 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-900/20 dark:text-indigo-300 dark:border-indigo-800">
+                                + {{ $template }}
+                            </button>
+                        @endforeach
+                    </div>
+
+                    <form wire:submit.prevent="createSet" class="p-6 pt-4">
                         <div class="flex gap-3">
                             <input type="text"
                                    wire:model="setName"
-                                   placeholder="Enter set name..."
-                                   class="flex-1 rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                   placeholder="Type custom set name and press Enter"
+                                   class="flex-1 rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                             <button type="submit"
-                                    class="px-6 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 whitespace-nowrap">
-                                Create Set
+                                    class="px-6 py-2.5 text-sm font-semibold text-white bg-indigo-600 border border-transparent rounded-xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 whitespace-nowrap">
+                                Add
                             </button>
                         </div>
                         @error('setName')
@@ -204,7 +213,7 @@
                 </div>
 
                 <!-- Existing Sets -->
-                <div class="bg-white dark:bg-gray-800 shadow-sm rounded-lg border border-gray-200 dark:border-gray-700">
+                <div class="bg-white dark:bg-gray-800 shadow-sm rounded-2xl border border-gray-200 dark:border-gray-700">
                     <div class="p-6 border-b border-gray-200 dark:border-gray-700">
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Your Sets ({{ $sets->count() }})</h3>
                     </div>
@@ -275,7 +284,7 @@
                                             <div class="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
                                                 <a href="{{ route('sets.detail', $set->id) }}"
                                                    class="inline-flex items-center text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300">
-                                                    Manage Photos
+                                                    Open Set
                                                     <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                                                     </svg>
