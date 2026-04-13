@@ -21,6 +21,7 @@ FilePond.registerPlugin(
 );
 
 window.FilePond = FilePond;
+window.dispatchEvent(new CustomEvent('filepond:ready'));
 window.imagesLoaded = imagesLoaded;
 window.Toastify = Toastify;
 

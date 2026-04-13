@@ -97,13 +97,16 @@
                     });
                 }
 
-                if (document.readyState === 'loading') {
-                    document.addEventListener('DOMContentLoaded', initializeUploader, { once: true });
-                } else {
+                // FilePond is loaded as an ES module (deferred), so window.FilePond may
+                // not be set yet when this inline script runs. If it is already set, init
+                // immediately; otherwise wait for the custom event dispatched by app.js.
+                if (typeof window.FilePond !== 'undefined') {
                     initializeUploader();
+                } else {
+                    window.addEventListener('filepond:ready', initializeUploader, { once: true });
                 }
 
-                document.addEventListener('livewire:load', initializeUploader);
+                // Re-init after Livewire re-renders the component.
                 document.addEventListener('livewire:update', initializeUploader);
             })();
         </script>
