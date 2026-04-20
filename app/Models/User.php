@@ -148,6 +148,17 @@ class User extends Authenticatable
     }
 
     // Feature checking methods
+    public function templates(): HasMany
+    {
+        return $this->hasMany(Template::class);
+    }
+
+    public function fonts(): HasMany
+    {
+        return $this->hasMany(Font::class);
+    }
+
+
     public function hasFeature(string $feature): bool
     {
         if ($this->is_admin) {

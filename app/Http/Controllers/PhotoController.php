@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Photo;
 use App\Models\Set;
+use App\Models\GeneratedPrint;
+use App\Models\Template;
+use App\Jobs\ApplyTemplateToPrint;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Storage;
@@ -207,5 +210,57 @@ class PhotoController extends Controller
                 'message' => 'Failed to send email. Please try again later.'
             ], 500);
         }
+    }
+
+    public function downloadOptions(Photo $photo)
+    {
+        $set       = $photo->set?->load('templates.generatedPrints');
+        $templates = $set?->templates ?? collect();
+
+        return view('photos.download-options', compact('photo', 'templates'));
+    }
+
+    public function downloadWithTemplate(Request $request, Photo $photo, Template $template)
+    {
+        // Ensure template belongs to this photo's set
+        $set = $photo->set;
+        abort_unless($set && $set->templates->contains($template->id), 404);
+
+        // Build print_data from submitted field values
+        $printData = [];
+        foreach ($template->fields as $field) {
+            $printData[$field['key']] = $request->input('fields.' . $field['key'], '');
+        }
+
+        $generatedPrint = GeneratedPrint::create([
+            'photo_id'    => $photo->id,
+            'template_id' => $template->id,
+            'print_data'  => $printData,
+            'status'      => 'pending',
+        ]);
+
+        ApplyTemplateToPrint::dispatchSync($generatedPrint);
+        $generatedPrint->refresh();
+
+        return redirect()->route('photos.download-result', [$photo, $generatedPrint]);
+    }
+
+    public function downloadResult(Photo $photo, GeneratedPrint $generatedPrint)
+    {
+        abort_unless($generatedPrint->photo_id === $photo->id, 404);
+
+        $outputUrl = null;
+        if ($generatedPrint->isCompleted() && $generatedPrint->output_path) {
+            if (app()->isLocal()) {
+                $outputUrl = Storage::disk('s3')->url($generatedPrint->output_path);
+            } else {
+                $outputUrl = Storage::disk('s3')->temporaryUrl(
+                    $generatedPrint->output_path,
+                    now()->addMinutes(30)
+                );
+            }
+        }
+
+        return view('photos.download-result', compact('photo', 'generatedPrint', 'outputUrl'));
     }
 }
