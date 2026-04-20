@@ -198,6 +198,13 @@
                             {{ _('/@' . $user->username) }}
                         </code>
                     </div>
+
+                    <div class="text-sm text-gray-600 dark:text-gray-400">
+                        <span class="mr-1">{{ __('Print product controls:') }}</span>
+                        <a href="{{ route('profile.prodigi-products.edit') }}" class="underline text-indigo-600 dark:text-indigo-400">
+                            Manage client product availability
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

@@ -18,6 +18,7 @@ class Product extends Model
         'name',
         'description',
         'type',
+        'prodigi_sku',
         'price',
         'active',
     ];
@@ -49,7 +50,8 @@ class Product extends Model
 
     public function isPrint(): bool
     {
-        return in_array($this->type, ['print_poster', 'print_mug', 'print_canvas']);
+        return !is_null($this->prodigi_sku)
+            || in_array($this->type, ['print_poster', 'print_mug', 'print_canvas']);
     }
 }
 

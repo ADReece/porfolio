@@ -16,6 +16,13 @@ class Order extends Model
         'user_id',
         'customer_email',
         'customer_name',
+        'customer_phone',
+        'shipping_address_line1',
+        'shipping_address_line2',
+        'shipping_city',
+        'shipping_county',
+        'shipping_postcode',
+        'shipping_country_code',
         'total',
         'platform_fee',
         'photographer_amount',
@@ -23,6 +30,13 @@ class Order extends Model
         'stripe_transfer_id',
         'status',
         'paid_at',
+        'prodigi_order_id',
+        'prodigi_status',
+        'prodigi_charge',
+        'prodigi_submitted_at',
+        'prodigi_shipped_at',
+        'prodigi_tracking_number',
+        'prodigi_error_message',
     ];
 
     protected $casts = [
@@ -30,6 +44,15 @@ class Order extends Model
         'platform_fee' => 'decimal:2',
         'photographer_amount' => 'decimal:2',
         'paid_at' => 'datetime',
+        'customer_phone' => 'encrypted',
+        'shipping_address_line1' => 'encrypted',
+        'shipping_address_line2' => 'encrypted',
+        'shipping_city' => 'encrypted',
+        'shipping_county' => 'encrypted',
+        'shipping_postcode' => 'encrypted',
+        'prodigi_charge' => 'decimal:2',
+        'prodigi_submitted_at' => 'datetime',
+        'prodigi_shipped_at' => 'datetime',
     ];
 
     public function user(): BelongsTo
@@ -60,6 +83,26 @@ class Order extends Model
     public function isRefunded(): bool
     {
         return $this->status === 'refunded';
+    }
+
+    public function hasPrintItems(): bool
+    {
+        return $this->items()
+            ->whereHas('product', function ($query) {
+                $query->where('type', 'like', 'print%')
+                    ->orWhereNotNull('prodigi_sku');
+            })
+            ->exists();
+    }
+
+    public function isProdigiSubmitted(): bool
+    {
+        return !is_null($this->prodigi_order_id);
+    }
+
+    public function isProdigiShipped(): bool
+    {
+        return $this->prodigi_status === 'shipped';
     }
 }
 

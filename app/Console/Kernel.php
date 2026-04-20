@@ -15,7 +15,13 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        $schedule->command('prodigi:sync-catalog --seed-user-preferences')
+            ->daily()
+            ->withoutOverlapping();
+
+        $schedule->command('prodigi:sync-orders')
+            ->everyThirtyMinutes()
+            ->withoutOverlapping();
     }
 
     /**
