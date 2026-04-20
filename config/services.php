@@ -35,4 +35,11 @@ return [
         'connect_client_id' => env('STRIPE_CONNECT_CLIENT_ID'),
     ],
 
+    'prodigi' => [
+        'api_key' => env('PRODIGI_API_KEY'),
+        'merchant_id' => env('PRODIGI_MERCHANT_ID'),
+        'environment' => env('PRODIGI_ENVIRONMENT', 'sandbox'),
+        'base_url' => env('PRODIGI_BASE_URL', 'https://sandbox.prodigi.com/v4.0'),
+    ],
+
 ];

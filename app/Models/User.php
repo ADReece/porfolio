@@ -4,8 +4,10 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\Traits\UsesUuid;
+use App\Models\ProdigiProduct;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -131,6 +133,18 @@ class User extends Authenticatable
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class);
+    }
+
+    public function prodigiProducts(): BelongsToMany
+    {
+        return $this->belongsToMany(ProdigiProduct::class, 'prodigi_product_user')
+            ->withPivot('is_enabled', 'retail_price')
+            ->withTimestamps();
+    }
+
+    public function enabledProdigiProducts(): BelongsToMany
+    {
+        return $this->prodigiProducts()->wherePivot('is_enabled', true)->where('is_active', true);
     }
 
     // Feature checking methods

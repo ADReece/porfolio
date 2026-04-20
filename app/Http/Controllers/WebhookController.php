@@ -56,11 +56,20 @@ class WebhookController extends CashierController
         // Find order by payment intent ID and mark as completed
         $order = \App\Models\Order::where('stripe_payment_intent_id', $paymentIntent['id'])->first();
 
+        if (!$order && !empty($paymentIntent['metadata']['order_id'])) {
+            $order = \App\Models\Order::find($paymentIntent['metadata']['order_id']);
+        }
+
         if ($order) {
             $order->update([
                 'status' => 'completed',
                 'paid_at' => now(),
+                'stripe_payment_intent_id' => $paymentIntent['id'],
             ]);
+
+            if ($order->hasPrintItems()) {
+                \App\Jobs\SubmitOrderToProdigi::dispatch($order);
+            }
 
             // Transfer funds to photographer via Stripe Connect
             if ($order->user->stripe_connect_enabled) {

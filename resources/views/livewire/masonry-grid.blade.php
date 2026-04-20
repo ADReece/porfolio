@@ -21,6 +21,11 @@
                         $isNewItem = $index >= $previousPageCount;
                     @endphp
                     <div class="masonry-item" data-photo-id="{{ $m->id }}" wire:key="photo-{{ $m->id }}" data-new-item="{{ $isNewItem ? 'true' : 'false' }}">
+                        @php
+                            $ownerCanSell = $m->user
+                                && $m->user->hasFeature('selling')
+                                && $m->user->enabledProdigiProducts()->exists();
+                        @endphp
                         <div class="relative group overflow-hidden rounded-lg shadow-sm hover:shadow-xl transition-shadow duration-300">
                             <!-- Image (clickable for lightbox) -->
                             <a href="{{ $m->getUri() }}"
@@ -51,6 +56,17 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                                     </svg>
                                 </button>
+
+                                @if($ownerCanSell)
+                                    <!-- Buy Print Button -->
+                                    <a href="{{ route('print-purchase.show', ['photo' => $m->id]) }}"
+                                       class="mr-2 bg-white hover:bg-gray-100 text-gray-800 rounded-full p-2 shadow-lg transition-transform transform hover:scale-110"
+                                       title="Buy Print">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m1.6 8L5.4 5M7 13l-1.2 6.4A1 1 0 006.8 21h10.4a1 1 0 001-.8L20 13M9 21a1 1 0 100-2 1 1 0 000 2zm8 0a1 1 0 100-2 1 1 0 000 2z"/>
+                                        </svg>
+                                    </a>
+                                @endif
 
                                 <!-- Lightbox View Button -->
                                 <button type="button"

@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\CollectionController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PrintPurchaseController;
+use App\Http\Controllers\ProdigiProductSettingsController;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\SetController;
 use App\Http\Livewire\ManageSets;
@@ -97,6 +99,9 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::delete('/profile/logo', [ProfileController::class, 'removeLogo'])->name('profile.logo.remove');
+
+    Route::get('/profile/print-products', [ProdigiProductSettingsController::class, 'edit'])->name('profile.prodigi-products.edit');
+    Route::patch('/profile/print-products', [ProdigiProductSettingsController::class, 'update'])->name('profile.prodigi-products.update');
 });
 
 Route::middleware(['auth','subscription:upload_logo'])->group(function(){
@@ -111,11 +116,16 @@ Route::prefix('/@{username}')->group(function(){
 
     Route::get('/collections', [ProfileController::class, 'collections'])->name('profile.collections');
     Route::get('/collections/{collection_id}', [ProfileController::class, 'collection'])->name('profile.collection');
+    Route::get('/print-products', [ProdigiProductSettingsController::class, 'listForPortfolio'])->name('profile.print-products');
 });
 
 // Public photo download and purchase requests
 Route::post('/photos/{photo}/request-download', [PhotoController::class, 'requestDownload'])->name('photos.request-download');
 Route::post('/photos/{photo}/request-purchase', [PhotoController::class, 'requestPurchase'])->name('photos.request-purchase');
+Route::get('/photos/{photo}/buy-print', [PrintPurchaseController::class, 'show'])->name('print-purchase.show');
+Route::post('/photos/{photo}/buy-print', [PrintPurchaseController::class, 'store'])->name('print-purchase.store');
+Route::get('/orders/{order}/purchase-success', [PrintPurchaseController::class, 'success'])->name('print-purchase.success');
+Route::get('/orders/{order}/purchase-cancel', [PrintPurchaseController::class, 'cancel'])->name('print-purchase.cancel');
 
 // Stripe Webhooks
 Route::post('/stripe/webhook', [App\Http\Controllers\WebhookController::class, 'handleWebhook'])->name('cashier.webhook');
