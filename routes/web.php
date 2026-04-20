@@ -1,11 +1,14 @@
 <?php
 
 use App\Http\Controllers\CollectionController;
+use App\Http\Controllers\FontController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\SetController;
+use App\Http\Controllers\TemplateController;
 use App\Http\Livewire\ManageSets;
 use App\Http\Livewire\PhotoUpload;
+use App\Http\Livewire\TemplateBatch;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminOrdersController;
@@ -81,6 +84,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/collections/{collection}/sets', [SetController::class, 'store'])->name('sets.store');
     Route::patch('/collections/{collection}/sets/{set}', [SetController::class, 'update'])->name('sets.update');
     Route::delete('/collections/{collection}/sets/{set}', [SetController::class, 'destroy'])->name('sets.destroy');
+    Route::post('/sets/{set}/templates', [SetController::class, 'syncTemplates'])->name('sets.templates.sync');
 
     Route::post('/collections/{collection}/email-client', [CollectionController::class, 'emailClient'])->name('collections.email-client');
     Route::post('/collections/{collection}/request-archive', [CollectionController::class, 'requestArchive'])->name('collections.request-archive');
@@ -97,6 +101,22 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::delete('/profile/logo', [ProfileController::class, 'removeLogo'])->name('profile.logo.remove');
+
+    // Template CRUD
+    Route::resource('templates', TemplateController::class)->except(['show']);
+
+    // Template test (single-photo preview)
+    Route::get('/templates/{template}/test', [TemplateController::class, 'test'])->name('templates.test');
+    Route::post('/templates/{template}/test', [TemplateController::class, 'runTest'])->name('templates.runTest');
+    Route::get('/templates/{template}/test/{generatedPrint}', [TemplateController::class, 'testResult'])->name('templates.testResult');
+
+    // Font management
+    Route::get('/font-library', [FontController::class, 'index'])->name('fonts.index');
+    Route::post('/font-library', [FontController::class, 'store'])->name('fonts.store');
+    Route::delete('/font-library/{font}', [FontController::class, 'destroy'])->name('fonts.destroy');
+
+    // Template batch — Livewire full-page component
+    Route::get('/collections/{collection}/batch', TemplateBatch::class)->name('collections.batch');
 });
 
 Route::middleware(['auth','subscription:upload_logo'])->group(function(){
@@ -114,6 +134,9 @@ Route::prefix('/@{username}')->group(function(){
 });
 
 // Public photo download and purchase requests
+Route::get('/photos/{photo}/download-options', [PhotoController::class, 'downloadOptions'])->name('photos.download-options');
+Route::post('/photos/{photo}/download-with-template/{template}', [PhotoController::class, 'downloadWithTemplate'])->name('photos.download-with-template');
+Route::get('/photos/{photo}/download-result/{generatedPrint}', [PhotoController::class, 'downloadResult'])->name('photos.download-result');
 Route::post('/photos/{photo}/request-download', [PhotoController::class, 'requestDownload'])->name('photos.request-download');
 Route::post('/photos/{photo}/request-purchase', [PhotoController::class, 'requestPurchase'])->name('photos.request-purchase');
 

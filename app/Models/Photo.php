@@ -67,18 +67,27 @@ class Photo extends Model
 
     public function getAwsMedia()
     {
-        return Storage::disk('s3')->temporaryUrl($this->url, now()->addMinutes(10));
+        return $this->s3Url($this->url);
     }
 
     public function getAwsThumbnail()
     {
         $key = str_replace('photos/', 'thumbnails/', $this->url);
-        return Storage::disk('s3')->temporaryUrl($key, now()->addMinutes(10));
+        return $this->s3Url($key);
     }
 
     public function getAwsWatermarked()
     {
         $key = str_replace('photos/', 'watermarked/', $this->url);
+        return $this->s3Url($key);
+    }
+
+    private function s3Url(string $key): string
+    {
+        if (app()->isLocal()) {
+            return Storage::disk('s3')->url($key);
+        }
+
         return Storage::disk('s3')->temporaryUrl($key, now()->addMinutes(10));
     }
 

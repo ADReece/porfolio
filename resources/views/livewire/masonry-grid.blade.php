@@ -43,14 +43,13 @@
                             <!-- Hover Overlay with Buttons -->
                             <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 flex items-end justify-end p-3 opacity-0 group-hover:opacity-100">
                                 <!-- Download Request Button -->
-                                <button type="button"
-                                        onclick="requestDownload('{{ $m->id }}')"
-                                        class="mr-2 bg-white hover:bg-gray-100 text-gray-800 rounded-full p-2 shadow-lg transition-transform transform hover:scale-110"
-                                        title="Request Download">
+                                <a href="/photos/{{ $m->id }}/download-options"
+                                   class="mr-2 bg-white hover:bg-gray-100 text-gray-800 rounded-full p-2 shadow-lg transition-transform transform hover:scale-110"
+                                   title="Download">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                                     </svg>
-                                </button>
+                                </a>
 
                                 <!-- Lightbox View Button -->
                                 <button type="button"

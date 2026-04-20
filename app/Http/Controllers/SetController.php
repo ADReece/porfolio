@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Set;
 use App\Models\Collection;
+use App\Models\Template;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\View\View;
@@ -60,8 +61,37 @@ class SetController extends Controller
     {
         $this->authorize('view', $set);
 
+        $userTemplates = Template::where('user_id', auth()->id())
+            ->where('active', true)
+            ->orderBy('name')
+            ->get();
+
         return view('collections.backend.set-detail', [
-            'set' => $set->load('photos', 'collection')
+            'set'           => $set->load('photos', 'collection', 'templates'),
+            'userTemplates' => $userTemplates,
+        ]);
+    }
+
+    public function syncTemplates(Request $request, Set $set): JsonResponse
+    {
+        $this->authorize('update', $set);
+
+        $validated = $request->validate([
+            'template_ids'   => 'present|array',
+            'template_ids.*' => 'uuid|exists:templates,id',
+        ]);
+
+        // Only allow attaching templates owned by the current user
+        $allowed = Template::where('user_id', auth()->id())
+            ->whereIn('id', $validated['template_ids'])
+            ->pluck('id')
+            ->all();
+
+        $set->templates()->sync($allowed);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Templates updated.',
         ]);
     }
 }

@@ -154,7 +154,59 @@ This is the living project file we will keep updating as development continues.
 6. **Performance Baseline** - load time targets, database query optimization, cache validation
 7. **Deploy Preparation** - environment variable docs, .env.example, database seeding scripts, backup strategy
 
-## 10) Decision Log
+## 10) Identified Bugs and Issues (2026-04-20 Audit)
+
+The following bugs and issues were identified during codebase cross-check. A corresponding `create-github-issues.sh` script exists at the repo root to create these as GitHub Issues once authenticated.
+
+### Bug #1 — Stale `use App\Models\Album` import in CollectionController
+**Severity: High (Fatal in production with OPcache)**
+`app/Http/Controllers/CollectionController.php` line 5 imports `App\Models\Album` which does not exist. The app uses `Collection`, not `Album`. This is a dead import that can cause class-not-found errors.
+
+### Bug #2 — `MustVerifyEmail` interface disabled on User model
+**Severity: High (Security)**
+The `User` model has `// use Illuminate\Contracts\Auth\MustVerifyEmail;` commented out, but routes use `->middleware(['auth', 'verified'])`. Without `MustVerifyEmail` being implemented, the `verified` middleware always passes, meaning unverified users can access the full application.
+
+### Bug #3 — `CheckPhotoLimit` and `CheckCollectionLimit` middleware redirect for JSON requests
+**Severity: Medium (UX/Integration)**
+Both limit middleware classes call `redirect()->back()` or `redirect()->route('pricing')` unconditionally, even when the request expects JSON (e.g., FilePond upload XHR). This returns an HTML redirect instead of a JSON 422/403 response, breaking the frontend uploader's error handling.
+
+### Bug #4 — `canUploadPhotos()` and `canCreateCollections()` skip `is_admin` check
+**Severity: Medium (Logic)**
+`User::hasFeature()` grants admins all features, but `canUploadPhotos()` and `canCreateCollections()` only check `isFeatureOverrideActive()`, not `is_admin`. An admin without a `subscription_plan_id` will be blocked from uploading photos and creating collections even though they should have full access.
+
+### Bug #5 — `ProcessImageUpload` job stores non-serializable `ImageManager` in public property
+**Severity: Medium (Queue Reliability)**
+The job stores `$this->imageManager = new ImageManager(...)` in a public property in the constructor. If this job runs async (not `dispatchSync`), the `ImageManager` object cannot be safely serialized for the queue, causing job failures. The `ImageManager` should be instantiated inside `handle()` instead.
+
+### Bug #6 — `Photo::getUri()` and friends generate fresh presigned URLs on every call
+**Severity: Medium (Performance)**
+`getAwsMedia()`, `getAwsThumbnail()`, and `getAwsWatermarked()` each call `Storage::disk('s3')->temporaryUrl(...)` with a 10-minute TTL on every invocation. A collection page with 50 photos triggers 150+ S3 API calls. Results should be cached per-request or CDN URLs should be used.
+
+### Bug #7 — Private collection `emailClient` sends no password in share email
+**Severity: Medium (UX / Product Gap)**
+`CollectionController::emailClient()` sends a share link for private collections but explicitly cannot include the plain-text password (it's stored as bcrypt). Clients receive a link to a password-gated page with no way to enter. A shareable token or temporary bypass link needs to be implemented.
+
+### Bug #8 — `GenerateCollectionArchive` downloads photos via `file_get_contents` on presigned URLs
+**Severity: Medium (Reliability)**
+The archive job calls `$photo->getUri()` (which generates a 10-minute presigned URL) and then `file_get_contents($imageUrl)` to stream the content into the ZIP. For large collections this is slow and fragile; the presigned URL may have already expired by the time `file_get_contents` is called if the job is delayed. Should use `Storage::disk('s3')->get($photo->url)` directly.
+
+### Bug #9 — `requestDownload` and `requestPurchase` routes have no rate limiting
+**Severity: Medium (Security/Abuse)**
+`POST /photos/{photo}/request-download` and `POST /photos/{photo}/request-purchase` are public unauthenticated routes with no throttle middleware. They trigger outbound emails, making them a potential email-spam vector.
+
+### Bug #10 — `CollectionController::sets()` has no ownership check
+**Severity: Low-Medium (Authorization)**
+`CollectionController::sets($collection)` at line 20 does not verify the authenticated user owns the collection. The `$collection` parameter is an untyped string so route model binding doesn't apply. Any authenticated user can view any collection's sets page by guessing the collection ID.
+
+### Bug #11 — Font options inconsistency between `updateDisplayMode` and `updateCustomization`
+**Severity: Low (Data Integrity)**
+`updateDisplayMode()` validates `portfolio_font` against `system,nunito,inter,playfair,roboto,open-sans` (6 options) but `updateCustomization()` validates against `system,nunito,inter,playfair,roboto,open-sans,lato,montserrat,merriweather` (9 options). Fonts set via customization page can't be preserved when calling `updateDisplayMode`.
+
+### Bug #12 — `User::$with` globally eager-loads `subscriptionPlan` on every User query
+**Severity: Low (Performance)**
+`protected $with = ['subscriptionPlan']` causes every `User::find()`, `User::all()`, etc. to always JOIN subscription plans, even in admin list views, middleware checks, and webhook handlers where the plan isn't needed.
+
+## 11) Decision Log
 
 Use this section to track product/technical decisions as we go.
 
@@ -189,6 +241,9 @@ Use this section as an append-only stream for tasks we execute.
 - 2026-04-13: Added WebhookPaymentIntentTest (3 tests) to validate Stripe payment success/failure webhook handling and unknown-intent safety.
 - 2026-04-13: Added PortfolioPrivacyFeatureTest (5 tests) to validate public portfolio filtering, private collection password gates, and private photo exclusion from public collections.
 - 2026-04-13: **UPDATED TEST COUNT: 72 feature tests passing** for launch-critical auth, billing, webhook, and privacy coverage.
+- 2026-04-20: Full codebase audit completed. Identified 12 bugs/issues (see Section 10). Created `create-github-issues.sh` at repo root for automated issue creation once a GitHub PAT is available.
+- 2026-04-20: Created GitHub issues #46–#57 for all 12 identified bugs on branch `feat/template-batching`.
+- 2026-04-20: Implemented **Template Batching** feature (branch `feat/template-batching`). New files: `database/migrations/2026_04_20_000001_create_templates_table.php`, `2026_04_20_000002_create_generated_prints_table.php`, `app/Models/Template.php`, `app/Models/GeneratedPrint.php`, `app/Jobs/ApplyTemplateToPrint.php`, `app/Http/Controllers/TemplateController.php`, `app/Http/Livewire/TemplateBatch.php`, `resources/views/templates/{index,create,edit}.blade.php`, `resources/views/livewire/template-batch.blade.php`. Updated `routes/web.php` (template CRUD resource + `/collections/{id}/batch` route) and `app/Models/User.php` (`templates()` HasMany relation). Feature is gated on `custom_templates` subscription plan flag.
 
 ## 12) Pre-Launch Readiness Checklist
 
