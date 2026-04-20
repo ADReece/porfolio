@@ -6,6 +6,7 @@ use App\Models\Traits\UsesUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Set extends Model
@@ -41,5 +42,10 @@ class Set extends Model
     public function photos() : HasMany
     {
         return $this->hasMany(Photo::class);
+    }
+
+    public function templates(): BelongsToMany
+    {
+        return $this->belongsToMany(Template::class, 'set_templates')->withTimestamps();
     }
 }
